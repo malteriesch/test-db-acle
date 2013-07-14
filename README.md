@@ -1,7 +1,7 @@
 Test-DB-Acle
 ============
 
-(pronounced test -debacle)
+(pronounced test -debacle, I also use the short form test-acle)
 
 A PHP library to facilitate easy and concise tests for the database layer, initially 
 for MySql, although I can see Oracle et al support possible.... 
@@ -19,7 +19,7 @@ id  |date        |name    |value  |dependent_table_id
 10  |2001-01-01  |foo     |900    |60
 
 
-[dependent_table_id]
+[dependent_table]
 id |name
 20 |Bar
 60 |Baz
