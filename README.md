@@ -30,7 +30,7 @@ id |name
 Where the framework itself knows which columns are not NULL-able in the table and inserts default values...
 
 
-Very, brief instructions:
+Very, brief, instructions:
 unzip lib/TestDbAcle into somewhere and enable autoload for it (for example, by using composer), it follows the PSR convention
 
 in your test case, assuming you have an instance of a PDO class in ```$pdo```, you can use this to have the data inserted into your database:
