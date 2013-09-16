@@ -30,4 +30,28 @@ id |name
 Where the framework itself knows which columns are not NULL-able in the table and inserts default values...
 
 
+Very, brief instructions:
+unzip lib/TestDbAcle into somewhere and enable autoload for it (for example, by using composer), it follows the PSR convention
 
+in your test case, assuming you have an instance of a PDO class in ```$pdo```, you can use this to have the data inserted into your database:
+```php
+$dbTablesToSetup="
+
+[table_name]
+id  |date        |name    |value  |dependent_table_id
+10  |2001-01-01  |foo     |900    |60
+
+
+[dependent_table]
+id |name
+20 |Bar
+60 |Baz
+
+";
+
+$dataInserter = new \TestDbAcle\Db\DataInserter($pdo);
+$psvParser = new \TestDbAcle\Psv\PsvParser();
+
+
+$dataInserter->process($psvParser->parsePsvTree($dbTablesToSetup));
+```
