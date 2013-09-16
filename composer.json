@@ -13,7 +13,6 @@
         
     },
     "require-dev": {
-        "mockery/mockery": "0.8.*"
     },
     "autoload": {
         "psr-0": { "TestDbAcle": "lib/" }
