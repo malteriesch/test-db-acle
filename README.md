@@ -27,12 +27,7 @@ id |name
 ";
 ```
 
-Where the framework itself knows which cilumns are not NULL-able in the table and inserts default values...
-
-This is a placeholder project until I have uploaded the code ....
-
-
-
+Where the framework itself knows which columns are not NULL-able in the table and inserts default values...
 
 
 

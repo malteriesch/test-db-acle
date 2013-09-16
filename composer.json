@@ -1,0 +1,19 @@
+{
+    "name": "malteriesch/test-db-acle",
+    "description": "Framework for setting up database test data for unit tests",
+    "license": "BSD",
+    "authors": [
+        {
+            "name": "Malte Riesch",
+            "email": "malteriesch@googlemail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-0": { "TestDbAcle": "lib/" }
+    }
+}
