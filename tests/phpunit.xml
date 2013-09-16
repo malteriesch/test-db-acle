@@ -1,4 +1,4 @@
-<phpunit bootstrap="./Bootstrap.php">
+<phpunit bootstrap="./Bootstrap.php" colors="true">
     <testsuite name="Test-DB-Acle Test Suite">
         <directory>./</directory>
     </testsuite>

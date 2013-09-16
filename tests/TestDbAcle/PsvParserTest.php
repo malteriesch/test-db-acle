@@ -3,7 +3,7 @@
 class PsvParserTest extends \PHPUnit_Framework_TestCase
 {
 
-    function test_ParsePsv() {
+    function test_parsePsv() {
 
         $psvParser = new \TestDbAcle\Psv\PsvParser();
 
@@ -24,7 +24,7 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedArray, $psvParser->parsePsv($psvToParse));
     }
 
-    function test_ParsePsv_WithNull() {
+    function test_parsePsv_WithNull() {
 
         $psvParser = new \TestDbAcle\Psv\PsvParser();
 
