@@ -30,8 +30,24 @@ id |name
 Where the framework itself knows which columns are not NULL-able in the table and inserts default values...
 
 
-Very, brief, instructions:
-unzip lib/TestDbAcle into somewhere and enable autoload for it (for example, by using composer), it follows the PSR convention
+How To Install
+--------------
+
+The easiest way of installing Test-Db-Acle is by using composer ( Read more here: [http://packagist.org](http://packagist.org "Packagist") ), and I highly recommend using this approach,
+although you can also unzip the package into a folder and enable autoload for it (it uses psr-0 naming convention)
+
+To use with composer, add this to your composer.json file:
+
+    "require": {
+        "test-db-acle/test-db-acle" : "dev-master"
+    },
+    "repositories" : [
+        {
+          "type": "git",
+          "url": "https://github.com/malteriesch/test-db-acle.git"
+        }
+    ]
+
 
 in your test case, assuming you have an instance of a PDO class in ```$pdo```, you can use this to have the data inserted into your database:
 ```php
