@@ -17,13 +17,13 @@ class DataInserter {
     }
 
     public function process($dataTree) {
-         
+        
         foreach (array_keys($dataTree) as $tableName) {
             $this->tableInfo->addTableDescription($tableName,$this->getQuery('describe ' . $tableName));
         }
         
-        foreach ($dataTree as $tableName => $content) {
-            $this->processTable($tableName, $content);
+        foreach ($dataTree as $tableName => $content) { 
+            $this->processTable($tableName, $content['data']);
         }
     }
 

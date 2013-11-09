@@ -1,7 +1,6 @@
 <?php
 
-class PsvParserTest extends \PHPUnit_Framework_TestCase
-{
+class PsvParserTest extends \PHPUnit_Framework_TestCase {
 
     function test_parsePsv() {
 
@@ -14,12 +13,12 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase
     	";
 
         $expectedArray = array(
-            array("id"       => "10",
+            array("id" => "10",
                 "first_name" => "john",
-                "last_name"  => "miller"),
-            array("id"       => "20",
+                "last_name" => "miller"),
+            array("id" => "20",
                 "first_name" => "stu",
-                "last_name"  => "Smith"),
+                "last_name" => "Smith"),
         );
         $this->assertEquals($expectedArray, $psvParser->parsePsv($psvToParse));
     }
@@ -35,12 +34,12 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase
     	";
 
         $expectedArray = array(
-            array("id"       => "10",
+            array("id" => "10",
                 "first_name" => NULL,
-                "last_name"  => "miller"),
-            array("id"       => "20",
+                "last_name" => "miller"),
+            array("id" => "20",
                 "first_name" => "stu",
-                "last_name"  => "Smith"),
+                "last_name" => "Smith"),
         );
         $this->assertSame($expectedArray, $psvParser->parsePsv($psvToParse));
     }
@@ -64,20 +63,23 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase
         ";
 
         $expectedArray = array("expression1:withsome&characters" => array(
-                array("id"       => "10",
-                    "first_name" => "john",
-                    "last_name"  => "miller"),
-                array("id"       => "20",
-                    "first_name" => "stu",
-                    "last_name"  => "Smith")),
+                'data' => array(
+                    array("id" => "10",
+                        "first_name" => "john",
+                        "last_name" => "miller"),
+                    array("id" => "20",
+                        "first_name" => "stu",
+                        "last_name" => "Smith"))
+            ),
             "expression2:we also have some values misaligned" => array(
-                array("col1" => "1",
-                    "col2"   => "moo",
-                    "col3"   => "foo"),
-                array("col1" => "30",
-                    "col2"   => "miaow",
-                    "col3"   => "boo")),
-        );
+                'data' => array(
+                    array("col1" => "1",
+                        "col2" => "moo",
+                        "col3" => "foo"),
+                    array("col1" => "30",
+                        "col2" => "miaow",
+                        "col3" => "boo"))
+        ));
         $this->assertEquals($expectedArray, $psvParser->parsePsvTree($psvToParse));
     }
 

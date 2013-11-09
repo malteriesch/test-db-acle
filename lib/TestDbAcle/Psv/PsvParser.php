@@ -64,7 +64,7 @@ class PsvParser {
             $tableName                    = trim( str_replace( '[', '', $contentSplitByTableDelimiter[0] ) );
             $actualContentForTable        = $contentSplitByTableDelimiter[1];
 
-            $parsedTree[ $tableName ]     = $this->parsePsv( $actualContentForTable );
+            $parsedTree[ $tableName ]     = array("data"=>$this->parsePsv( $actualContentForTable ));
 
         }
         return $parsedTree;
