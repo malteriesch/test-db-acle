@@ -61,14 +61,35 @@ class PsvParser {
             }
 
             $contentSplitByTableDelimiter = explode( "]", $tableContentPartStart );
-            $tableName                    = trim( str_replace( '[', '', $contentSplitByTableDelimiter[0] ) );
+            $expression                    = trim( str_replace( '[', '', $contentSplitByTableDelimiter[0] ) );
+            
+            list($tableName,$meta) = $this->parseIntoTableAndMeta($expression);
+            
             $actualContentForTable        = $contentSplitByTableDelimiter[1];
 
-            $parsedTree[ $tableName ]     = array("data"=>$this->parsePsv( $actualContentForTable ));
+            $parsedTree[ $tableName ]     = array('meta'=>$meta,"data"=>$this->parsePsv( $actualContentForTable ));
 
         }
         return $parsedTree;
 	}
+        
+    protected function parseIntoTableAndMeta($expression)
+    {
+        if (strpos($expression,"|")!==false){
+            $meta = array();
+            list($tableName,$parametersExpression) = explode("|",$expression);
+            foreach(explode(";",$parametersExpression) as $parameterExpression){
+                list($key,$value)=explode(":",$parameterExpression);
+                if(strpos($value,",")!==false){
+                    $value= explode(",",$value);
+                }
+                $meta[$key]=$value;
+            }
+            return array($tableName,$meta);
+        }else{
+            return array($expression,array());
+        }
+    }
     /**
      *
      * parses a single bit of Psv content such that

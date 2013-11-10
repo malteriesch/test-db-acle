@@ -48,7 +48,7 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase {
         $psvParser = new \TestDbAcle\Psv\PsvParser();
 
         $psvToParse = "
-        [expression1:withsome&characters]
+        [expression1|mode:replace;identifiedBy:first_name,last_name]
         id  |first_name   |last_name
         10  |john         |miller
         #----------------------------------
@@ -56,13 +56,19 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase {
         #----------------------------------
         20  |stu          |Smith
 
-         [expression2:we also have some values misaligned]
+         [expression2]
          col1  |col2    |col3
          1     |moo     |foo
          30    |miaow   |boo
+         
+         [empty]
         ";
 
-        $expectedArray = array("expression1:withsome&characters" => array(
+        $expectedArray = array("expression1" => array(
+                'meta' => array(
+                    'mode'=> 'replace',
+                     'identifiedBy' => array('first_name','last_name')
+                ),
                 'data' => array(
                     array("id" => "10",
                         "first_name" => "john",
@@ -71,15 +77,17 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase {
                         "first_name" => "stu",
                         "last_name" => "Smith"))
             ),
-            "expression2:we also have some values misaligned" => array(
+            "expression2" => array(
+                'meta' => array(),
                 'data' => array(
                     array("col1" => "1",
                         "col2" => "moo",
                         "col3" => "foo"),
                     array("col1" => "30",
                         "col2" => "miaow",
-                        "col3" => "boo"))
-        ));
+                        "col3" => "boo"))),
+            'empty' => array('meta'=>array(),'data'=>array())
+        );
         $this->assertEquals($expectedArray, $psvParser->parsePsvTree($psvToParse));
     }
 
