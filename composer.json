@@ -1,6 +1,7 @@
 {
-    "name": "malteriesch/test-db-acle",
-    "description": "Framework for setting up database test data for unit tests",
+    "name": "test-db-acle/test-db-acle",
+    "description": "Framework for very lightweight setting up of database test data for unit tests",
+    "keywords": ["library", "testing", "test", "TDD", "phpUnit", "simpletest", "dbUnit","build","database","php"],
     "license": "BSD",
     "authors": [
         {

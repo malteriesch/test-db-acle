@@ -2,7 +2,7 @@
 
 namespace TestDbAcle\Db;
 
-class TableInfo extends \PHPUnit_Framework_TestCase
+class TableInfo 
 {
     protected   $nonNullableColumns   = array();
     protected   $nullableColumns = array();
