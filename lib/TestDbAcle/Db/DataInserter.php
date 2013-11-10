@@ -42,7 +42,7 @@ class DataInserter
     protected function getUpserter($tableName,$identifiedBy,$valuesToBeInserted)
     {
         $updateBuilder = new Sql\UpdateBuilder($tableName);
-        foreach ($identifiedBy as $idColumn) {
+        foreach ((array)$identifiedBy as $idColumn) {
             $updateBuilder->addCondition("$idColumn='{$valuesToBeInserted[$idColumn]}'");
         }
 

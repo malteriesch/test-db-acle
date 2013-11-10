@@ -55,8 +55,8 @@ class TableInfoTest extends \PHPUnit_Framework_TestCase
         
     }
     public function test_decorateWithNullPlaceHolders() {
-        $this->assertEquals( array('col9'=>'','col4'=>'2012-01-01','col1'=>'1','col9'=>'foo'), $this->tableInfo->getDecorateWithNullPlaceHolders('stuff',array('col9'=>'','col4'=>'2012-01-01')));
-        
+        $this->assertEquals( array('col4'=>'2012-01-01','col1'=>'1','col9'=>'foo'), $this->tableInfo->getDecorateWithNullPlaceHolders('stuff',array('col9'=>'','col4'=>'2012-01-01')));
+        $this->assertEquals( array('col9'=>'moo','col4'=>'2012-01-01','col1'=>'1'), $this->tableInfo->getDecorateWithNullPlaceHolders('stuff',array('col9'=>'moo','col4'=>'2012-01-01')));
     }
 
 }

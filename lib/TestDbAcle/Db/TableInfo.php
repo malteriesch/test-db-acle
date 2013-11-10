@@ -45,7 +45,7 @@ class TableInfo
 
         foreach ($this->nonNullableColumns[$tableName] as $columnName) {
             $columnDescription = $this->tableDescriptions[$tableName][$columnName];
-            if (!is_null($columnDescription['Default'])){
+            if (!is_null($columnDescription['Default'])&& (!isset($tableRow[$columnName]) || !$tableRow[$columnName])){
                 $tableRow[$columnName]=$columnDescription['Default'];
             }elseif (!isset($tableRow[$columnName]) && 
                  $columnDescription['Null'] == 'NO' && 
