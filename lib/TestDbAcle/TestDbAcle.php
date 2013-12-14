@@ -60,13 +60,13 @@ class TestDbAcle
         return $this->dataInserter;
     }
     
-    function setupTables($psvContent)
+    function setupTables($psvContent, $additionalFilters = array())
     {
         $parsedTree = $this->parser->parsePsvTree($psvContent);
         foreach(array_keys($parsedTree) as $tableName){
             $this->tableInfo->addTableDescription($tableName, $this->pdoFacade->describeTable($tableName));
         }
-        return $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree));
+        return $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree,$additionalFilters));
     }
        
     /**
