@@ -64,10 +64,6 @@ id |name
 60 |Baz
 
 ";
-
-$dataInserter = new \TestDbAcle\Db\DataInserter($pdo);
-$psvParser = new \TestDbAcle\Psv\PsvParser();
-
-
-$dataInserter->process($psvParser->parsePsvTree($dbTablesToSetup));
+$testDbAcle = \TestDbAcle\TestDbAcle::create($pdo);
+$testDbAcle->setupTables(dbTablesToSetup);
 ```
