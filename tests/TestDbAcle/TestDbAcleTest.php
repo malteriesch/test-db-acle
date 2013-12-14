@@ -12,21 +12,8 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         return $mock;
     }
     
-    function test_setupTables()
+    protected function createConfiguredTestDbAcleWithExpectations($expectedPsv, $additionalFilters = array())
     {
-        
-        $psv="
-            [user]
-            user_id |first_name |last_name  |company_id
-            10      |Joe        |Bloggs     |1
-            20      |Tommy      |Jones      |1
-            
-            [company]
-            company_id  |name
-            1           |foo
-            
-        ";
-        
         $parser        = \Mockery::mock('TestDbAcle\Psv\PsvParser');
         $filterQueue   = \Mockery::mock('TestDbAcle\Filter\FilterQueue');
         $dataTableInfo = \Mockery::mock('TestDbAcle\Db\TableInfo');
@@ -43,8 +30,9 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         $mockPdoFacade->shouldReceive('describeTable')->once()->with('table1')->andReturn($describedTable1);
         $mockPdoFacade->shouldReceive('describeTable')->once()->with('table2')->andReturn($describedTable2);
 
-        $parser->shouldReceive('parsePsvTree')->once()->with($psv)->andReturn($afterParsing)->ordered();
-        $filterQueue->shouldReceive('filterDataTree')->once()->with($afterParsing)->andReturn($afterFiltering)->ordered();
+        $parser->shouldReceive('parsePsvTree')->once()->with($expectedPsv)->andReturn($afterParsing)->ordered();
+        
+        $filterQueue->shouldReceive('filterDataTree')->once()->with($afterParsing, $additionalFilters)->andReturn($afterFiltering)->ordered();
 
         $dataTableInfo->shouldReceive('addTableDescription')->with('table1', $describedTable1);
         $dataTableInfo->shouldReceive('addTableDescription')->with('table2', $describedTable2);
@@ -60,8 +48,47 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         $testDbAcle->setTableInfo($dataTableInfo);
         $testDbAcle->setDataInserter($dataInserter);
         $testDbAcle->setPdoFacade($mockPdoFacade);
+        return $testDbAcle;
+    }
+    
+    function test_setupTables()
+    {
         
+        $psv="
+            [user]
+            user_id |first_name |last_name  |company_id
+            10      |Joe        |Bloggs     |1
+            20      |Tommy      |Jones      |1
+            
+            [company]
+            company_id  |name
+            1           |foo
+            
+        ";
+        
+        $testDbAcle = $this->createConfiguredTestDbAcleWithExpectations($psv);
         $testDbAcle->setUpTables($psv);
+        
+    }
+    
+    function test_setupTables_WithAdditionalFilters()
+    {
+        
+        $psv="
+            [user]
+            user_id |first_name |last_name  |company_id
+            10      |Joe        |Bloggs     |1
+            20      |Tommy      |Jones      |1
+            
+            [company]
+            company_id  |name
+            1           |foo
+            
+        ";
+        $additionalFilters = array('filter1','filter2');
+        
+        $testDbAcle = $this->createConfiguredTestDbAcleWithExpectations($psv, $additionalFilters);
+        $testDbAcle->setUpTables($psv, $additionalFilters);
         
     }
     

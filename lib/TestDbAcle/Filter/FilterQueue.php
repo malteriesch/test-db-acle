@@ -12,22 +12,31 @@ class FilterQueue
         $this->rowFilters[] = $filter;
     }
 
-    function filterDataTree(array $dataTree)
+    function filterDataTree(array $dataTree, array $additionalRowFilters = array())
     {
         foreach ($this->rowFilters as $filter) {
-            foreach ($dataTree as $table => $tableData) {
-                $dataTree[$table]['data'] = $this->filterTable($filter, $table, $tableData['data']);
-            }
+            $dataTree = $this->applyRowFilter($filter, $dataTree);
+        }
+        foreach ($additionalRowFilters as $filter) {
+            $dataTree = $this->applyRowFilter($filter, $dataTree);
         }
         return $dataTree;
     }
 
-    function filterTable(\TestDbAcle\Filter\RowFilter $filter, $table, array $tableData)
+    protected function filterTable(\TestDbAcle\Filter\RowFilter $filter, $table, array $tableData)
     {
         foreach ($tableData as $index => $tableRow) {
             $tableData[$index] = $filter->filter($table, $tableRow);
         }
         return $tableData;
+    }
+
+    protected function applyRowFilter($filter, $dataTree)
+    {
+        foreach ($dataTree as $table => $tableData) {
+            $dataTree[$table]['data'] = $this->filterTable($filter, $table, $tableData['data']);
+        }
+        return $dataTree;
     }
 
 }

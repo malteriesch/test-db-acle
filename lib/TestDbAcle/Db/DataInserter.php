@@ -52,7 +52,7 @@ class DataInserter
 
     protected function insertValues($upsertBuilder, $tableName, $valuesToBeInserted)
     {
-        foreach ($this->tableInfo->getDecorateWithNullPlaceHolders($tableName, $valuesToBeInserted) as $columnName => $columnValue) {
+        foreach ($valuesToBeInserted as $columnName => $columnValue) {
             if ($columnValue == 'NULL') {
                 $upsertBuilder->addColumn($columnName, 'NULL', true);
             } else {
