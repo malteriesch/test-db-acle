@@ -67,7 +67,16 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
     
     function test_create_withDefaults()
     {
-        $mockPdo = $this->createMock('MockablePDO');
+        $mockPdo = $this->createMock('MockablePDO',array('query','setAttribute'));
+        
+        $mockPdo->expects($this->once())
+                ->method('setAttribute')
+                ->with(\Pdo::ATTR_ERRMODE, \Pdo::ERRMODE_EXCEPTION);
+        
+        $mockPdo->expects($this->once())
+                ->method('query')
+                ->with("SET FOREIGN_KEY_CHECKS = 0");
+        
         $expectedMockPdoFacade = new \TestDbAcle\Db\PdoFacade($mockPdo);
         
         $expectedTableInfo = new \TestDbAcle\Db\TableInfo();

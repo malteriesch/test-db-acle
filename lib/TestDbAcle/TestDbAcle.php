@@ -74,7 +74,8 @@ class TestDbAcle
      */
     public static function create(\Pdo $pdo)
     {
-        
+        $pdo->setAttribute(\Pdo::ATTR_ERRMODE, \Pdo::ERRMODE_EXCEPTION);
+        $pdo->query("SET FOREIGN_KEY_CHECKS = 0");
         
         $testDbAcle = new TestDbAcle();
         
