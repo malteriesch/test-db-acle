@@ -9,7 +9,16 @@ class PdoFacade
 
     function __construct($pdo)
     {
+        
         $this->pdo = $pdo;
+    }
+    
+    public function enableExceptions(){
+        $this->pdo->setAttribute(\Pdo::ATTR_ERRMODE, \Pdo::ERRMODE_EXCEPTION);
+    }
+    
+    public function disableForeignKeyChecks(){
+        $this->pdo->query("SET FOREIGN_KEY_CHECKS = 0");
     }
 
     public function clearTable($table)
@@ -36,4 +45,15 @@ class PdoFacade
         return null;
     }
 
+    public function recordExists($table, array $identityMap)
+    {
+        $conditions = array();
+        foreach($identityMap as $key=>$value){
+            $conditions[]="$key='".addslashes($value)."'";
+        }
+        $numberOfRecords = $this->getQuery("SELECT COUNT(*) N FROM $table WHERE ".implode(" AND ", \TestDbAcle\Db\Sql\UpdateBuilder::identityMapToConditionArray($identityMap)));
+       
+        return $numberOfRecords[0]['N'] > 0;
+        
+    }
 }
