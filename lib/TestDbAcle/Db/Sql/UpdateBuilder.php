@@ -6,6 +6,22 @@ class UpdateBuilder extends UpsertBuilder {
 
     protected $conditions;
     
+     public function __construct($tablename, $identityMap = array()) {
+        parent::__construct($tablename);
+        foreach(self::identityMapToConditionArray($identityMap) as $condition) {
+            $this->addCondition($condition);
+        }
+    }
+    
+    public static function identityMapToConditionArray($identifyKeyMap)
+    {
+        $conditions = array();
+        foreach($identifyKeyMap as $key=>$value){
+            $conditions[]="$key='".addslashes($value)."'";
+        }
+        return $conditions;
+    }
+    
     protected function escapeValues(&$value) {
         $actualValue = addslashes($value['value']);
         if ($value['isExpression']) {
@@ -20,7 +36,7 @@ class UpdateBuilder extends UpsertBuilder {
         $this->conditions[] = $condition;
     }
     
-    public function getConditionSql()
+    protected function getConditionSql()
     {
         return implode(' AND ', $this->conditions);
     }

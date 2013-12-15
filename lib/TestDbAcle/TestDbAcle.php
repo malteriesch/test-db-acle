@@ -68,31 +68,44 @@ class TestDbAcle
         }
         return $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree,$additionalFilters));
     }
+    
        
     /**
      * @return \TestDbAcle\TestDbAcle;
      */
     public static function create(\Pdo $pdo)
     {
-        $pdo->setAttribute(\Pdo::ATTR_ERRMODE, \Pdo::ERRMODE_EXCEPTION);
-        $pdo->query("SET FOREIGN_KEY_CHECKS = 0");
-        
         $testDbAcle = new TestDbAcle();
         
-        $pdoFacade    = new \TestDbAcle\Db\PdoFacade($pdo);
-        $tableInfo    = new \TestDbAcle\Db\TableInfo();
-        $dataInserter = new \TestDbAcle\Db\DataInserter($pdoFacade, $tableInfo);
-        
-        $filterQueue = new \TestDbAcle\Filter\FilterQueue();
-        $filterQueue->addRowFilter(new \TestDbAcle\Filter\AddDefaultValuesRowFilter($tableInfo));
+        $pdoFacade    = static::createConfiguredPdoFacade($pdo);
         
         $testDbAcle->setParser(new \TestDbAcle\Psv\PsvParser());
         $testDbAcle->setPdoFacade($pdoFacade);
-        $testDbAcle->setTableInfo($tableInfo);
-        $testDbAcle->setFilterQueue($filterQueue);
-        $testDbAcle->setDataInserter($dataInserter);
+        $testDbAcle->setTableInfo(new \TestDbAcle\Db\TableInfo());
+        $testDbAcle->setDataInserter(new \TestDbAcle\Db\DataInserter($pdoFacade));
+
+        static::setDefaultFilters($testDbAcle);
         
         return $testDbAcle;
+    }
+    /**
+     * this method needs to be run after all other initialisations have been made
+     * @param \TestDbAcle\Db\PdoFacade $testDbAcle
+     */
+    protected static function setDefaultFilters(TestDbAcle $testDbAcle )
+    {
+        $filterQueue = new \TestDbAcle\Filter\FilterQueue();
+        $filterQueue->addRowFilter(new \TestDbAcle\Filter\AddDefaultValuesRowFilter($testDbAcle->getTableInfo()));
+        
+        $testDbAcle->setFilterQueue($filterQueue);
+    }
+    
+    protected static function createConfiguredPdoFacade(\Pdo $pdo)
+    {
+        $pdoFacade    = new \TestDbAcle\Db\PdoFacade($pdo);
+        $pdoFacade->disableForeignKeyChecks();
+        $pdoFacade->enableExceptions();
+        return $pdoFacade;
     }
     
 }

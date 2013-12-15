@@ -1,15 +1,10 @@
 <?php
-require_once(__DIR__.'/Mocks/MockablePdo.php');
+
 
 class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
     
     public function teardown() {
         \Mockery::close();
-    }
-    
-    protected function createMock($className, $methods = array(), $constructorParameters = array()) {
-        $mock = $this->getMock($className, $methods, $constructorParameters, "_Mock_" . uniqid($className));
-        return $mock;
     }
     
     protected function createConfiguredTestDbAcleWithExpectations($expectedPsv, $additionalFilters = array())
@@ -94,15 +89,10 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
     
     function test_create_withDefaults()
     {
-        $mockPdo = $this->createMock('MockablePDO',array('query','setAttribute'));
+        $mockPdo = MockablePdo::createMock($this, array('prepare', 'exec', 'query','setAttribute'));
+        $mockPdo->expects($this->once())->method('setAttribute')->with(\Pdo::ATTR_ERRMODE, \Pdo::ERRMODE_EXCEPTION);
         
-        $mockPdo->expects($this->once())
-                ->method('setAttribute')
-                ->with(\Pdo::ATTR_ERRMODE, \Pdo::ERRMODE_EXCEPTION);
-        
-        $mockPdo->expects($this->once())
-                ->method('query')
-                ->with("SET FOREIGN_KEY_CHECKS = 0");
+        $mockPdo->expects($this->once())->method('query')->with("SET FOREIGN_KEY_CHECKS = 0");
         
         $expectedMockPdoFacade = new \TestDbAcle\Db\PdoFacade($mockPdo);
         
@@ -113,7 +103,7 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         $expectedFilterQueue  = new \TestDbAcle\Filter\FilterQueue();
         $expectedFilterQueue->addRowFilter(new \TestDbAcle\Filter\AddDefaultValuesRowFilter($expectedTableInfo));
                 
-        $expectedDataInserter = new \TestDbAcle\Db\DataInserter($expectedMockPdoFacade, $expectedTableInfo);
+        $expectedDataInserter = new \TestDbAcle\Db\DataInserter($expectedMockPdoFacade);
         
         $testDbacle = \TestDbAcle\TestDbAcle::create($mockPdo);
         
@@ -122,5 +112,18 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($expectedTableInfo, $testDbacle->getTableInfo());
         $this->assertEquals($expectedFilterQueue, $testDbacle->getFilterQueue());
         $this->assertEquals($expectedDataInserter, $testDbacle->getDataInserter());
+    }
+}
+//@TODO use \TestDbAcle\PhpUnit\Mocks\MockablePdo, at the moment somehow it only works if defined below.... investigate.
+class MockablePdo extends \PDO {
+
+    public function __construct() {
+        
+    }
+
+    public static function createMock(\PHPUnit_Framework_TestCase $testCase, $methods = array()) {
+        $className = 'MockablePdo';
+        $mock = $testCase->getMock($className, $methods, array(), "_Mock_" . uniqid($className));
+        return $mock;
     }
 }

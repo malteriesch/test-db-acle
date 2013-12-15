@@ -5,17 +5,14 @@ namespace TestDbAcle\Db;
 class DataInserter
 {
 
-    protected $tableInfo;
-
     /**
      * @var \TestDbAcle\Db\PdoFacade
      */
     private $pdoFacade;
 
-    public function __construct(\TestDbAcle\Db\PdoFacade $pdoFacade = null, \TestDbAcle\Db\TableInfo $tableInfo)
+    public function __construct(\TestDbAcle\Db\PdoFacade $pdoFacade)
     {
         $this->pdoFacade = $pdoFacade;
-        $this->tableInfo = $tableInfo;
     }
 
     public function process($dataTree)
@@ -36,18 +33,18 @@ class DataInserter
 
     protected function getUpserter($tableName, $identifiedBy, $valuesToBeInserted)
     {
-        $updateBuilder = new Sql\UpdateBuilder($tableName);
+        $identifyMap = array();
+        
         foreach ((array) $identifiedBy as $idColumn) {
-            $updateBuilder->addCondition("$idColumn='{$valuesToBeInserted[$idColumn]}'");
+            $identifyMap[$idColumn]=$valuesToBeInserted[$idColumn];
         }
 
-        $conditionString = $updateBuilder->getConditionSql();
-        $numberOfRecords = $this->pdoFacade->getQuery("SELECT COUNT(*) N FROM $tableName WHERE $conditionString");
-        if ($numberOfRecords[0]['N'] == 0) {
+        if($this->pdoFacade->recordExists($tableName, $identifyMap)){
+            return new Sql\UpdateBuilder($tableName,$identifyMap);
+        }else{
             return new Sql\InsertBuilder($tableName);
         }
-
-        return $updateBuilder;
+        
     }
 
     protected function insertValues($upsertBuilder, $tableName, $valuesToBeInserted)
@@ -70,7 +67,7 @@ class DataInserter
     }
 
     public function clearAndInsertTable($tableName, $content)
-    {
+    {//@TODO should be done via a table-wide filter
         $this->pdoFacade->clearTable($tableName);
 
         if (count($content) == 0) {
