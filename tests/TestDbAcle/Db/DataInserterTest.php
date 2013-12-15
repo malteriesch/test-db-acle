@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__.'/Mocks/MockablePdo.php');
+require_once(__DIR__.'/../Mocks/MockablePdo.php');
 
 class DataInserterTest extends \PHPUnit_Framework_TestCase {
 

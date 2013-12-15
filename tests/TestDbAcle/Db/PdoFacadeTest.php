@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__.'/Mocks/MockablePdo.php');
+require_once(__DIR__.'/../Mocks/MockablePdo.php');
 
 class PdoFacadeTest extends \PHPUnit_Framework_TestCase {
     
