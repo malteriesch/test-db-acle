@@ -43,6 +43,27 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase {
         );
         $this->assertSame($expectedArray, $psvParser->parsePsv($psvToParse));
     }
+    
+    function test_parsePsv_WithNull_AndInlineComment() {
+
+        $psvParser = new \TestDbAcle\Psv\PsvParser();
+
+        $psvToParse = "
+        id  |first_name    |last_name    | #comment
+        10  |NULL  #nul    |miller       |ignored
+        20  |stu           |Smith        |ignore
+    	";
+
+        $expectedArray = array(
+            array("id" => "10",
+                "first_name" => NULL,
+                "last_name" => "miller"),
+            array("id" => "20",
+                "first_name" => "stu",
+                "last_name" => "Smith"),
+        );
+        $this->assertSame($expectedArray, $psvParser->parsePsv($psvToParse));
+    }
 
     function test_parsePsvTree() {
         $psvParser = new \TestDbAcle\Psv\PsvParser();
@@ -56,15 +77,21 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase {
         #----------------------------------
         20  |stu          |Smith
 
-         [expression2]
+          [ expression2]
          col1  |col2    |col3
-         1     |moo     |foo
-         30    |miaow   |boo
+         1     |moo  #inline comment    |foo
+         30     |miaow          |boo #another inline comment
+         #the misaligned  above should be parsed ok as if it were aligned
          
+#comments can be inserted anywhere between tables
+        
          [empty]
+         
+#comments can be the last thing
         ";
 
-        $expectedArray = array("expression1" => array(
+        $expectedArray = 
+            array("expression1" => array(
                 'meta' => array(
                     'mode'=> 'replace',
                      'identifiedBy' => array('first_name','last_name')

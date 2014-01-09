@@ -1,102 +1,88 @@
 <?php
+
 namespace TestDbAcle\Psv;
 
-class PsvParser {
-
-    protected function _trimArrayElements( array $row )
-    {
-        foreach( $row as $index => $column ) {
-            $row[ $index ] = trim( $column );
-        }
-        return $row;
-    }
-    protected function _filterColumnValue( $value ) {
-        if ( $value == 'NULL' ) {
-        	return null;
-        }
-        return $value;
-    }
-
+class PsvParser implements PsvParserInterface
+{
+    const SYMBOL_PIPE                      = '|';
+    const SYMBOL_COMMENT                   = '#';
+    const SYMBOL_OPEN_TABLE_DEFINITION     = '[';
+    const SYMBOL_CLOSE_TABLE_DEFINITION    = ']';
+    const SYMBOL_OUTER_PARAMETER_SEPERATOR = ';';
+    const SYMBOL_INNER_PARAMETER_SEPERATOR = ',';
+    const SYMBOL_ASSIGNMENT                = ':';
+    
     /**
      *
      * Parses a psv tree such that a structure such as
-     * [expression1]
-     * id  |first_name   |last_name
-     * 10  |john         |miller
-     * 20  |stu          |Smith
-     *
-     * [expression2]
-     * col1  |col2    |col3
-     * 1     |moo     |foo
-     * 30    |miaow     |boo
-     *
-     * gets parsed into
-     * array( "expression1" => array(
-     *            array( "id" => "10",
-     *                   "first_name" => "john",
-     *                   "last_name" => "miller" ),
-     *            array( "id" => "20",
-     *                   "first_name" => "stu",
-     *                   "last_name" => "Smith" ) ),
-     *
-     *        "expression2" => array(
-     *            array( "col1" => "1",
-     *                   "col2" => "moo",
-     *                   "col3" => "foo" ),
-     *            array( "col1" => "30",
-     *                   "col2" => "miaow",
-     *                   "col3" => "boo" ) ) )
+     *     [expression1|mode:replace;identifiedBy:first_name,last_name]
+     *             id  |first_name   |last_name
+     *             10  |john         |miller
+     *             20  |stu          |Smith
+     * 
+     *             [expression2]
+     *             col1  |col2    |col3
+     *             1     |moo     |foo
+     *             30    |miaow   |boo 
+     *              
+     * Into following array
+     * 
+     *     array("expression1" => array(
+     *              'meta' => array(
+     *                  'mode'=> 'replace',
+     *                   'identifiedBy' => array('first_name','last_name')
+     *              ),
+     *              'data' => array(
+     *                  array("id" => "10",
+     *                      "first_name" => "john",
+     *                      "last_name" => "miller"),
+     *                  array("id" => "20",
+     *                      "first_name" => "stu",
+     *                      "last_name" => "Smith"))
+     *          ),
+     *          "expression2" => array(
+     *              'meta' => array(),
+     *              'data' => array(
+     *                  array("col1" => "1",
+     *                      "col2" => "moo",
+     *                      "col3" => "foo"),
+     *                  array("col1" => "30",
+     *                      "col2" => "miaow",
+     *                      "col3" => "boo"))),
+     *          'empty' => array('meta'=>array(),'data'=>array())
+     *      )
+     * 
      * @param string $psvContent the content to be parsed
      * @return array the parsed content
      */
-	public function parsePsvTree( $psvContent )
-	{
-		$parsedTree           = array();
-        $contentSplitByTables = preg_split( "/\n\s*\[/", $psvContent );
+    public function parsePsvTree($psvContent)
+    {
+        $parsedTree           = array();
+        $contentSplitByOpeningBracket = preg_split("/\n\s*\[/", $psvContent);
 
-        foreach ( $contentSplitByTables as $tableContentPartStart ){
+        foreach ($contentSplitByOpeningBracket as $startOfTableContent) {
 
-            if ( trim($tableContentPartStart) === '' ) {
-            	continue;
+            if (trim($startOfTableContent) === '') {
+                continue;
             }
 
-            $contentSplitByTableDelimiter = explode( "]", $tableContentPartStart );
-            $expression                    = trim( str_replace( '[', '', $contentSplitByTableDelimiter[0] ) );
-            
-            list($tableName,$meta) = $this->parseIntoTableAndMeta($expression);
-            
-            $actualContentForTable        = $contentSplitByTableDelimiter[1];
+            list($actualContentForTable, $expression) = $this->extractExpressionAndContent($startOfTableContent);
+            list($tableName, $meta)                   = $this->parseIntoTableAndMeta($expression);
 
-            $parsedTree[ $tableName ]     = array('meta'=>$meta,"data"=>$this->parsePsv( $actualContentForTable ));
-
+            $parsedTree[$tableName] = array('meta' => $meta, "data" => $this->parsePsv($actualContentForTable));
         }
         return $parsedTree;
-	}
-        
-    protected function parseIntoTableAndMeta($expression)
-    {
-        if (strpos($expression,"|")!==false){
-            $meta = array();
-            list($tableName,$parametersExpression) = explode("|",$expression);
-            foreach(explode(";",$parametersExpression) as $parameterExpression){
-                list($key,$value)=explode(":",$parameterExpression);
-                if(strpos($value,",")!==false){
-                    $value= explode(",",$value);
-                }
-                $meta[$key]=$value;
-            }
-            return array($tableName,$meta);
-        }else{
-            return array($expression,array());
-        }
     }
+    
+    
+
     /**
      *
      * parses a single bit of Psv content such that
-     * id  |first_name   |last_name
-     * 10  |john         |miller
+     * id  |first_name                        |last_name
+     * 10  |john                              |miller
      * #lines starting with # are ignored
-     * 20  |stu          |Smith
+     * 20  |stu  #and comments can be inline  |Smith
      *
      * gets parsed into
      *
@@ -111,37 +97,114 @@ class PsvParser {
      * @param string $psvTableContent the content to be parsed
      * @return the parsed content
      */
-	public function parsePsv( $psvTableContent ) 
+    public function parsePsv($psvTableContent)
     {
 
-		$psvRowList    = explode( "\n", trim( $psvTableContent ));
-		$psvHeaderLine = array_shift ( $psvRowList );
-		$headers       = $this->_trimArrayElements( explode( "|", $psvHeaderLine ) );
+        $psvRows       = $this->psvToArray($psvTableContent);
+        $psvHeaderLine = $this->extractHeaders($psvRows);
+        $headers       = $this->splitByPipe($psvHeaderLine);
 
-        $contentTable  = array();
+        $contentTable = array();
 
-        foreach( $psvRowList as $psvRow ) {
-            $trimmedRow = ltrim($psvRow);
-            if ($trimmedRow[0]=="#") {
+        foreach ($psvRows as $psvRow) {
+            if ($this->skipRow($psvRow)) {
                 continue;
             }
-            
-            $currentRowPsvFields     = $this->_trimArrayElements( explode( "|", $psvRow ) );
+
+            $currentRowPsvFields     = $this->splitByPipe($psvRow);
             $psvRowFilteredValueList = array();
 
-            foreach ( $headers as $columnIndex =>$psvColumnHeader ) {
-
-                if (strpos( $psvColumnHeader ,'#')===0) {
-                	continue;
+            foreach ($headers as $columnIndex => $psvColumnHeader) {
+                if ($this->isCommented($psvColumnHeader)) {
+                    continue;
                 }
-
-                $psvRowFilteredValueList[ $psvColumnHeader ] = $this->_filterColumnValue( $currentRowPsvFields[$columnIndex] );
+                $psvRowFilteredValueList[$psvColumnHeader] = $this->filterColumnValue($currentRowPsvFields[$columnIndex]);
             }
 
             $contentTable[] = $psvRowFilteredValueList;
         }
         return $contentTable;
-	}
+    }
+    
+    
+    protected function extractHeaders(&$psvRows)
+    {
+        return array_shift($psvRows);
+    }
+    
+    protected function psvToArray($psvContent)
+    {
+        return explode("\n", trim($psvContent));
+    }
+    
+    protected function skipRow($row){
+        $trimmedRow = ltrim($row);
+        return !$trimmedRow || $trimmedRow[0] == static::SYMBOL_COMMENT;
+    }
+    
+    protected function splitByPipe($row){
+        return $this->trimArrayElements(explode(static::SYMBOL_PIPE, $row));
+    }
+    
+    protected function isCommented($subject){
+        return strpos($subject, static::SYMBOL_COMMENT) === 0;
+    }
+    
+    protected function trimArrayElements(array $row)
+    {
+        foreach ($row as $index => $column) {
+            $row[$index] = trim($column);
+        }
+        return $row;
+    }
+    
+    protected function filterColumnValue($value)
+    {
+        $filters = array(
+            'stripComments' => function(&$value){
+                if(strpos($value, static::SYMBOL_COMMENT) !== false){
+                    list($valuePart,) = explode(static::SYMBOL_COMMENT, $value);
+                    $value = trim($valuePart);
+                }
+            },
+            'convertNulls' => function(&$value){
+                if($value == 'NULL'){
+                    $value = null;
+                }
+            }
+        );
+        
+        foreach($filters as $filter){
+            $filter($value);
+        }
+        
+        return $value;
+    }
+    
+    protected function extractExpressionAndContent($startOfTableContent)
+    {
+        $startOfContentSplitByClosingBracklet = explode(static::SYMBOL_CLOSE_TABLE_DEFINITION, $startOfTableContent);
+        return array($startOfContentSplitByClosingBracklet[1], ltrim($startOfContentSplitByClosingBracklet[0], static::SYMBOL_OPEN_TABLE_DEFINITION . ' '));
+    }
 
+    protected function parseIntoTableAndMeta($expression)
+    {
+        if (strpos($expression, static::SYMBOL_PIPE) !== false) {
+            $meta = array();
+            list($tableName, $parametersExpression) = explode(static::SYMBOL_PIPE, $expression);
+            foreach (explode(static::SYMBOL_OUTER_PARAMETER_SEPERATOR, $parametersExpression) as $parameterExpression) {
+                list($key, $value) = explode(static::SYMBOL_ASSIGNMENT, $parameterExpression);
+                if (strpos($value, static::SYMBOL_INNER_PARAMETER_SEPERATOR) !== false) {
+                    $value = explode(static::SYMBOL_INNER_PARAMETER_SEPERATOR, $value);
+                }
+                $meta[$key] = $value;
+            }
+            return array($tableName, $meta);
+        } else {
+            return array($expression, array());
+        }
+    }
+    
 }
+
 ?>
