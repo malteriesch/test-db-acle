@@ -43,7 +43,50 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '30', 'miaow', 'boo' )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('emptyTable')->ordered();
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter($mockPdoFacade);
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade);
+        $dataInserter->process($dataTree);
+    }
+    
+    public function test_process_upsertEventsGetCalled() {
+        
+        $mockPdoFacade =  Mockery::mock('\TestDbAcle\Db\PdoFacade');
+
+        $dataTree = array(
+            "user" => array(
+                'meta' => array(),
+                'data' => array(
+                    array("user_id" => "10",
+                        "first_name" => "john",
+                        "last_name" => "miller"),
+                    array("user_id" => "20",
+                        "first_name" => "stu",
+                        "last_name" => "Smith")
+                ),
+            ),
+        );
+        
+        $checkUpserterClosure = function ($upserter){
+            $this->assertTrue($upserter instanceOf \TestDbAcle\Db\DataInserter\Sql\InsertBuilder);
+            $this->assertEquals('user', $upserter->getTableName());
+            return true;
+        };
+        
+        $testListener1 = \Mockery::mock('\TestDbAcle\Db\DataInserter\UpsertListenerInterface');
+        $testListener2 = \Mockery::mock('\TestDbAcle\Db\DataInserter\UpsertListenerInterface');
+
+        $mockPdoFacade->shouldReceive('clearTable')->once()->with('user')->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '10', 'john', 'miller' )")->ordered();
+        $testListener1->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
+        $testListener2->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
+        
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '20', 'stu', 'Smith' )")->ordered();
+        $testListener1->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
+        $testListener2->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
+        
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade);
+        $dataInserter->addUpsertListener($testListener1);
+        $dataInserter->addUpsertListener($testListener2);
+       
         $dataInserter->process($dataTree);
     }
    
@@ -93,7 +136,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '30', 'miaow', 'boo' )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('emptyTable')->ordered();
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter($mockPdoFacade);
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade);
         $dataInserter->process($dataTree);
     }
     
@@ -130,7 +173,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'stuart'))->andReturn(false)->ordered();
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '30', 'stuart', 'Smith' )")->ordered();
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter($mockPdoFacade);
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade);
         $dataInserter->process($dataTree);
     }
     

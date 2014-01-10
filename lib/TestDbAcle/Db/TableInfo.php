@@ -30,6 +30,14 @@ class TableInfo
             }
         }
     }
+    
+    public function getPrimaryKey($table)
+    {
+        if (isset($this->primaryKeys[$table])){
+            return $this->primaryKeys[$table];
+        }
+        return null;
+    }
 
     public function generateDefaultNullValue($columnType)
     {

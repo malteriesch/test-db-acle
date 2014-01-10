@@ -10,7 +10,7 @@ class TestDbAcle
     protected $tableInfo;
     protected $pdoFacade;
   
-    function setParser(\TestDbAcle\Psv\PsvParser $parser)
+    function setParser(Psv\PsvParser $parser)
     {
         $this->parser=$parser;
     }
@@ -20,7 +20,7 @@ class TestDbAcle
         return $this->parser;
     }
     
-    function setPdoFacade(\TestDbAcle\Db\PdoFacade $pdoFacade)
+    function setPdoFacade(Db\PdoFacade $pdoFacade)
     {
         $this->pdoFacade=$pdoFacade;
     }
@@ -30,7 +30,7 @@ class TestDbAcle
         return $this->pdoFacade;
     }
     
-    function setTableInfo(\TestDbAcle\Db\TableInfo $tableInfo)
+    function setTableInfo(Db\TableInfo $tableInfo)
     {
         $this->tableInfo=$tableInfo;
     }
@@ -40,7 +40,7 @@ class TestDbAcle
         return $this->tableInfo;
     }
     
-    function setFilterQueue(\TestDbAcle\Filter\FilterQueue $filterQueue)
+    function setFilterQueue(Filter\FilterQueue $filterQueue)
     {
         $this->filterQueue=$filterQueue;
     }
@@ -50,7 +50,7 @@ class TestDbAcle
         return  $this->filterQueue;
     }
     
-    function setDataInserter(\TestDbAcle\Db\DataInserter $dataInserter)
+    function setDataInserter(Db\DataInserter\DataInserter $dataInserter)
     {
         $this->dataInserter=$dataInserter;
     }
@@ -71,18 +71,23 @@ class TestDbAcle
     
        
     /**
-     * @return \TestDbAcle\TestDbAcle;
+     * @return TestDbAcle;
      */
     public static function create(\Pdo $pdo)
     {
         $testDbAcle = new TestDbAcle();
         
-        $pdoFacade    = static::createConfiguredPdoFacade($pdo);
+        $pdoFacade  = static::createConfiguredPdoFacade($pdo);
         
-        $testDbAcle->setParser(new \TestDbAcle\Psv\PsvParser());
+        $tableInfo  = new Db\TableInfo();
+        
+        $dataInserter = new Db\DataInserter\DataInserter($pdoFacade);
+        $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($pdoFacade, $tableInfo));
+        
+        $testDbAcle->setParser(new Psv\PsvParser());
         $testDbAcle->setPdoFacade($pdoFacade);
-        $testDbAcle->setTableInfo(new \TestDbAcle\Db\TableInfo());
-        $testDbAcle->setDataInserter(new \TestDbAcle\Db\DataInserter($pdoFacade));
+        $testDbAcle->setTableInfo($tableInfo);
+        $testDbAcle->setDataInserter($dataInserter);
 
         static::setDefaultFilters($testDbAcle);
         
@@ -90,19 +95,19 @@ class TestDbAcle
     }
     /**
      * this method needs to be run after all other initialisations have been made
-     * @param \TestDbAcle\Db\PdoFacade $testDbAcle
+     * @param Db\PdoFacade $testDbAcle
      */
     protected static function setDefaultFilters(TestDbAcle $testDbAcle )
     {
-        $filterQueue = new \TestDbAcle\Filter\FilterQueue();
-        $filterQueue->addRowFilter(new \TestDbAcle\Filter\AddDefaultValuesRowFilter($testDbAcle->getTableInfo()));
+        $filterQueue = new Filter\FilterQueue();
+        $filterQueue->addRowFilter(new Filter\AddDefaultValuesRowFilter($testDbAcle->getTableInfo()));
         
         $testDbAcle->setFilterQueue($filterQueue);
     }
     
     protected static function createConfiguredPdoFacade(\Pdo $pdo)
     {
-        $pdoFacade    = new \TestDbAcle\Db\PdoFacade($pdo);
+        $pdoFacade    = new Db\PdoFacade($pdo);
         $pdoFacade->disableForeignKeyChecks();
         $pdoFacade->enableExceptions();
         return $pdoFacade;

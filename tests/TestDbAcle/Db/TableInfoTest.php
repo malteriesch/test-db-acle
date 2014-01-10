@@ -30,6 +30,17 @@ class TableInfoTest extends \PHPUnit_Framework_TestCase
         $this->tableInfo->addTableDescription("user", $describeUser);
         $this->tableInfo->addTableDescription("stuff", $describeStuff);
     }
+    
+     public function test_getPrimaryKey() {
+        $this->tableInfo->addTableDescription("more_users", array(
+            array('Field' => 'user_id', 'Type' => 'int(11)', 'Key' => '', 'Null' => 'NO', 'Default' => NULL ),
+            array('Field' => 'first_name', 'Type' => 'varchar(255)', 'Null' => 'NO', 'Key' => '', 'Default' => NULL, 'Extra' => ''),
+        ));
+        
+        $this->assertEquals('user_id', $this->tableInfo->getPrimaryKey('user'));
+        $this->assertEquals(null , $this->tableInfo->getPrimaryKey('Mooo'));
+        $this->assertEquals(null , $this->tableInfo->getPrimaryKey('more_users'));
+    }
 
     public function test_isNullable() {
         $this->assertFalse($this->tableInfo->isNullable('user','user_id'));

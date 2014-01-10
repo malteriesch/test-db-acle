@@ -12,7 +12,7 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         $parser        = \Mockery::mock('TestDbAcle\Psv\PsvParser');
         $filterQueue   = \Mockery::mock('TestDbAcle\Filter\FilterQueue');
         $dataTableInfo = \Mockery::mock('TestDbAcle\Db\TableInfo');
-        $dataInserter  = \Mockery::mock('TestDbAcle\Db\DataInserter');
+        $dataInserter  = \Mockery::mock('TestDbAcle\Db\DataInserter\DataInserter');
         
         
         $afterParsing   = array('table1'=>array('parsed1'),'table2'=>array('parsed1'));
@@ -103,7 +103,8 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         $expectedFilterQueue  = new \TestDbAcle\Filter\FilterQueue();
         $expectedFilterQueue->addRowFilter(new \TestDbAcle\Filter\AddDefaultValuesRowFilter($expectedTableInfo));
                 
-        $expectedDataInserter = new \TestDbAcle\Db\DataInserter($expectedMockPdoFacade);
+        $expectedDataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($expectedMockPdoFacade);
+        $expectedDataInserter->addUpsertListener(new \TestDbAcle\Db\DataInserter\Listeners\MysqlZeroPKListener($expectedMockPdoFacade, $expectedTableInfo));
         
         $testDbacle = \TestDbAcle\TestDbAcle::create($mockPdo);
         

@@ -1,6 +1,6 @@
 <?php
 
-namespace TestDbAcle\Db\Sql;
+namespace TestDbAcle\Db\DataInserter\Sql;
 
 class InsertBuilder extends UpsertBuilder {
     

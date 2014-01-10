@@ -7,7 +7,7 @@ class PdoFacade
 
     protected $pdo;
 
-    function __construct($pdo)
+    function __construct(\PDO $pdo)
     {
         
         $this->pdo = $pdo;
@@ -35,6 +35,11 @@ class PdoFacade
     {
         $this->pdo->exec($sql);
     }
+    
+    public function lastInsertId()
+    {
+        return $this->pdo->lastInsertId();
+    }
 
     public function getQuery($sql)
     {
@@ -51,7 +56,7 @@ class PdoFacade
         foreach($identityMap as $key=>$value){
             $conditions[]="$key='".addslashes($value)."'";
         }
-        $numberOfRecords = $this->getQuery("SELECT COUNT(*) N FROM $table WHERE ".implode(" AND ", \TestDbAcle\Db\Sql\UpdateBuilder::identityMapToConditionArray($identityMap)));
+        $numberOfRecords = $this->getQuery("SELECT COUNT(*) N FROM $table WHERE ".implode(" AND ", \TestDbAcle\Db\DataInserter\Sql\UpdateBuilder::identityMapToConditionArray($identityMap)));
        
         return $numberOfRecords[0]['N'] > 0;
         

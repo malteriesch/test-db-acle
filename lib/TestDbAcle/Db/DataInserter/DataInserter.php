@@ -1,6 +1,6 @@
 <?php
 
-namespace TestDbAcle\Db;
+namespace TestDbAcle\Db\DataInserter;
 
 class DataInserter
 {
@@ -8,7 +8,9 @@ class DataInserter
     /**
      * @var \TestDbAcle\Db\PdoFacade
      */
-    private $pdoFacade;
+    protected $pdoFacade;
+    /* @var $listeners UpsertListenerInterface */
+    protected $listeners = array();
 
     public function __construct(\TestDbAcle\Db\PdoFacade $pdoFacade)
     {
@@ -57,6 +59,8 @@ class DataInserter
             }
         }
         $this->pdoFacade->executeSql($upsertBuilder->GetSql());
+        $this->onAfterUpsert($upsertBuilder);
+        
     }
 
     public function replaceIntoTable($tableName, $content, $identifiedBy)
@@ -79,6 +83,19 @@ class DataInserter
         }
     }
 
+    protected function onAfterUpsert($upsertBuilder)
+    {
+        foreach($this->listeners as $listener)
+        {
+            $listener->afterUpsert($upsertBuilder);
+        }
+    }
+    
+    public function addUpsertListener(UpsertListenerInterface $listener)
+    {
+        $this->listeners[] = $listener;
+    }
+    
 }
 
 ?>

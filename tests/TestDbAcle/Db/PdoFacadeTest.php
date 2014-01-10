@@ -19,7 +19,7 @@ class PdoFacadeTest extends \PHPUnit_Framework_TestCase {
     
     protected function setUp()
     {
-        $this->mockPdo = TestDbAcle\PhpUnit\Mocks\MockablePdo::createMock($this, array('prepare', 'exec', 'query','setAttribute'));
+        $this->mockPdo = TestDbAcle\PhpUnit\Mocks\MockablePdo::createMock($this, array('prepare', 'exec', 'query','setAttribute', 'lastInsertId'));
         
         $this->pdoFacade = new \TestDbAcle\Db\PdoFacade($this->mockPdo);
     }
@@ -64,6 +64,14 @@ class PdoFacadeTest extends \PHPUnit_Framework_TestCase {
                       ->method('query')->with('select * from foo')->will($this->returnValue(false));
         
         $this->assertNull( $this->pdoFacade->getQuery('select * from foo'));
+    }
+    
+    function test_lastInsertId()
+    {
+        $this->mockPdo->expects($this->once())
+                      ->method('lastInsertId')->will($this->returnValue(11));
+        
+        $this->assertEquals(11, $this->pdoFacade->lastInsertId());
     }
     
     function test_describeTable()

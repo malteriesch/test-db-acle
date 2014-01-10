@@ -1,9 +1,10 @@
 <?php
 
-namespace TestDbAcle\Db\Sql;
+namespace TestDbAcle\Db\DataInserter\Sql;
 
 abstract class UpsertBuilder {
 
+    
     var $tablename;
     var $columns = array();
 
@@ -16,12 +17,26 @@ abstract class UpsertBuilder {
 
         $this->columns[$name] = array("value" => $value, "isExpression" => $isExpression);
     }
+    
+    public function getColumn($name) {
+
+        if(isset($this->columns[$name])){
+            return $this->columns[$name]['value'];
+        }
+        return null;
+    }
+    
+    public function getTableName()
+    {
+        return $this->tablename;
+    }
 
     protected function getCopyOfColumnsForManipulation() {
         return $this->columns;
     }
 
     abstract public function GetSql();
+    
 }
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-namespace TestDbAcle\Db\Sql;
+namespace TestDbAcle\Db\DataInserter\Sql;
 
 class UpdateBuilder extends UpsertBuilder {
 
@@ -64,6 +64,7 @@ class UpdateBuilder extends UpsertBuilder {
         return "UPDATE {$this->tablename} SET $valueString WHERE $conditionString";
     }
 
+   
 }
 
 ?>
