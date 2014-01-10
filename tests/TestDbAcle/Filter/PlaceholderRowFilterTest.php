@@ -28,7 +28,7 @@ class PlaceholderRowFilterTest extends \PHPUnit_Framework_TestCase
             "col3" => "NULL",
         );
 
-        $this->assertEquals( $expected, $this->filter->filter("my_tasble", $inputRow));
+        $this->assertEquals( $expected, $this->filter->filter("my_table", $inputRow));
         
         
     }
