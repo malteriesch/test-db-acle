@@ -43,6 +43,27 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase {
         );
         $this->assertSame($expectedArray, $psvParser->parsePsv($psvToParse));
     }
+
+    function test_parsePsv_WithEscapedCharacters() {
+
+        $psvParser = new \TestDbAcle\Psv\PsvParser();
+
+        $psvToParse = '
+        id  |first_name   |last_name        | #comment
+        10  |NULL         |\[\|\#miller\\\] |ignored
+        20  |stu          |Smith            |ignore
+        ';
+
+        $expectedArray = array(
+            array("id" => "10",
+                "first_name" => NULL,
+                "last_name" => "[|#miller\]"),
+            array("id" => "20",
+                "first_name" => "stu",
+                "last_name" => "Smith"),
+        );
+        $this->assertSame($expectedArray, $psvParser->parsePsv($psvToParse));
+    }
     
     function test_parsePsv_WithNull_AndInlineComment() {
 
@@ -71,11 +92,11 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase {
         $psvToParse = "
         [expression1|mode:replace;identifiedBy:first_name,last_name]
         id  |first_name   |last_name
-        10  |john         |miller
+        10  |john         |\[miller\]
         #----------------------------------
         #these 3 lines are igored
         #----------------------------------
-        20  |stu          |Smith
+        20  |stu          |Smith\"
 
           [ expression2]
          col1  |col2    |col3
@@ -99,10 +120,10 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase {
                 'data' => array(
                     array("id" => "10",
                         "first_name" => "john",
-                        "last_name" => "miller"),
+                        "last_name" => "[miller]"),
                     array("id" => "20",
                         "first_name" => "stu",
-                        "last_name" => "Smith"))
+                        "last_name" => 'Smith"'))
             ),
             "expression2" => array(
                 'meta' => array(),

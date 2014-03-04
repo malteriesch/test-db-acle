@@ -58,7 +58,7 @@ class PsvParser implements PsvParserInterface
     public function parsePsvTree($psvContent)
     {
         $parsedTree           = array();
-        $contentSplitByOpeningBracket = preg_split("/\n\s*\[/", $psvContent);
+        $contentSplitByOpeningBracket = preg_split('/\n\s*(?<!\\\\)\[/', $psvContent);
 
         foreach ($contentSplitByOpeningBracket as $startOfTableContent) {
 
@@ -143,7 +143,7 @@ class PsvParser implements PsvParserInterface
     }
     
     protected function splitByPipe($row){
-        return $this->trimArrayElements(explode(static::SYMBOL_PIPE, $row));
+        return $this->trimArrayElements(preg_split('/(?<!\\\\)'.preg_quote(static::SYMBOL_PIPE).'/', $row));
     }
     
     protected function isCommented($subject){
@@ -163,13 +163,21 @@ class PsvParser implements PsvParserInterface
         $filters = array(
             'stripComments' => function(&$value){
                 if(strpos($value, static::SYMBOL_COMMENT) !== false){
-                    list($valuePart,) = explode(static::SYMBOL_COMMENT, $value);
+                    list($valuePart,) = preg_split('/(?<!\\\\)'.static::SYMBOL_COMMENT.'/', $value);
                     $value = trim($valuePart);
                 }
             },
             'convertNulls' => function(&$value){
                 if($value == 'NULL'){
                     $value = null;
+                }
+            },
+            'replaceEscapedCharacters' => function(&$value){
+                if (!is_null($value)) {
+                    $value = str_replace('\[','[',$value);
+                    $value = str_replace('\]',']',$value);
+                    $value = str_replace('\#','#',$value);
+                    $value = str_replace('\|','|',$value);
                 }
             }
         );
@@ -183,7 +191,7 @@ class PsvParser implements PsvParserInterface
     
     protected function extractExpressionAndContent($startOfTableContent)
     {
-        $startOfContentSplitByClosingBracklet = explode(static::SYMBOL_CLOSE_TABLE_DEFINITION, $startOfTableContent);
+        $startOfContentSplitByClosingBracklet = preg_split('/(?<!\\\\)'.preg_quote(static::SYMBOL_CLOSE_TABLE_DEFINITION).'/', $startOfTableContent);
         return array($startOfContentSplitByClosingBracklet[1], ltrim($startOfContentSplitByClosingBracklet[0], static::SYMBOL_OPEN_TABLE_DEFINITION . ' '));
     }
 
