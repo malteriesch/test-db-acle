@@ -25,8 +25,9 @@ class MysqlZeroPKListener implements \TestDbAcle\Db\DataInserter\UpsertListenerI
         if ($primaryKey == null){
             return;
         }
+        $primaryKeyValue = $upsertBuilder->getColumn($primaryKey);
         
-        if ( $upsertBuilder->getColumn($primaryKey) != 0){
+        if (!is_numeric($primaryKeyValue) || $primaryKeyValue != 0){
             return;
         }
            
