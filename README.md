@@ -149,6 +149,15 @@ To use with composer, add this to your composer.json file:
 
 You can also use https://packagist.org/packages/test-db-acle/test-db-acle if you prefer.
 
+
+Contributing
+-------------------------------
+Contributions are more than welcome...!
+
+###How to run the Test-Db-Acle tests###
+To run the tests, you will need to create an empty database on a MySql sever of your choice, copy tests/Functional/config.php.dist to tests/Functional/config.php and populate with your database details.
+Then, hopefully, all the tests should run. (The database is actually only needed for the functional smoke test)
+
 More Documentation
 --------------
 - [PSV Syntax](docs/PsvParser.md)
