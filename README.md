@@ -41,7 +41,7 @@ So I set up my own solution.
 
 ###So how does it work and look like? Show me an example!###
 
-The idea is to use a "pipe-separated-values" text string to set up test fixtures like this:
+The idea is to use a "pipe-separated-values" (imaginatively called PSV by me) text string to set up test fixtures like this:
 
 ```php
 $dbTablesToSetup="
@@ -149,3 +149,8 @@ To use with composer, add this to your composer.json file:
 
 You can also use https://packagist.org/packages/test-db-acle/test-db-acle if you prefer.
 
+More Documentation
+--------------
+- [PSV Syntax](docs/PsvParser.md)
+- [AbstractTestCase](docs/AbstractTestCase.md)
+- [Extending and customizing TestDbAcle](docs/Customizing.md)
