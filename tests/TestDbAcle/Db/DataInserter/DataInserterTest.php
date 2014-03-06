@@ -30,7 +30,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
                         "col3" => "NULL"),
                     array("col1" => "30",
                         "col2" => "miaow",
-                        "col3" => "boo")),
+                        "col3" => null)),
             ),
             'emptyTable' => array('meta' => array(),'data'=>array())
         );
@@ -40,7 +40,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '20', 'stu', 'Smith' )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('stuff')->ordered();
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '1', 'moo', NULL )")->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '30', 'miaow', 'boo' )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '30', 'miaow', NULL )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('emptyTable')->ordered();
         
         $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade);

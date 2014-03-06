@@ -52,7 +52,7 @@ class DataInserter
     protected function insertValues($upsertBuilder, $tableName, $valuesToBeInserted)
     {
         foreach ($valuesToBeInserted as $columnName => $columnValue) {
-            if ($columnValue == 'NULL') {
+            if ($columnValue == 'NULL' || is_null($columnValue)) {
                 $upsertBuilder->addColumn($columnName, 'NULL', true);
             } else {
                 $upsertBuilder->addColumn($columnName, $columnValue);

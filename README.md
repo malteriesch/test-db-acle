@@ -8,7 +8,7 @@ What is Test-DB-Acle? A short mission statement.
 
 Test-DB-Acle is a PHP library to facilitate writing easy and concise tests for the database layer. 
 
-It is my belief that writing tests should be as easy as possible for the developer, and they should also be as easy to read as possible for another developer to pick up (Ah, so easy to give advice..!)
+It is my belief that writing tests should be as easy as possible for the developer, and they should also be as easy to read as possible for other developers to pick up (Ah, so easy to give advice..!)
 
 This means any test data in the test should be relevant to the test scenario only. Most database tables however have non-null columns that require you to enter dummy data that is just introducing cognitive noise  to the test. 
 
@@ -26,7 +26,7 @@ I can see Postgres, Sqllite or even Oracle support possible in the future.
 Supported Test Frameworks
 -------------------------
 
-This library can be used with PHPUnit as well as other frameorks such as Simpletest (The one that started me on my TDD journey). 
+This library can be used with PHPUnit as well as other frameworks such as Simpletest (The one that started me on my TDD journey). 
 
 I have provided a simple TestDbAcle\PhpUnit\AbstractTestCase, an appropriate Simpletest one would need to be created, but should be as simple as exchanging the parent class.
 
@@ -39,7 +39,7 @@ I was frustrated with the existing tools available. Many had dependencies on par
 
 So I set up my own solution.
 
-###So how does it work and look like? Show me an example!###
+###So how does it work and what does it look like? Show me an example!###
 
 The idea is to use a "pipe-separated-values" (imaginatively called PSV by me) text string to set up test fixtures like this:
 
@@ -117,7 +117,7 @@ class ExampleTest extends \TestDbAcle\PhpUnit\AbstractTestCase
             user_id  |name
             10       |John
             20       |Mary
-            ","Stuff works");
+            ", array(), "Stuff works");
     }
 }
 ```
