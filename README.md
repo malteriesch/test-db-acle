@@ -8,11 +8,11 @@ What is Test-DB-Acle? A short mission statement.
 
 Test-DB-Acle is a PHP library to facilitate writing easy and concise tests for the database layer. 
 
-It is my belief that writing tests should be as easy as possible for the developer, and they should also be as easy to read as possible for another developer to pick up. 
+It is my belief that writing tests should be as easy as possible for the developer, and they should also be as easy to read as possible for another developer to pick up (Ah, so easy to give advice..!)
 
 This means any test data in the test should be relevant to the test scenario only. Most database tables however have non-null columns that require you to enter dummy data that is just introducing cognitive noise  to the test. 
 
-Test-Db-Acle aims to take this burden away from the developer. This testing framework does not make any asumptions on how your database layer classes work, if they use an ORM like Doctrine, stored procedures or straight SQL. 
+Test-Db-Acle aims to take this burden away from the developer. This testing framework does not make any assumptions on how your database layer classes work, if they use an ORM like Doctrine, stored procedures or straight SQL. 
 
 The principle is always the same, at some point the code interacts with the data in the DB tables, and we do need to test this.
 
@@ -35,7 +35,7 @@ Introduction and (very) quick example
 
 Ok, to be really fair, testing the database layer is expensive and slooooows down tests, and wherever possible any dependencies on the database should be mocked. But sometimes we just have to do this, hopefully in a well-structured application this can be kept to a minimum.
 
-I was frustrated with the existing tools available. Many had dependencies on particular XUnit frameworks, or I was not  able to use them together with different test base classes as they ere diifiult to integrate, and all of them were waaaay to verbose and cumbersome to use. 
+I was frustrated with the existing tools available. Many had dependencies on particular XUnit frameworks, or I was not  able to use them together with different test base classes as they were difficult to integrate, and all of them were waaaay to verbose and cumbersome to use. 
 
 So I set up my own solution.
 
