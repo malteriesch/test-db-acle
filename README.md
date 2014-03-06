@@ -102,7 +102,7 @@ class ExampleTest extends \TestDbAcle\PhpUnit\AbstractTestCase
             
         ");
         
-        $this->getPdo()->query("ALTER TABLE address AUTO_INCREMENT = 100");
+        $this->setAutoIncrement('address', 100);
         
         $this->addressService->addEntry("them");
 

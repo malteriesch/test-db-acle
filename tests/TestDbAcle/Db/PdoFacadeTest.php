@@ -32,6 +32,15 @@ class PdoFacadeTest extends \PHPUnit_Framework_TestCase {
         
         $this->pdoFacade->disableForeignKeyChecks();
     }
+
+    function test_setAutoIncrement()
+    {
+        $this->mockPdo->expects($this->once())
+                ->method('query')
+                ->with("ALTER TABLE address AUTO_INCREMENT = 100");
+
+        $this->pdoFacade->setAutoIncrement("address", 100);
+    }
     
     function test_enableExceptions()
     {

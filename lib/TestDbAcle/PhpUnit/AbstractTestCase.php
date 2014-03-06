@@ -19,6 +19,11 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase
     {
         return $this->databaseTestHelper;
     }
+
+    protected function setAutoIncrement($table, $nextIncrement)
+    {
+        $this->getDatabaseTestHelper()->getPdoFacade()->setAutoIncrement($table, $nextIncrement);
+    }
     
     protected function setupTables($psvContent, $replace = array())
     {
