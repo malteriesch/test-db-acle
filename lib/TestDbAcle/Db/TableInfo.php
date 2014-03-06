@@ -73,4 +73,9 @@ class TableInfo
         return !in_array($columnName, $this->nonNullableColumns[$tableName]);
     }
 
+    public function isDateTime($tableName, $columnName)
+    {
+        return strpos($this->tableDescriptions[$tableName][$columnName]['Type'], 'date') !== false;
+    }
+
 }

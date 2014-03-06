@@ -14,6 +14,7 @@ class SmokeTest extends FunctionalBaseTestCase {
                                 `city` varchar(100) NOT NULL,
                                 `postcode` varchar(100) NOT NULL,
                                 `country` varchar(100) NOT NULL,
+                                `date_of_entry` DATETIME,
                                 PRIMARY KEY (`address_id`)
                               ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8');
 
@@ -26,9 +27,9 @@ class SmokeTest extends FunctionalBaseTestCase {
         
         $this->setupTables("
             [address]
-            address_id  |company
-            0           |me
-            3           |you
+            address_id  |company    |date_of_entry
+            0           |me         |2001-01-01 08:50:00
+            3           |you        |2002-01-01 08:50:00
 
             [user]
             user_id |name
@@ -41,18 +42,19 @@ class SmokeTest extends FunctionalBaseTestCase {
         $this->setAutoIncrement('address', 1000);
 
         $exampleService->addEntry("them");
+
         
         $this->assertTableStateContains("
             [address]
-            address_id  |company
-            0           |me
-            3           |John
-            1000        |them
+            address_id  |company    |date_of_entry
+            0           |me         |2001-01-01
+            3           |John       |2002-01-01
+            1000        |them       |NOW
 
             [user]
             user_id |name
             1       |mary
-            ");
+            ", array('NOW'=>date("Y-m-d")));
         try{
             $this->assertTableStateContains("
                 [address]
@@ -82,6 +84,6 @@ class ExampleService
     }
     function addEntry($name)
     {
-        $this->pdo->exec("insert into address (company) values ('".addslashes($name)."')");
+        $this->pdo->exec("insert into address (company, date_of_entry) values ('".addslashes($name)."',now())");
     }
 }

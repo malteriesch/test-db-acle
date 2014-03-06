@@ -38,18 +38,45 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase
         return $this->databaseTestHelper;
     }
     
-    protected function assertTableStateContains( $expectedPsv, $message = '' )
+    protected function assertTableStateContains( $expectedPsv, $placeHolders = array(), $message = '' )
     {
-        $expectedData = array();
-        $actualData   = array();
+        $expectedData         = array();
+        $actualData           = array();
+        $parsedTree           = $this->getDatabaseTestHelper()->getParser()->parsePsvTree($expectedPsv);
+        $filterQueue          = new \TestDbAcle\Filter\FilterQueue();
+        $filterQueue->addRowFilter(new \TestDbAcle\Filter\PlaceholderRowFilter($placeHolders));
+        $filteredParsedTree   = $filterQueue->filterDataTree($parsedTree);
+
+        $tableInfo = $this->getDatabaseTestHelper()->getTableInfo();
+        $pdoFacade = $this->getDatabaseTestHelper()->getPdoFacade();
         
-        foreach($this->getDatabaseTestHelper()->getParser()->parsePsvTree($expectedPsv) as $tableName=>$tableData){
+        foreach(array_keys($filteredParsedTree) as $tableName){
+            $tableInfo->addTableDescription($tableName, $pdoFacade->describeTable($tableName));
+        }
+
+        foreach($filteredParsedTree as $tableName=>$tableData){
             $expectedData[$tableName]=$tableData['data'];
             $columnsToSelect = array_keys($expectedData[$tableName][0]);
             $data = $this->pdo->query("select ".implode(", ",$columnsToSelect)." from $tableName")->fetchAll(\PDO::FETCH_ASSOC);
-            $actualData[$tableName] = $data;
+            $actualData[$tableName] = $this->truncateDatetimeFields($tableName, $data, $tableInfo);
         }
-        
-       $this->assertEquals($expectedData,$actualData);
+        $this->assertEquals($expectedData, $actualData, $message);
+    }
+
+    protected function truncateDatetimeFields($tableName, $tableData, \TestDbAcle\Db\TableInfo $tableInfo)
+    {
+        $filtered = array();
+        foreach($tableData as $dataRow){
+            $newFilteredRow = array();
+            foreach($dataRow as $columnName=>$value){
+                if ($tableInfo->isDateTime($tableName, $columnName) && $value ){
+                    $newFilteredRow[$columnName] = date("Y-m-d", strtotime($value));
+                }else{
+                    $newFilteredRow[$columnName] = $value;
+                }
+            }
+            $filtered[]=$newFilteredRow;
+        }
+        return $filtered;
     }
 }

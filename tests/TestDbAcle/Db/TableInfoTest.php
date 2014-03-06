@@ -43,15 +43,26 @@ class TableInfoTest extends \PHPUnit_Framework_TestCase
     }
 
     public function test_isNullable() {
-        $this->assertFalse($this->tableInfo->isNullable('user','user_id'));
-        $this->assertFalse($this->tableInfo->isNullable('user','first_name'));
-        $this->assertFalse($this->tableInfo->isNullable('stuff','stuff_id'));
+        $this->assertFalse($this->tableInfo->isDateTime('user','user_id'));
+        $this->assertFalse($this->tableInfo->isDateTime('user','first_name'));
+        $this->assertFalse($this->tableInfo->isDateTime('stuff','stuff_id'));
         
-        $this->assertTrue($this->tableInfo->isNullable('user','last_name'));
-        $this->assertTrue($this->tableInfo->isNullable('stuff','col2'));
+        $this->assertTrue($this->tableInfo->isDateTime('stuff','col3'));
+        $this->assertTrue($this->tableInfo->isDateTime('stuff','col4'));
         
         
     }
+
+    public function test_isDateTime() {
+        $this->assertFalse($this->tableInfo->isNullable('user','user_id'));
+        $this->assertFalse($this->tableInfo->isNullable('user','first_name'));
+        $this->assertFalse($this->tableInfo->isNullable('stuff','stuff_id'));
+
+        $this->assertTrue($this->tableInfo->isNullable('user','last_name'));
+        $this->assertTrue($this->tableInfo->isNullable('stuff','col2'));
+
+    }
+
     public function test_generateDefaultNullValue() {
         $this->assertEquals("1",$this->tableInfo->generateDefaultNullValue('INT'));
         $this->assertEquals("1",$this->tableInfo->generateDefaultNullValue('int'),"is case insensitive");
