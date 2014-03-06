@@ -123,9 +123,9 @@ class ExampleTest extends \TestDbAcle\PhpUnit\AbstractTestCase
 ```
 Ok, obviously \Services\AddressService does not exist here (Obviously, it is test-first, right?). The example is quite simple.
 
-In ral life, I would put the getPdo method into a common base test class for the project and it might be obtained quite differently than here. But, well, this *is* an example.
+In real life, I would put the getPdo method into a common base test class for the project and it might be obtained quite differently than here. But, well, this *is* an example.
 
-As you can see, setupTables can set up several tables at once and  assertTableStateContains can varify the state of various tables at the same time, too.
+As you can see, setupTables can set up several tables at once and  assertTableStateContains can verify the state of various tables at the same time, too.
 
 Similarly to how setupTables can setup tables that have many more columns than those specified, assertTableStateContains only compares and asserts the values of the columns specified too.
 
