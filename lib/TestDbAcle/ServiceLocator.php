@@ -5,6 +5,11 @@ class ServiceLocator
     protected $factories = array();
     protected $services  = array();
 
+    function __construct($factories = array())
+    {
+        $this->setFactories($factories);
+    }
+    
     function setFactories($factories)
     {
         $this->factories = $factories;
@@ -13,21 +18,24 @@ class ServiceLocator
     function get($name)
     {
         if (!isset($this->services[$name])){
-            
-            if (!isset($this->factories[$name])){
-                return null;
-            }
-            
-            $factory = $this->factories[$name];
-            if (is_string($factory)){
-                $this->services[$name] = new $factory();
-            }else{
-                $this->services[$name] = $factory($this);
-            }
+            $this->services[$name] = $this->createNew($name);
         }
         return $this->services[$name];
     }
     
+    function createNew($name)
+    {
+        if (!isset($this->factories[$name])){
+            return null;
+        }
+
+        $factory = $this->factories[$name];
+        if (is_string($factory)){
+            return new $factory();
+        }else{
+            return $factory($this);
+        }
+    }
     function set($name, $service)
     {
         if (isset($this->services[$name])){

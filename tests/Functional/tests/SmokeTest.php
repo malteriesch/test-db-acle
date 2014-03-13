@@ -28,6 +28,12 @@ class SmokeTest extends FunctionalBaseTestCase {
                               ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8');
     }
     
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
     function test_simpleSetupAndAssertTableStateContains()
     {
         
@@ -80,6 +86,12 @@ class SmokeTest extends FunctionalBaseTestCase {
                 
     }
     
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
     function test_simpleSetupAndAssertTableStateContains_WithZeroPrimaryKey()
     {
         
@@ -115,6 +127,13 @@ class SmokeTest extends FunctionalBaseTestCase {
             ", array('NOW'=>date("Y-m-d")));
               
     }
+    
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
     
     function test_SetupAndAssertWithPlaceholders()
     {
@@ -153,6 +172,12 @@ class SmokeTest extends FunctionalBaseTestCase {
                 
     }
     
+     /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
     function test_DatetimeColumnsGetTruncatedWhenComparing()
     {
         

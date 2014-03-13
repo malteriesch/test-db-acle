@@ -36,7 +36,6 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         $dataInserter->shouldReceive('process')->once()->with($afterFiltering);
         
         
-        
         $testDbAcle = new \TestDbAcle\TestDbAcle();
         $testDbAcle->setParser($parser);
         $testDbAcle->setFilterQueue($filterQueue);
@@ -46,119 +45,53 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         return $testDbAcle;
     }
     
-    function test_setupTables()
-    {
+    function test_runCommand(){
+        $mockServiceLocator = \Mockery::mock('\TestDbAcle\ServiceLocator');
         
-        $psv="
-            [user]
-            user_id |first_name |last_name  |company_id
-            10      |Joe        |Bloggs     |1
-            20      |Tommy      |Jones      |1
-            
-            [company]
-            company_id  |name
-            1           |foo
-            
-        ";
+        $testDbAcle = new \TestDbAcle\TestDbAcle();
+        $testDbAcle->setServiceLocator($mockServiceLocator);
         
-        $testDbAcle = $this->createConfiguredTestDbAcleWithExpectations($psv);
-        $testDbAcle->setUpTables($psv);
+        $mockCommand = \Mockery::mock('TestDbAcle\Commands\CommandInterface');
+        $mockCommand->shouldReceive('initialise')->once()->with($mockServiceLocator)->ordered();
+        $mockCommand->shouldReceive('execute')->once()->withNoArgs()->ordered();
+        
+        $testDbAcle->runCommand($mockCommand);
+        
         
     }
     
-    function test_setupTables_WithAdditionalFilters()
-    {
+    function test_create(){
         
-        $psv="
-            [user]
-            user_id |first_name |last_name  |company_id
-            10      |Joe        |Bloggs     |1
-            20      |Tommy      |Jones      |1
-            
-            [company]
-            company_id  |name
-            1           |foo
-            
-        ";
-        $additionalFilters = array('filter1','filter2');
+        $expectedTestDbAcle = new \TestDbAcle\TestDbAcle();
+        $mockPdo = MockablePdo::createMock($this);
+                      
+        $serviceLocator = new \TestDbAcle\ServiceLocator(\TestDbAcle\TestDbAcle::getDefaultFactories());
+        $serviceLocator->set('pdo', $mockPdo);
         
-        $testDbAcle = $this->createConfiguredTestDbAcleWithExpectations($psv, $additionalFilters);
-        $testDbAcle->setUpTables($psv, $additionalFilters);
-        
-    }
-    function test_setupTablesWithPlaceholders()
-    {
-        
-        $expectedPsv="
-            [user]
-            user_id |first_name |last_name  |company_id
-            10      |FOO        |Bloggs     |1
-            20      |Tommy      |Jones      |1
-        ";
-        
-        $testDbAcle = $this->createConfiguredTestDbAcleWithExpectations($expectedPsv,  array(new \TestDbAcle\Filter\PlaceholderRowFilter(array("FOO"=>"Joe"))));
-        $testDbAcle->setupTablesWithPlaceholders($expectedPsv, array("FOO"=>"Joe"));
-        
-    }
-    
-    function test_create_withDefaults()
-    {
-        $mockPdo = MockablePdo::createMock($this, array('prepare', 'exec', 'query','setAttribute'));
-        $mockPdo->expects($this->once())->method('setAttribute')->with(\Pdo::ATTR_ERRMODE, \Pdo::ERRMODE_EXCEPTION);
-        
-        $mockPdo->expects($this->once())->method('query')->with("SET FOREIGN_KEY_CHECKS = 0");
-        
-        $expectedMockPdoFacade = new \TestDbAcle\Db\PdoFacade($mockPdo);
-        
-        $expectedTableInfo = new \TestDbAcle\Db\TableInfo();
-        
-        
-        $expectedParser       = new \TestDbAcle\Psv\PsvParser();
-        $expectedFilterQueue  = new \TestDbAcle\Filter\FilterQueue();
-        $expectedFilterQueue->addRowFilter(new \TestDbAcle\Filter\AddDefaultValuesRowFilter($expectedTableInfo));
+        $expectedTestDbAcle->setServiceLocator($serviceLocator);
+        $testDbAcle = \TestDbAcle\TestDbAcle::create($mockPdo);
                 
-        $expectedDataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($expectedMockPdoFacade);
-        $expectedDataInserter->addUpsertListener(new \TestDbAcle\Db\DataInserter\Listeners\MysqlZeroPKListener($expectedMockPdoFacade, $expectedTableInfo));
+        $this->assertEquals($expectedTestDbAcle, $testDbAcle);
         
-        $testDbacle = \TestDbAcle\TestDbAcle::create($mockPdo);
-        
-        $this->assertEquals($expectedParser, $testDbacle->getParser());
-        $this->assertEquals($expectedMockPdoFacade, $testDbacle->getPdoFacade());
-        $this->assertEquals($expectedTableInfo, $testDbacle->getTableInfo());
-        $this->assertEquals($expectedFilterQueue, $testDbacle->getFilterQueue());
-        $this->assertEquals($expectedDataInserter, $testDbacle->getDataInserter());
     }
     
-    function test_create_withDefaultsOverriden()
-    {
-        $mockPdo = MockablePdo::createMock($this, array('prepare', 'exec', 'query','setAttribute'));
-        $mockPdo->expects($this->once())->method('setAttribute')->with(\Pdo::ATTR_ERRMODE, \Pdo::ERRMODE_EXCEPTION);
+    function test_create_with_defaultOverriden(){
         
-        $mockPdo->expects($this->once())->method('query')->with("SET FOREIGN_KEY_CHECKS = 0");
-        
-        $expectedMockPdoFacade = new \TestDbAcle\Db\PdoFacade($mockPdo);
-        
-        $expectedTableInfo = new \TestDbAcle\Db\TableInfo();
-        
-        
-        $expectedParser       = new \TestDbAcle\Psv\PsvParser();
-        $expectedFilterQueue  = new \TestDbAcle\Filter\FilterQueue();
-        $expectedFilterQueue->addRowFilter(new \TestDbAcle\Filter\AddDefaultValuesRowFilter($expectedTableInfo));
-                
-        $expectedDataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($expectedMockPdoFacade);
-        
-        $testDbacle = \TestDbAcle\TestDbAcle::create($mockPdo,array(
-            'dataInserter' => function($serviceLocator){
-                return $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'));
-            }
+        $mockPdo = MockablePdo::createMock($this);
+                      
+        $testDbAcle = \TestDbAcle\TestDbAcle::create($mockPdo, array(
+                    'dataInserter' => function($serviceLocator) {
+                        return 'foo';
+                    }
         ));
         
-        $this->assertEquals($expectedParser, $testDbacle->getParser());
-        $this->assertEquals($expectedMockPdoFacade, $testDbacle->getPdoFacade());
-        $this->assertEquals($expectedTableInfo, $testDbacle->getTableInfo());
-        $this->assertEquals($expectedFilterQueue, $testDbacle->getFilterQueue());
-        $this->assertEquals($expectedDataInserter, $testDbacle->getDataInserter());
+        
+        $this->assertEquals("foo", $testDbAcle->getServiceLocator()->get('dataInserter'));
+        
     }
+    
+    
+    
     
 }
 //@TODO use \TestDbAcle\PhpUnit\Mocks\MockablePdo, at the moment somehow it only works if defined below.... investigate.

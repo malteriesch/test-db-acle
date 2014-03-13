@@ -12,12 +12,9 @@ class FilterQueue
         $this->rowFilters[] = $filter;
     }
 
-    function filterDataTree(array $dataTree, array $additionalRowFilters = array())
+    function filterDataTree(array $dataTree)
     {
         foreach ($this->rowFilters as $filter) {
-            $dataTree = $this->applyRowFilter($filter, $dataTree);
-        }
-        foreach ($additionalRowFilters as $filter) {
             $dataTree = $this->applyRowFilter($filter, $dataTree);
         }
         return $dataTree;

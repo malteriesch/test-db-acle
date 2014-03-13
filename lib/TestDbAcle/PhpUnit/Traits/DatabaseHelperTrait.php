@@ -1,12 +1,11 @@
 <?php
-namespace TestDbAcle\PhpUnit;
 
-abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase implements AbstractTestCaseInterface
+namespace TestDbAcle\PhpUnit\Traits;
+
+//require that consuming class implements AbstractTestCaseInterface
+trait DatabaseHelperTrait
 {
-    /* @var $databaseTestHelper \TestDbAcle\TestDbAcle */
-    protected $databaseTestHelper;
-    
-    
+   
     /**
      * Override to provide the PDO connection to the test database.
      * @returns \PDO
@@ -23,14 +22,6 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase implements A
     }
     
     
-    /**
-     * returns the configures TestDbAcle database helper
-     * @return \TestDbAcle\TestDbAcle
-     */
-    public function getDatabaseTestHelper()
-    {
-        return $this->databaseTestHelper;
-    }
 
     /**
      * Sets up the autoincrement for a table
@@ -53,18 +44,10 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase implements A
     protected function setupTables($psvContent, $replace = array())
     {
         $this->getDatabaseTestHelper()->runCommand(new \TestDbAcle\Commands\SetupTablesCommand($psvContent, $replace));
-       // $this->getDatabaseTestHelper()->setupTablesWithPlaceholders($psvContent, $replace);
     }
     
-    /**
-     * If this method gets overridden, parent::Setup() needs to be called as the first line of the overiding method
-     */
-    function setUp()
-    {
-        if(!isset($this->databaseTestHelper)){
-            $this->databaseTestHelper = $this->createDatabaseTestHelper();
-        }
-    }
+    
+    
     
     /**
      * Asserts that a table contains the values specified. Placeholders can be 
