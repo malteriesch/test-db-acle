@@ -48,10 +48,6 @@ class ServiceLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($override, $this->serviceLocator->get('moo'), 'services can be overridden');
         $this->assertSame($cow1,     $this->serviceLocator->get('prototype.moo'), 'overides are shadowed by parent');
         $this->assertNull($this->serviceLocator->get('baz'), 'unreckognised services return null');
-        
-        
-        
-        
     }
 }
 
