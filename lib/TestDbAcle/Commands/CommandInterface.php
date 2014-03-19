@@ -4,5 +4,4 @@ interface CommandInterface
 {
     function execute();
     function initialise(\TestDbAcle\ServiceLocator $serviceLocator);
-    
 }
