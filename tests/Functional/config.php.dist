@@ -1,8 +1,8 @@
 <?php
 
 return array(
-    'db_host'     => '',
-    'db_name'     => '',
-    'db_user'     => '',
-    'db_password' => '',
+    'db_host'     => '@MYSQL_TESTDB_HOST@',
+    'db_name'     => '@MYSQL_TESTDB_NAME@',
+    'db_user'     => '@MYSQL_TESTDB_USER@',
+    'db_password' => '@MYSQL_TESTDB_PASSWORD@',
 );
