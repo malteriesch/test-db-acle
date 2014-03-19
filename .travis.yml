@@ -8,6 +8,9 @@ before_script:
   - composer self-update
   - composer install --dev --prefer-source
   - mysql -e 'create database myapp_test;'
+  - sed -e 's/@MYSQL_TESTDB_HOST@/'localhost'/' -e 's/@MYSQL_TESTDB_NAME@/'myapp_test'/' -e 's/@MYSQL_TESTDB_USER@/'root'/' -e 's/@MYSQL_TESTDB_PASSWORD@/''/' config.php.dist > config.php
+  
+  
 
 
 services: mysql
