@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/malteriesch/test-db-acle.png?branch=master)](https://travis-ci.org/malteriesch/test-db-acle)
+
 Test-DB-Acle
 ============
 
