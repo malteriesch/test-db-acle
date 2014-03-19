@@ -12,5 +12,4 @@ class FunctionalBaseTestCase extends TestDbAcle\PhpUnit\AbstractTestCase
         }
         return $this->pdo;
     }
-
 }
