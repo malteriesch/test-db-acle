@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__.'/../FunctionalBaseTestCase.php');
+require_once(__DIR__.'/../../FunctionalBaseTestCase.php');
 
 class SmokeTest extends FunctionalBaseTestCase {
     
