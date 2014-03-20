@@ -160,9 +160,10 @@ class PsvParser implements PsvParserInterface
     
     protected function filterColumnValue($value)
     {
+        $self = $this;//we need to to do this for PHP 5.3 compatability
         $filters = array(
-            'stripComments' => function(&$value){
-                if(strpos($value, static::SYMBOL_COMMENT) !== false){
+            'stripComments' => function(&$value) use($self){
+                if(strpos($value, $self::SYMBOL_COMMENT) !== false){
                     list($valuePart,) = preg_split('/(?<!\\\\)'.static::SYMBOL_COMMENT.'/', $value);
                     $value = trim($valuePart);
                 }
