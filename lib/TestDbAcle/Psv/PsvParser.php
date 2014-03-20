@@ -164,7 +164,7 @@ class PsvParser implements PsvParserInterface
         $filters = array(
             'stripComments' => function(&$value) use($self){
                 if(strpos($value, $self::SYMBOL_COMMENT) !== false){
-                    list($valuePart,) = preg_split('/(?<!\\\\)'.static::SYMBOL_COMMENT.'/', $value);
+                    list($valuePart,) = preg_split('/(?<!\\\\)'.$self::SYMBOL_COMMENT.'/', $value);
                     $value = trim($valuePart);
                 }
             },
