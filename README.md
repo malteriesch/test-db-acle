@@ -3,7 +3,7 @@
 Test-DB-Acle
 ============
 
-Pronounced test-debacle. I guess you can leave out the -db- part if you feel so inclined. Not me, obviously :) 
+Pronounced test debacle. I guess you can leave out the -db- part if you want a slightly shorter word and feel so inclined.
 
 What is Test-DB-Acle? A short mission statement.
 ------------------------------------------------
