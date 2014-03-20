@@ -65,7 +65,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
             ),
         );
         
-        $checkUpserterClosure = function ($upserter){
+        $checkUpserterClosure = function ($upserter) use ($this) {
             $this->assertTrue($upserter instanceOf \TestDbAcle\Db\DataInserter\Sql\InsertBuilder);
             $this->assertEquals('user', $upserter->getTableName());
             return true;
