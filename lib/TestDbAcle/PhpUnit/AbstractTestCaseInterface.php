@@ -9,7 +9,7 @@ interface AbstractTestCaseInterface
      * Override to provide the PDO connection to the test database.
      * @returns \PDO
      */
-    public function getPdo();
+    public function createPdo();
     
     
     /**

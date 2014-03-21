@@ -4,15 +4,24 @@ namespace TestDbAcle\PhpUnit;
 abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase implements AbstractTestCaseInterface
 {
     /* @var $databaseTestHelper \TestDbAcle\TestDbAcle */
-    protected $databaseTestHelper;
+    protected $databaseTestHelper = null;
     
+    /* @var $pdo \Pdo */
+    protected $pdo = null;
     
     /**
      * Override to provide the PDO connection to the test database.
      * @returns \PDO
      */
-    abstract public function getPdo();
+    abstract public function createPdo();
     
+    function getPdo()
+    {
+        if(is_null($this->pdo)){
+            $this->pdo = $this->createPdo();
+        }
+        return $this->pdo;
+    }
     /**
      * used to create the TestDbAcle database helper
      * @return \TestDbAcle\TestDbAcle
@@ -29,6 +38,9 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase implements A
      */
     public function getDatabaseTestHelper()
     {
+        if(is_null($this->databaseTestHelper)){
+            $this->databaseTestHelper = $this->createDatabaseTestHelper();
+        }
         return $this->databaseTestHelper;
     }
 

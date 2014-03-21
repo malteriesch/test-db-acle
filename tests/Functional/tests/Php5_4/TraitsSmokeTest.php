@@ -7,7 +7,7 @@ class TraitsSmokeTest extends FunctionalBaseTestCaseUsingTraits
     
     function setup()
     {
-        parent::setup();
+        
         $this->getPdo()->query('CREATE TEMPORARY TABLE `address` (
                                 `address_id` int(11) NOT NULL AUTO_INCREMENT,
                                 `company` varchar(100) NOT NULL,
@@ -53,7 +53,7 @@ class TraitsSmokeTest extends FunctionalBaseTestCaseUsingTraits
 
         $this->setAutoIncrement('address', 1000);
 
-        $this->pdo->exec("insert into address (company, date_of_entry) values ('them',now())");
+        $this->getPdo()->exec("insert into address (company, date_of_entry) values ('them',now())");
 
         
         $this->assertTableStateContains("
