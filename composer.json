@@ -1,7 +1,7 @@
 {
     "name": "test-db-acle/test-db-acle",
     "description": "Framework for very lightweight setting up of database test data for unit tests",
-    "keywords": ["library", "testing", "test", "TDD", "phpUnit", "simpletest", "dbUnit","build","database","php"],
+    "keywords": ["library", "testing", "test", "TDD", "phpUnit", "simpletest", "dbUnit","build","database","php", "fixtures"],
     "license": "BSD",
     "authors": [
         {
