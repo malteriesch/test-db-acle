@@ -10,7 +10,7 @@ trait DatabaseHelperTrait
      * Override to provide the PDO connection to the test database.
      * @returns \PDO
      */
-    abstract public function createPdo();
+    abstract public function providePdo();
     
     /**
      * used to create the TestDbAcle database helper
@@ -42,7 +42,7 @@ trait DatabaseHelperTrait
     {
         static $pdo = null;
         if (is_null($pdo)){
-            $pdo = $this->createPdo();
+            $pdo = $this->providePdo();
         }
         return $pdo;
     }

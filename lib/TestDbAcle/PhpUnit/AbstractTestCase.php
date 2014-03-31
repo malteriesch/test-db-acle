@@ -13,12 +13,12 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase implements A
      * Override to provide the PDO connection to the test database.
      * @returns \PDO
      */
-    abstract public function createPdo();
+    abstract public function providePdo();
     
     function getPdo()
     {
         if(is_null($this->pdo)){
-            $this->pdo = $this->createPdo();
+            $this->pdo = $this->providePdo();
         }
         return $this->pdo;
     }
