@@ -17,15 +17,18 @@ class DataInserter
         $this->pdoFacade = $pdoFacade;
     }
 
-    public function process($dataTree)
+    public function process(\TestDbAcle\Psv\Table\TableList $tableList)
     {
-        foreach ($dataTree as $tableName => $content) {
-            $this->processTable($tableName, $content['data'], $content['meta']);
+        foreach ($tableList->getTables() as $table) {
+            $this->processTable($table);
         }
     }
 
-    public function processTable($tableName, $content, $meta)
+    public function processTable(\TestDbAcle\Psv\Table\Table $table)
     {
+        $tableName = $table->getName();
+        $content = $table->toArray();
+        $meta = $table->getMeta()->toArray();
         if (isset($meta['mode']) && $meta['mode'] == 'replace') {
             $this->replaceIntoTable($tableName, $content, $meta['identifiedBy']);
         } else {
@@ -49,7 +52,7 @@ class DataInserter
         
     }
 
-    protected function insertValues($upsertBuilder, $tableName, $valuesToBeInserted)
+    protected function insertValues($upsertBuilder, $valuesToBeInserted)
     {
         foreach ($valuesToBeInserted as $columnName => $columnValue) {
             if ($columnValue == 'NULL' || is_null($columnValue)) {
@@ -66,7 +69,7 @@ class DataInserter
     public function replaceIntoTable($tableName, $content, $identifiedBy)
     {
         foreach ($content as $valuesToBeInserted) {
-            $this->insertValues($this->getUpserter($tableName, $identifiedBy, $valuesToBeInserted), $tableName, $valuesToBeInserted);
+            $this->insertValues($this->getUpserter($tableName, $identifiedBy, $valuesToBeInserted), $valuesToBeInserted);
         }
     }
 
@@ -79,7 +82,7 @@ class DataInserter
         }
 
         foreach ($content as $valuesToBeInserted) {
-            $this->insertValues(new Sql\InsertBuilder($tableName), $tableName, $valuesToBeInserted);
+            $this->insertValues(new Sql\InsertBuilder($tableName), $valuesToBeInserted);
         }
     }
 

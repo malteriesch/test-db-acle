@@ -20,7 +20,8 @@ class SetupTablesCommand implements CommandInterface
     public function execute()
     {
         $parsedTree = $this->parser->parsePsvTree($this->sourcePsv);
-        foreach(array_keys($parsedTree) as $tableName){
+        foreach($parsedTree->getTables() as $table){
+            $tableName = $table->getName();
             $this->tableInfo->addTableDescription($tableName, $this->pdoFacade->describeTable($tableName));
         }
         return $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree));
