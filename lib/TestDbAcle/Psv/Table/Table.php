@@ -27,6 +27,10 @@ class Table
         $this->data = $data;
     }
     
+    /**
+     * 
+     * @return Meta
+     */
     function getMeta()
     {
         return $this->meta;

@@ -8,7 +8,9 @@ class InsertBuilderTest extends \PHPUnit_Framework_TestCase
         $insertBuilder = new \TestDbAcle\Db\DataInserter\Sql\InsertBuilder("foo");
         $insertBuilder->addColumn("col1", "'I will be escaped'");
         $insertBuilder->addColumn("the_date", "now()",true);
-        $this->assertEquals("INSERT INTO foo ( col1, the_date ) VALUES ( '\'I will be escaped\'', now() )", $insertBuilder->getSql());
+        $insertBuilder->addColumn("col2", null);
+        $insertBuilder->addColumn("col3", "NULL");
+        $this->assertEquals("INSERT INTO foo ( col1, the_date, col2, col3 ) VALUES ( '\'I will be escaped\'', now(), NULL, NULL )", $insertBuilder->getSql());
     }
     
     function test_getColumn() 

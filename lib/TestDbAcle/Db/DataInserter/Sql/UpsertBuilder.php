@@ -15,7 +15,11 @@ abstract class UpsertBuilder {
 
     public function addColumn($name, $value, $isExpression = false) {
 
-        $this->columns[$name] = array("value" => $value, "isExpression" => $isExpression);
+        if (is_null($value) || $value =="NULL"){
+            $this->columns[$name] = array("value" => "NULL", "isExpression" => true);
+        }else{
+            $this->columns[$name] = array("value" => $value, "isExpression" => $isExpression);
+        }
     }
     
     public function getColumn($name) {

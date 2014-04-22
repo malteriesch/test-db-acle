@@ -42,7 +42,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '30', 'miaow', NULL )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('emptyTable')->ordered();
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade);
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
         $dataInserter->process($dataTree);
     }
     
@@ -79,7 +79,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
         $testListener1->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
         $testListener2->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade);
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
         $dataInserter->addUpsertListener($testListener1);
         $dataInserter->addUpsertListener($testListener2);
        
@@ -114,7 +114,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
                     array("col1" => "30",
                         "col2" => "miaow",
                         "col3" => "boo"))));
-         $dataTree->addTable( new \TestDbAcle\Psv\Table\Table('emptyTable'));
+        $dataTree->addTable( new \TestDbAcle\Psv\Table\Table('emptyTable'));
         
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'john','last_name'=>'miller'))->andReturn(true)->ordered();
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE user SET user_id='10', first_name='john', last_name='miller' WHERE first_name='john' AND last_name='miller'")->ordered();
@@ -127,7 +127,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '30', 'miaow', 'boo' )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('emptyTable')->ordered();
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade);
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
         $dataInserter->process($dataTree);
     }
     
@@ -161,7 +161,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'stuart'))->andReturn(false)->ordered();
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '30', 'stuart', 'Smith' )")->ordered();
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade);
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
         $dataInserter->process($dataTree);
     }
     
