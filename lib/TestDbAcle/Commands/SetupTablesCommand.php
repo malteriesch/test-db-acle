@@ -17,12 +17,19 @@ class SetupTablesCommand implements CommandInterface
         $this->sourcePsv    = $sourcePsv;
         
     }
+    
+    protected function configureTableInfo(array $tables)
+    {
+        foreach($tables as $table){
+            $tableName = $table->getName();
+            $this->tableInfo->addTable(new \TestDbAcle\Db\Table\Table($tableName, $this->pdoFacade->describeTable($tableName) ) );
+        }
+    }
+    
     public function execute()
     {
         $parsedTree = $this->parser->parsePsvTree($this->sourcePsv);
-        foreach(array_keys($parsedTree) as $tableName){
-            $this->tableInfo->addTableDescription($tableName, $this->pdoFacade->describeTable($tableName));
-        }
+        $this->configureTableInfo($parsedTree->getTables());
         return $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree));
     }
 

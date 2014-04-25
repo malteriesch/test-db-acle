@@ -15,23 +15,23 @@ class FilterQueueTest extends \PHPUnit_Framework_TestCase
     
     function test_filterDataTree_withOneRowFilter()
     {
+        $dataTree = new \TestDbAcle\Psv\Table\TableList();
         
-        $dataTree = array(
-            "user" => array(
-                'meta' => array(),
-                'data' => array(
-                    array('user.row1'),
-                    array('user.row2')
-                ),
-            ),
-            "stuff" => array(
-                'meta' => array(),
-                'data' => array(
-                    array('stuff.row1'),
-                    array('stuff.row2')),
-            ),
-            'emptyTable' => array('meta' => array(),'data'=>array())
-        );
+        $dataTree->addTable(
+                    new \TestDbAcle\Psv\Table\Table('user', array(
+                        array('user.row1'),
+                        array('user.row2')
+                )));
+        
+        $dataTree->addTable(
+                    new \TestDbAcle\Psv\Table\Table('stuff', array(
+                        array('stuff.row1'),
+                        array('stuff.row2')
+                )));
+        
+        $dataTree->addTable(
+                    new \TestDbAcle\Psv\Table\Table('emptyTable'));
+        
         
         $mockRowFilter1 = \Mockery::mock('\TestDbAcle\Filter\RowFilter');
         
@@ -45,27 +45,20 @@ class FilterQueueTest extends \PHPUnit_Framework_TestCase
                        ->andReturn(array('stuff.filtered_filter1_row2'));
 
         
-
-        $expected = array(
-            "user" => array(
-                'meta' => array(),
-                'data' => array(
-                    array('user.filtered_filter1_row1'),
-                    array('user.filtered_filter1_row2')
-                ),
-            ),
-            "stuff" => array(
-                'meta' => array(),
-                'data' => array(
-                    array('stuff.filtered_filter1_row1'),
-                    array('stuff.filtered_filter1_row2')),
-            ),
-            'emptyTable' => array('meta' => array(),'data'=>array())
-        );
        
        $this->filterQueue->addRowFilter($mockRowFilter1);
         
-       $this->assertEquals( $expected, $this->filterQueue->filterDataTree($dataTree));
+       $filteredTableList = $this->filterQueue->filterDataTree($dataTree);
+       
+       $this->assertEquals( array(
+                    array('user.filtered_filter1_row1'),
+                    array('user.filtered_filter1_row2')
+                ), $filteredTableList->getTable('user')->toArray());
+       
+       $this->assertEquals( array(
+                    array('stuff.filtered_filter1_row1'),
+                    array('stuff.filtered_filter1_row2')), $filteredTableList->getTable('stuff')->toArray());
+       $this->assertEquals( array(), $filteredTableList->getTable('emptyTable')->toArray());
         
     }
     
@@ -73,22 +66,23 @@ class FilterQueueTest extends \PHPUnit_Framework_TestCase
     function test_filterDataTree_withTwoRowFilters()
     {
         
-        $dataTree = array(
-            "user" => array(
-                'meta' => array(),
-                'data' => array(
+        $dataTree = new \TestDbAcle\Psv\Table\TableList();
+        
+        $dataTree->addTable(
+                    new \TestDbAcle\Psv\Table\Table('user', array(
                     array('user.row1'),
                     array('user.row2')
-                ),
-            ),
-            "stuff" => array(
-                'meta' => array(),
-                'data' => array(
+                )));
+        
+        $dataTree->addTable(
+                    new \TestDbAcle\Psv\Table\Table('stuff', array(
                     array('stuff.row1'),
-                    array('stuff.row2')),
-            ),
-            'emptyTable' => array('meta' => array(),'data'=>array())
-        );
+                    array('stuff.row2'))));
+        
+        $dataTree->addTable(
+                    new \TestDbAcle\Psv\Table\Table('emptyTable'));
+        
+       
         
         $mockRowFilter1 = \Mockery::mock('\TestDbAcle\Filter\RowFilter');
         
@@ -113,27 +107,22 @@ class FilterQueueTest extends \PHPUnit_Framework_TestCase
         $mockRowFilter2->shouldReceive('filter')->once()->with('stuff', array("stuff.filtered_filter1_row2"))->ordered()
                        ->andReturn(array('stuff.filtered_filter2_row2'));
 
-        $expected = array(
-            "user" => array(
-                'meta' => array(),
-                'data' => array(
-                    array('user.filtered_filter2_row1'),
-                    array('user.filtered_filter2_row2')
-                ),
-            ),
-            "stuff" => array(
-                'meta' => array(),
-                'data' => array(
-                    array('stuff.filtered_filter2_row1'),
-                    array('stuff.filtered_filter2_row2')),
-            ),
-            'emptyTable' => array('meta' => array(),'data'=>array())
-        );
        
        $this->filterQueue->addRowFilter($mockRowFilter1);
        $this->filterQueue->addRowFilter($mockRowFilter2);
-        
-       $this->assertEquals( $expected, $this->filterQueue->filterDataTree($dataTree));
+       
+       $filteredTableList = $this->filterQueue->filterDataTree($dataTree);
+       
+       $this->assertEquals(  array(
+                    array('user.filtered_filter2_row1'),
+                    array('user.filtered_filter2_row2')
+                ), $filteredTableList->getTable('user')->toArray());
+       
+       $this->assertEquals( array(
+                    array('stuff.filtered_filter2_row1'),
+                    array('stuff.filtered_filter2_row2')), $filteredTableList->getTable('stuff')->toArray());
+       $this->assertEquals( array(), $filteredTableList->getTable('emptyTable')->toArray());
+       
         
     }
     

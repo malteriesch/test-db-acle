@@ -12,7 +12,7 @@ class FilterQueue
         $this->rowFilters[] = $filter;
     }
 
-    function filterDataTree(array $dataTree)
+    function filterDataTree($dataTree)
     {
         foreach ($this->rowFilters as $filter) {
             $dataTree = $this->applyRowFilter($filter, $dataTree);
@@ -30,8 +30,8 @@ class FilterQueue
 
     protected function applyRowFilter($filter, $dataTree)
     {
-        foreach ($dataTree as $table => $tableData) {
-            $dataTree[$table]['data'] = $this->filterTable($filter, $table, $tableData['data']);
+        foreach ($dataTree->getTables() as $table) {
+            $table->setData( $this->filterTable($filter, $table->getName(), $table->toArray()));
         }
         return $dataTree;
     }

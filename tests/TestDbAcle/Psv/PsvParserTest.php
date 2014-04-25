@@ -111,32 +111,39 @@ class PsvParserTest extends \PHPUnit_Framework_TestCase {
 #comments can be the last thing
         ";
 
-        $expectedArray = 
-            array("expression1" => array(
-                'meta' => array(
-                    'mode'=> 'replace',
-                     'identifiedBy' => array('first_name','last_name')
-                ),
-                'data' => array(
-                    array("id" => "10",
-                        "first_name" => "john",
-                        "last_name" => "[miller]"),
-                    array("id" => "20",
-                        "first_name" => "stu",
-                        "last_name" => 'Smith"'))
-            ),
-            "expression2" => array(
-                'meta' => array(),
-                'data' => array(
-                    array("col1" => "1",
-                        "col2" => "moo",
-                        "col3" => "foo"),
-                    array("col1" => "30",
-                        "col2" => "miaow",
-                        "col3" => "boo"))),
-            'empty' => array('meta'=>array(),'data'=>array())
-        );
-        $this->assertEquals($expectedArray, $psvParser->parsePsvTree($psvToParse));
+        $parsedTree = $psvParser->parsePsvTree($psvToParse);
+        
+        
+        $this->assertEquals(
+            array(
+                array("id" => "10",
+                    "first_name" => "john",
+                    "last_name" => "[miller]"),
+                array("id" => "20",
+                    "first_name" => "stu",
+                    "last_name" => 'Smith"'),
+                ), 
+                $parsedTree->getTable('expression1')->toArray());
+        
+        $this->assertEquals('expression1', $parsedTree->getTable('expression1')->getName());
+        
+        $this->assertEquals('expression2', $parsedTree->getTable('expression2')->getName());
+        
+        $this->assertEquals(
+            array(
+                array("col1" => "1",
+                    "col2" => "moo",
+                    "col3" => "foo"),
+                array("col1" => "30",
+                    "col2" => "miaow",
+                    "col3" => "boo")),
+             $parsedTree->getTable('expression2')->toArray());
+        
+        $this->assertEquals(array(
+                       'mode'=> 'replace',
+                       'identifiedBy' => array('first_name','last_name') ), $parsedTree->getTable('expression1')->getMeta()->toArray());
+        
+        $this->assertEquals(array(), $parsedTree->getTable('expression2')->getMeta()->toArray());
     }
 
 }

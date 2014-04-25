@@ -1,11 +1,10 @@
 <?php
-class AddDefaultValuesRowFilterTest extends \PHPUnit_Framework_TestCase 
+
+class TableTest extends \PHPUnit_Framework_TestCase 
 {
-    protected $mockTableInfo;
-    protected $filter;
-    
     function setUp()
     {
+   
         $describeStuff = array(
             array('Field' => 'stuff_id', 'Type' => 'int(11)', 'Null' => 'NO', 'Key' => 'PRI', 'Default' => NULL, 'Extra' => 'auto_increment'),
             array('Field' => 'col1', 'Type' => 'int', 'Null' => 'NO', 'Key' => '', 'Default' => NULL, 'Extra' => ''),
@@ -20,22 +19,31 @@ class AddDefaultValuesRowFilterTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->table = new TestDbAcle\Db\Table\Table("stuff", $describeStuff);
-        $this->mockTableInfo =  \Mockery::mock('\TestDbAcle\Db\TableInfo');
-        $this->mockTableInfo->shouldReceive('getTable')->andReturn($this->table);
-        $this->filter = new \TestDbAcle\Filter\AddDefaultValuesRowFilter($this->mockTableInfo);
     }
-    
-    public function teardown() {
-        \Mockery::close();
-    }
-    
-    function test_filter_addsNonNullableDefaultValues()
+    public function test_getNonNullableColumns()
     {
-        $this->assertEquals( array('col4'=>'2012-01-01','col1'=>'1','col9'=>'foo'), $this->filter->filter("my_table", array('col9'=>'','col4'=>'2012-01-01')));
-        $this->assertEquals( array('col9'=>'moo','col4'=>'2012-01-01','col1'=>'1'), $this->filter->filter("my_table", array('col9'=>'moo','col4'=>'2012-01-01')));
-        
-        
+        $this->assertEquals(array('stuff_id', 'col1', 'col4', 'col9'), $this->table->getNonNullableColumns());
     }
+    public function test_getColumn()
+    {
+        $this->assertEquals('stuff_id', $this->table->getColumn('stuff_id')->getName());
+    }
+    
+    public function test_getPrimaryKey() {
+        
+        $tableWithPrimaryKey= new \TestDbAcle\Db\Table\Table("foo", array(
+            array('Field' => 'user_id', 'Type' => 'int(11)', 'Null' => 'NO', 'Key' => 'PRI', 'Default' => NULL, 'Extra' => 'auto_increment'),
+            array('Field' => 'first_name', 'Type' => 'varchar(255)', 'Null' => 'NO', 'Key' => '', 'Default' => NULL, 'Extra' => ''),
+        ));
+        
+        $tableWithOutPrimaryKey= new \TestDbAcle\Db\Table\Table("foo", array(
+            array('Field' => 'col2', 'Type' => 'tinyint', 'Null' => 'YES', 'Key' => '', 'Default' => NULL, 'Extra' => ''),
+            array('Field' => 'col3', 'Type' => 'date', 'Null' => 'YES', 'Key' => '', 'Default' => NULL, 'Extra' => ''),
+        ));
+        
+        $this->assertEquals('user_id', $tableWithPrimaryKey->getPrimaryKey());
+        $this->assertEquals(null , $tableWithOutPrimaryKey->getPrimaryKey());
+    }
+    
+   
 }
-
-?>

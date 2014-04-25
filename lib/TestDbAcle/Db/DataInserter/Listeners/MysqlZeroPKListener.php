@@ -19,10 +19,17 @@ class MysqlZeroPKListener implements \TestDbAcle\Db\DataInserter\UpsertListenerI
             return;
         }
         
-        $table      = $upsertBuilder->getTableName();
-        $primaryKey = $this->tableInfo->getPrimaryKey($table);
+        $tableName = $upsertBuilder->getTableName();
         
-        if ($primaryKey == null){
+        $table      = $this->tableInfo->getTable($tableName);
+        
+        if ($table == null){
+            return;
+        }
+        
+        $primaryKey = $table->getPrimaryKey();
+        
+        if($primaryKey==null){
             return;
         }
         $primaryKeyValue = $upsertBuilder->getColumn($primaryKey);
@@ -30,8 +37,7 @@ class MysqlZeroPKListener implements \TestDbAcle\Db\DataInserter\UpsertListenerI
         if (!is_numeric($primaryKeyValue) || $primaryKeyValue != 0){
             return;
         }
-           
-        $this->pdoFacadeFacade->executeSql("update {$table} set $primaryKey = 0 where $primaryKey = " . $this->pdoFacadeFacade->lastInsertId());
+        $this->pdoFacadeFacade->executeSql("update {$tableName} set $primaryKey = 0 where $primaryKey = " . $this->pdoFacadeFacade->lastInsertId());
     }
 
 }

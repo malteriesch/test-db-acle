@@ -55,7 +55,7 @@ class TestDbAcle
                 return $pdoFacade;
            },
            'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                $dataInserter = new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'));
+                $dataInserter = new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'));
                 $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableInfo')));
                 return $dataInserter;
            },
@@ -68,8 +68,12 @@ class TestDbAcle
                 $filterQueue = new Filter\FilterQueue();
                 return $filterQueue;
            },
+           'upsertBuilderFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                return new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($serviceLocator->get('pdoFacade'));
+           },
            'tableInfo' => '\TestDbAcle\Db\TableInfo',
            'parser'    => '\TestDbAcle\Psv\PsvParser',
+                   
         );
     }
         

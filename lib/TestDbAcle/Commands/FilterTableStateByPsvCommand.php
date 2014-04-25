@@ -28,12 +28,13 @@ class FilterTableStateByPsvCommand implements CommandInterface
         
         $filteredParsedTree   = $this->filterQueue->filterDataTree($parsedTree);
 
-        foreach(array_keys($filteredParsedTree) as $tableName){
-            $this->tableInfo->addTableDescription($tableName, $this->pdoFacade->describeTable($tableName));
+        foreach($filteredParsedTree->getTables() as $table){
+            $this->tableInfo->addTable(new \TestDbAcle\Db\Table\Table($table->getName(), $this->pdoFacade->describeTable($table->getName())));
         }
 
-        foreach($filteredParsedTree as $tableName=>$tableData){
-            $expectedData[$tableName]=$tableData['data'];
+        foreach($filteredParsedTree->getTables() as $table){
+            $tableName = $table->getName();
+            $expectedData[$tableName]=$table->toArray();
             $columnsToSelect = array_keys($expectedData[$tableName][0]);
             $data = $this->pdoFacade->getQuery("select ".implode(", ",$columnsToSelect)." from $tableName");
             $actualData[$tableName] = $this->truncateDatetimeFields($tableName, $data);
@@ -76,7 +77,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
         foreach($tableData as $dataRow){
             $newFilteredRow = array();
             foreach($dataRow as $columnName=>$value){
-                if ($this->tableInfo->isDateTime($tableName, $columnName) && $value){
+                if ($this->tableInfo->getTable($tableName)->getColumn($columnName)->isDateTime() && $value){
                     $newFilteredRow[$columnName] = date("Y-m-d", strtotime($value));
                 }else{
                     $newFilteredRow[$columnName] = $value;
