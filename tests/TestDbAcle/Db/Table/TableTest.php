@@ -20,6 +20,14 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         $this->table = new TestDbAcle\Db\Table\Table("stuff", $describeStuff);
     }
+    public function test_getNonNullableColumns()
+    {
+        $this->assertEquals(array('stuff_id', 'col1', 'col4', 'col9'), $this->table->getNonNullableColumns());
+    }
+    public function test_getColumn()
+    {
+        $this->assertEquals('stuff_id', $this->table->getColumn('stuff_id')->getName());
+    }
     
     public function test_getPrimaryKey() {
         
@@ -37,9 +45,5 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(null , $tableWithOutPrimaryKey->getPrimaryKey());
     }
     
-    
-     public function test_decorateWithNullPlaceHolders() {
-        $this->assertEquals( array('col4'=>'2012-01-01','col1'=>'1','col9'=>'foo'), $this->table->getDecorateWithNullPlaceHolders(array('col9'=>'','col4'=>'2012-01-01')));
-        $this->assertEquals( array('col9'=>'moo','col4'=>'2012-01-01','col1'=>'1'), $this->table->getDecorateWithNullPlaceHolders(array('col9'=>'moo','col4'=>'2012-01-01')));
-    }
+   
 }
