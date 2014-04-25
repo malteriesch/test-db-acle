@@ -29,7 +29,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
         $filteredParsedTree   = $this->filterQueue->filterDataTree($parsedTree);
 
         foreach($filteredParsedTree->getTables() as $table){
-            $this->tableInfo->addTableDescription($table->getName(), $this->pdoFacade->describeTable($table->getName()));
+            $this->tableInfo->addTable(new \TestDbAcle\Db\Table\Table($table->getName(), $this->pdoFacade->describeTable($table->getName())));
         }
 
         foreach($filteredParsedTree->getTables() as $table){
@@ -77,7 +77,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
         foreach($tableData as $dataRow){
             $newFilteredRow = array();
             foreach($dataRow as $columnName=>$value){
-                if ($this->tableInfo->isDateTime($tableName, $columnName) && $value){
+                if ($this->tableInfo->getTable($tableName)->getColumn($columnName)->isDateTime() && $value){
                     $newFilteredRow[$columnName] = date("Y-m-d", strtotime($value));
                 }else{
                     $newFilteredRow[$columnName] = $value;

@@ -12,7 +12,7 @@ class AddDefaultValuesRowFilter implements RowFilter {
     
     public function filter($tableName, array $row)
     {
-        return $this->tableInfo->getDecorateWithNullPlaceHolders($tableName, $row);
+        return $this->tableInfo->getTable($tableName)->getDecorateWithNullPlaceHolders($row);
     }
     
 }

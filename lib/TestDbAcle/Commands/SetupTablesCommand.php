@@ -22,7 +22,7 @@ class SetupTablesCommand implements CommandInterface
         $parsedTree = $this->parser->parsePsvTree($this->sourcePsv);
         foreach($parsedTree->getTables() as $table){
             $tableName = $table->getName();
-            $this->tableInfo->addTableDescription($tableName, $this->pdoFacade->describeTable($tableName));
+            $this->tableInfo->addTable(new \TestDbAcle\Db\Table\Table($tableName, $this->pdoFacade->describeTable($tableName) ) );
         }
         return $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree));
     }

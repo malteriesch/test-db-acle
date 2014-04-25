@@ -29,10 +29,11 @@ class AddDefaultValuesRowFilterTest extends \PHPUnit_Framework_TestCase
             'important_col' => 'DEFAULT_VALUE'
         );
 
-        $this->mockTableInfo->shouldReceive('getDecorateWithNullPlaceHolders')
-                            ->once()
-                            ->with('my_table', $inputRow)
-                            ->andReturn($expected);
+        
+        $mockTable = \Mockery::mock('TestDbAcle\Db\Table\Table');
+        $this->mockTableInfo->shouldReceive("getTable")->once()->with('my_table')->andReturn($mockTable);
+        $mockTable->shouldReceive("getDecorateWithNullPlaceHolders")->once()->with($inputRow)->andReturn($expected);
+        
         
         $this->assertEquals( $expected, $this->filter->filter("my_table", $inputRow));
         
