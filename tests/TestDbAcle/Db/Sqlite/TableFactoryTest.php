@@ -13,6 +13,6 @@ class TableFactoryTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
     function test_createColumn()
     {
         $tableFactory = new \TestDbAcle\Db\Sqlite\TableFactory(\Mockery::mock('\TestDbAcle\Db\AbstractPdoFacade'));
-        $this->assertEquals(new \TestDbAcle\Db\Sqlite\Table\Column(["foo"]), $tableFactory->createColumn(["foo"]));
+        $this->assertEquals(new \TestDbAcle\Db\Sqlite\Table\Column(array("foo")), $tableFactory->createColumn(["foo"]));
     }
 }

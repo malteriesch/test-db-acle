@@ -56,7 +56,7 @@ class TableTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
     
     function test_getNonNullableColumns()
     {
-        $this->assertEquals(["col_pk", "col_nn1" ,"col_nn2"], $this->table->getNonNullableColumns());
+        $this->assertEquals(array("col_pk", "col_nn1" ,"col_nn2"), $this->table->getNonNullableColumns());
     }
     
 }
