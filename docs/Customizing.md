@@ -6,7 +6,7 @@ The TestDbAcle class is used as a simple facade that provides access to common f
 It is configured in AbstractTestCase::createDatabaseTestHelper and can be customised there.
 
 It is possible to override AbstractTestCase::createDatabaseTestHelper and provide to the TestDbAcle::create factory methods as a second arument a service locator configuration.
-This service locator is a very simplified version of one inspired by the Zend Framework 2.
+(NB: This service locator is a very simplified version of one inspired by the Zend Framework 2.)
 
 The custom configuration is merged with the one provided as the second argument so it is easy to selectively override any part without affecting others.
 
@@ -17,41 +17,42 @@ The default configuration is as follows, this can be used as an example for the 
 
 ```php
     array(
-           'testDbAcle'=> function(\TestDbAcle\ServiceLocator $serviceLocator){
-                $testDbAcle = new TestDbAcle();
-                $testDbAcle->setParser($serviceLocator->get('parser'));
-                $testDbAcle->setPdoFacade($serviceLocator->get('pdoFacade'));
-                $testDbAcle->setTableList($serviceLocator->get('tableList'));
-                $testDbAcle->setDataInserter($serviceLocator->get('dataInserter'));
-                $testDbAcle->setFilterQueue($serviceLocator->get('filterQueue'));
-                return $testDbAcle;
-           },
            'pdoFacade'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                $pdoFacade    = new Db\PdoFacade($serviceLocator->get('pdo'));
+                $pdoFacade    = new Db\Mysql\Pdo\PdoFacade($serviceLocator->get('pdo'));
                 $pdoFacade->disableForeignKeyChecks();
                 $pdoFacade->enableExceptions();
                 return $pdoFacade;
            },
            'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                $dataInserter = new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'));
+                $dataInserter = new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'));
                 $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableList')));
                 return $dataInserter;
            },
-           'filterQueue'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                $filterQueue = new Filter\FilterQueue();
+           'dataInserterFilterQueue'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                $filterQueue = $serviceLocator->get('filterQueue');
                 $filterQueue->addRowFilter(new Filter\AddDefaultValuesRowFilter($serviceLocator->get('tableList')));
                 return $filterQueue;
+           },
+           'filterQueue'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                $filterQueue = new Filter\FilterQueue();
+                return $filterQueue;
+           },
+           'upsertBuilderFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                return new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($serviceLocator->get('pdoFacade'));
+           },
+           'tableFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                return new \TestDbAcle\Db\Mysql\TableFactory($serviceLocator->get('pdoFacade'));
            },
            'tableList' => '\TestDbAcle\Db\TableList',
            'parser'    => '\TestDbAcle\Psv\PsvParser',
                    
-        );
+        )
 ```
 
 
 
 
-So if you do not want exeptions to be enabled for example, you can override AbstractTestCase::createDatabaseTestHelper as such:
+So if you do not want exceptions to be enabled for example, you can override AbstractTestCase::createDatabaseTestHelper as such:
 ```php
     protected function createDatabaseTestHelper()
     {
