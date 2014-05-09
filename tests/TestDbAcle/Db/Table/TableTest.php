@@ -3,7 +3,7 @@ namespace TestDbAcleTests\TestDbAcle\Db\Table;
 
 class TableTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase 
 {
-    protected $mockColumns = [];
+    protected $mockColumns = array();
     
     function setup()
     {
