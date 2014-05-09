@@ -12,7 +12,7 @@ class FilterQueue
         $this->rowFilters[] = $filter;
     }
 
-    function filterDataTree(\TestDbAcle\Psv\Table\PsvTree $dataTree)
+    function filterDataTree(\TestDbAcle\Psv\PsvTree $dataTree)
     {
         foreach ($this->rowFilters as $filter) {
             $dataTree = $this->applyRowFilter($filter, $dataTree);
@@ -28,7 +28,7 @@ class FilterQueue
         return $tableData;
     }
 
-    protected function applyRowFilter($filter, \TestDbAcle\Psv\Table\PsvTree $dataTree)
+    protected function applyRowFilter($filter, \TestDbAcle\Psv\PsvTree $dataTree)
     {
         foreach ($dataTree->getTables() as $table) {
             $table->setData( $this->filterTable($filter, $table->getName(), $table->toArray()));

@@ -7,7 +7,7 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         
         $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
 
-        $dataTree = new \TestDbAcle\Psv\Table\PsvTree();
+        $dataTree = new \TestDbAcle\Psv\PsvTree();
         
         $dataTree->addTable(
                     new \TestDbAcle\Psv\Table\Table('user', array ( 
@@ -47,7 +47,7 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         
         $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
 
-        $dataTree = new \TestDbAcle\Psv\Table\PsvTree();
+        $dataTree = new \TestDbAcle\Psv\PsvTree();
         $dataTree->addTable(   new \TestDbAcle\Psv\Table\Table('user', array(
                     array("user_id" => "10",
                         "first_name" => "john",
@@ -87,7 +87,7 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         
         $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
 
-        $dataTree = new \TestDbAcle\Psv\Table\PsvTree();
+        $dataTree = new \TestDbAcle\Psv\PsvTree();
         $dataTree->addTable(  new \TestDbAcle\Psv\Table\Table('user', array(
                         array("user_id" => "10",
                             "first_name" => "john",
@@ -132,7 +132,7 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         
         $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
 
-        $dataTree = new \TestDbAcle\Psv\Table\PsvTree();
+        $dataTree = new \TestDbAcle\Psv\PsvTree();
         $dataTree->addTable( new \TestDbAcle\Psv\Table\Table('user',  array(
                         array("user_id" => "10",
                             "first_name" => "john",

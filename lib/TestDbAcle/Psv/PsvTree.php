@@ -1,6 +1,6 @@
 <?php
 
-namespace TestDbAcle\Psv\Table;
+namespace TestDbAcle\Psv;
 
 /**
  * @TODO this is currently covered implicitly by PsvParseTest
@@ -13,7 +13,7 @@ class PsvTree
         $this->tables = $tables;
     }
     
-    function addTable(Table $table)
+    function addTable(\TestDbAcle\Psv\Table\Table $table)
     {
         return $this->tables[$table->getName()] = $table;
     }
