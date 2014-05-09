@@ -29,17 +29,17 @@ abstract class AbstractTableFactory
         return $table;
     }
     
-    public function populateTableInfo(array $tableNames, \TestDbAcle\Db\TableInfo $tableInfo )
+    public function populateTableList(array $tableNames, \TestDbAcle\Db\TableList $tableList )
     {
         foreach($tableNames as $tableName){
-            $tableInfo->addTable($this->createTableFromTableDescription($tableName, $this->pdoFacade->describeTable($tableName)));
+            $tableList->addTable($this->createTableFromTableDescription($tableName, $this->pdoFacade->describeTable($tableName)));
         }
     }
     
-    public function createTableInfo(array $tableNames )
+    public function createTableList(array $tableNames )
     {
-        $tableInfo=new \TestDbAcle\Db\TableInfo();
-        $this->populateTableInfo($tableNames, $tableInfo);
-        return $tableInfo;
+        $tableList=new \TestDbAcle\Db\TableList();
+        $this->populateTableList($tableNames, $tableList);
+        return $tableList;
     }
 }

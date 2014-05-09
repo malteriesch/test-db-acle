@@ -3,16 +3,16 @@ namespace TestDbAcle\Filter;
 
 class AddDefaultValuesRowFilter implements RowFilter {
     
-    protected $tableInfo;
+    protected $tableList;
     
-    public function __construct(\TestDbAcle\Db\TableInfo $tableInfo)
+    public function __construct(\TestDbAcle\Db\TableList $tableList)
     {
-        $this->tableInfo = $tableInfo;
+        $this->tableList = $tableList;
     }
     
     public function filter($tableName, array $row)
     {
-        $table = $this->tableInfo->getTable($tableName);
+        $table = $this->tableList->getTable($tableName);
         foreach ($table->getNonNullableColumns() as $columnName) {
             $column = $table->getColumn($columnName);
             if (($default = $column->getDefault()) && $this->isRedefineable($row,$columnName)){

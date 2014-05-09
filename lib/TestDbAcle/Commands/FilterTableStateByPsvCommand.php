@@ -4,7 +4,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
 {
     protected $parser;
     protected $filterQueue;
-    protected $tableInfo;
+    protected $tableList;
     protected $pdoFacade;
     protected $tableFactory;
     
@@ -29,12 +29,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
         
         $filteredParsedTree   = $this->filterQueue->filterDataTree($parsedTree);
 
-        $this->tableFactory->populateTableInfo(array_keys($filteredParsedTree->getTables()),$this->tableInfo);
-        
-        
-//        foreach($filteredParsedTree->getTables() as $table){
-//            $this->tableInfo->addTable(new \TestDbAcle\Db\Mysql\Table\Table($table->getName(), $this->pdoFacade->describeTable($table->getName())));
-//        }
+        $this->tableFactory->populateTableList(array_keys($filteredParsedTree->getTables()),$this->tableList);
 
         foreach($filteredParsedTree->getTables() as $table){
             $tableName = $table->getName();
@@ -51,7 +46,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
     {
         $this->parser      = $serviceLocator->get('parser');
         //$this->filterQueue = $serviceLocator->get('filterQueue');
-        $this->tableInfo   = $serviceLocator->get('tableInfo');
+        $this->tableList   = $serviceLocator->get('tableList');
         $this->pdoFacade   = $serviceLocator->get('pdoFacade');
         $this->tableFactory = $serviceLocator->get('tableFactory');
         
@@ -82,7 +77,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
         foreach($tableData as $dataRow){
             $newFilteredRow = array();
             foreach($dataRow as $columnName=>$value){
-                if ($this->tableInfo->getTable($tableName)->getColumn($columnName)->isDateTime() && $value){
+                if ($this->tableList->getTable($tableName)->getColumn($columnName)->isDateTime() && $value){
                     $newFilteredRow[$columnName] = date("Y-m-d", strtotime($value));
                 }else{
                     $newFilteredRow[$columnName] = $value;

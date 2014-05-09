@@ -5,12 +5,12 @@ namespace TestDbAcle\Db\DataInserter\Listeners;
 class MysqlZeroPKListener implements \TestDbAcle\Db\DataInserter\UpsertListenerInterface
 {
     protected $pdoFacadeFacade;
-    protected $tableInfo;
+    protected $tableList;
     
-    public function __construct(\TestDbAcle\Db\Mysql\Pdo\PdoFacade $pdoFacade, \TestDbAcle\Db\TableInfo $tableInfo)
+    public function __construct(\TestDbAcle\Db\Mysql\Pdo\PdoFacade $pdoFacade, \TestDbAcle\Db\TableList $tableList)
     {
         $this->pdoFacadeFacade = $pdoFacade;
-        $this->tableInfo = $tableInfo;
+        $this->tableList = $tableList;
     }
 
     public function  afterUpsert(\TestDbAcle\Db\DataInserter\Sql\UpsertBuilder $upsertBuilder)
@@ -21,7 +21,7 @@ class MysqlZeroPKListener implements \TestDbAcle\Db\DataInserter\UpsertListenerI
         
         $tableName = $upsertBuilder->getTableName();
         
-        $table      = $this->tableInfo->getTable($tableName);
+        $table      = $this->tableList->getTable($tableName);
         
         if ($table == null){
             return;

@@ -8,7 +8,7 @@ class TestDbAcle
     protected $parser;
     protected $filterQueue;
     protected $dataInserter;
-    protected $tableInfo;
+    protected $tableList;
     protected $pdoFacade;
     protected $serviceLocator;
     
@@ -56,12 +56,12 @@ class TestDbAcle
            },
            'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 $dataInserter = new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'));
-                $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableInfo')));
+                $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableList')));
                 return $dataInserter;
            },
            'dataInserterFilterQueue'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 $filterQueue = $serviceLocator->get('filterQueue');
-                $filterQueue->addRowFilter(new Filter\AddDefaultValuesRowFilter($serviceLocator->get('tableInfo')));
+                $filterQueue->addRowFilter(new Filter\AddDefaultValuesRowFilter($serviceLocator->get('tableList')));
                 return $filterQueue;
            },
            'filterQueue'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
@@ -74,7 +74,7 @@ class TestDbAcle
            'tableFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 return new \TestDbAcle\Db\Mysql\TableFactory($serviceLocator->get('pdoFacade'));
            },
-           'tableInfo' => '\TestDbAcle\Db\TableInfo',
+           'tableList' => '\TestDbAcle\Db\TableList',
            'parser'    => '\TestDbAcle\Psv\PsvParser',
                    
         );

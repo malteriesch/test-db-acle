@@ -53,12 +53,12 @@ class PsvParser implements PsvParserInterface
      *      )
      * 
      * @param string $psvContent the content to be parsed
-     * @return \TestDbAcle\Psv\Table\TableList the parsed content
+     * @return \TestDbAcle\Psv\Table\PsvTree the parsed content
      */
     public function parsePsvTree($psvContent)
     {
         $parsedTree           = array();
-        $parsedTree = new \TestDbAcle\Psv\Table\TableList();
+        $parsedTree = new \TestDbAcle\Psv\Table\PsvTree();
         $contentSplitByOpeningBracket = preg_split('/\n\s*(?<!\\\\)\[/', $psvContent);
 
         foreach ($contentSplitByOpeningBracket as $startOfTableContent) {

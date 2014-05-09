@@ -2,7 +2,7 @@
 
 namespace TestDbAcle\Db;
 
-class TableInfo
+class TableList
 {
 
     protected $nonNullableColumns = array();

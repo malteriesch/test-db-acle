@@ -4,12 +4,12 @@ namespace TestDbAcleTests\TestDbAcle\Filter;
 
 class PlaceholderRowFilterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
-    protected $mockTableInfo;
+    protected $mockTableList;
     protected $filter;
     
     function setUp()
     {
-        $this->mockTableInfo =  \Mockery::mock('\TestDbAcle\Db\TableInfo');
+        $this->mockTableList =  \Mockery::mock('\TestDbAcle\Db\TableList');
         $this->filter = new \TestDbAcle\Filter\PlaceholderRowFilter(array("foo"=>"Moo"));
     }
     

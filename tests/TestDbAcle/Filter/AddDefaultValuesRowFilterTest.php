@@ -4,7 +4,7 @@ namespace TestDbAcleTests\TestDbAcle\Filter;
 
 class AddDefaultValuesRowFilterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
-    protected $mockTableInfo;
+    protected $mockTableList;
     protected $filter;
     
     function setUp()
@@ -26,9 +26,9 @@ class AddDefaultValuesRowFilterTest extends \TestDbAcleTests\TestDbAcle\BaseTest
         foreach($describeStuff as $describedColumn) {
             $this->table->addColumn(new \TestDbAcle\Db\Mysql\Table\Column($describedColumn));
         }
-        $this->mockTableInfo =  \Mockery::mock('\TestDbAcle\Db\TableInfo');
-        $this->mockTableInfo->shouldReceive('getTable')->andReturn($this->table);
-        $this->filter = new \TestDbAcle\Filter\AddDefaultValuesRowFilter($this->mockTableInfo);
+        $this->mockTableList =  \Mockery::mock('\TestDbAcle\Db\TableList');
+        $this->mockTableList->shouldReceive('getTable')->andReturn($this->table);
+        $this->filter = new \TestDbAcle\Filter\AddDefaultValuesRowFilter($this->mockTableList);
     }
     
     public function teardown() {

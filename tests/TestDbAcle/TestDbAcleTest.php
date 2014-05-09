@@ -11,7 +11,7 @@ class TestDbAcleTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
     {
         $parser        = \Mockery::mock('TestDbAcle\Psv\PsvParser');
         $filterQueue   = \Mockery::mock('TestDbAcle\Filter\FilterQueue');
-        $dataTableInfo = \Mockery::mock('TestDbAcle\Db\TableInfo');
+        $dataTableList = \Mockery::mock('TestDbAcle\Db\TableList');
         $dataInserter  = \Mockery::mock('TestDbAcle\Db\DataInserter\DataInserter');
         
         
@@ -29,8 +29,8 @@ class TestDbAcleTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         
         $filterQueue->shouldReceive('filterDataTree')->once()->with($afterParsing, $additionalFilters)->andReturn($afterFiltering)->ordered();
 
-        $dataTableInfo->shouldReceive('addTableDescription')->with('table1', $describedTable1);
-        $dataTableInfo->shouldReceive('addTableDescription')->with('table2', $describedTable2);
+        $dataTableList->shouldReceive('addTableDescription')->with('table1', $describedTable1);
+        $dataTableList->shouldReceive('addTableDescription')->with('table2', $describedTable2);
             
 
         $dataInserter->shouldReceive('process')->once()->with($afterFiltering);
@@ -39,7 +39,7 @@ class TestDbAcleTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $testDbAcle = new \TestDbAcle\TestDbAcle();
         $testDbAcle->setParser($parser);
         $testDbAcle->setFilterQueue($filterQueue);
-        $testDbAcle->setTableInfo($dataTableInfo);
+        $testDbAcle->setTableList($dataTableList);
         $testDbAcle->setDataInserter($dataInserter);
         $testDbAcle->setPdoFacade($mockPdoFacade);
         return $testDbAcle;

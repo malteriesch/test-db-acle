@@ -25,7 +25,7 @@ class DataInserter
         $this->upsertBuilderFactory = $upsertBuilderFactory;
     }
 
-    public function process(\TestDbAcle\Psv\Table\TableList $tableList)
+    public function process(\TestDbAcle\Psv\Table\PsvTree $tableList)
     {
         foreach ($tableList->getTables() as $table) {
             $this->processTable($table);

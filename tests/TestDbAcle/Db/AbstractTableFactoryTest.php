@@ -29,7 +29,7 @@ class AbstractTableFactoryTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
         $this->assertSame($mockTable, $actualTable);
     }
     
-    function test_populateTableInfo()
+    function test_populateTableList()
     {
         $mockPdoFacade = \Mockery::mock('TestDbAcle\Db\AbstractPdoFacade');
         $mockPdoFacade->shouldReceive('describeTable')->once()->with("table1")->andReturn(["table description 1"]);
@@ -37,21 +37,21 @@ class AbstractTableFactoryTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
         
         $abstractTableFactory = \Mockery::mock('\TestDbAcle\Db\AbstractTableFactory[createTableFromTableDescription]', [$mockPdoFacade]);
         
-        $mockTableInfo = \Mockery::mock('TestDbAcle\Db\TableInfo');
+        $mockTableList = \Mockery::mock('TestDbAcle\Db\TableList');
         
         $mockTable1 = \Mockery::mock('TestDbAcle\Db\Table\Table');
         $mockTable2 = \Mockery::mock('TestDbAcle\Db\Table\Table');
         
         $abstractTableFactory->shouldReceive('createTableFromTableDescription')->once()->with("table1", ["table description 1"])->andReturn($mockTable1);
-        $mockTableInfo->shouldReceive('addTable')->once()->with($mockTable1);
+        $mockTableList->shouldReceive('addTable')->once()->with($mockTable1);
         
         $abstractTableFactory->shouldReceive('createTableFromTableDescription')->once()->with("table2", ["table description 2"])->andReturn($mockTable2);
-        $mockTableInfo->shouldReceive('addTable')->once()->with($mockTable2);
+        $mockTableList->shouldReceive('addTable')->once()->with($mockTable2);
       
-        $abstractTableFactory->populateTableInfo(["table1", "table2"], $mockTableInfo);
+        $abstractTableFactory->populateTableList(["table1", "table2"], $mockTableList);
     }
     
-    function test_createTableInfo()
+    function test_createTableList()
     {
         $mockPdoFacade = \Mockery::mock('TestDbAcle\Db\AbstractPdoFacade');
         $mockPdoFacade->shouldReceive('describeTable')->once()->with("table")->andReturn(["table description"]);
@@ -64,12 +64,12 @@ class AbstractTableFactoryTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
         
         $abstractTableFactory->shouldReceive('createTableFromTableDescription')->once()->with("table", ["table description"])->andReturn($mockTable);
         
-        $tableInfo = $abstractTableFactory->createTableInfo(["table"]);
+        $tableList = $abstractTableFactory->createTableList(["table"]);
         
-        $expectedTableInfo = new \TestDbAcle\Db\TableInfo();
-        $expectedTableInfo->addTable($mockTable);
+        $expectedTableList = new \TestDbAcle\Db\TableList();
+        $expectedTableList->addTable($mockTable);
         
-      //  $this->assertEquals($expectedTableInfo, $tableInfo->getTable("table"));
+      //  $this->assertEquals($expectedTableList, $tableList->getTable("table"));
     }
    
 }

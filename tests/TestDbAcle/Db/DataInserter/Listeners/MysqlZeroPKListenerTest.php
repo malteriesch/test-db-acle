@@ -4,19 +4,19 @@ namespace TestDbAcleTests\TestDbAcle\Db\DataInserter\Listeners;
 class MysqlZeroPKListenerTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
 
     protected $mockPdoFacade;
-    protected $mockTableInfo;
+    protected $mockTableList;
     
     protected function setup()
     {
         $this->mockPdoFacade = \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
-        $this->mockTableInfo = \Mockery::mock('\TestDbAcle\Db\TableInfo');
-        $this->listener = new \TestDbAcle\Db\DataInserter\Listeners\MysqlZeroPKListener($this->mockPdoFacade,  $this->mockTableInfo);
+        $this->mockTableList = \Mockery::mock('\TestDbAcle\Db\TableList');
+        $this->listener = new \TestDbAcle\Db\DataInserter\Listeners\MysqlZeroPKListener($this->mockPdoFacade,  $this->mockTableList);
     }
     
     protected function configureMockTable($columnName, $expectedPrimaryKey)
     {
         $mockTable = \Mockery::mock('TestDbAcle\Db\Mysql\Table\Table');
-        $this->mockTableInfo->shouldReceive("getTable")->once()->with($columnName)->andReturn($mockTable);
+        $this->mockTableList->shouldReceive("getTable")->once()->with($columnName)->andReturn($mockTable);
         $mockTable->shouldReceive("getPrimaryKey")->once()->andReturn($expectedPrimaryKey);
     }
     

@@ -4,7 +4,7 @@ namespace TestDbAcleTests\TestDbAcle\Filter;
 
 class FilterQueueTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
-    protected $mockTableInfo;
+    protected $mockTableList;
     protected $filterQueue;
     
     function setUp()
@@ -18,7 +18,7 @@ class FilterQueueTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
     
     function test_filterDataTree_withOneRowFilter()
     {
-        $dataTree = new \TestDbAcle\Psv\Table\TableList();
+        $dataTree = new \TestDbAcle\Psv\Table\PsvTree();
         
         $dataTree->addTable(
                     new \TestDbAcle\Psv\Table\Table('user', array(
@@ -69,7 +69,7 @@ class FilterQueueTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
     function test_filterDataTree_withTwoRowFilters()
     {
         
-        $dataTree = new \TestDbAcle\Psv\Table\TableList();
+        $dataTree = new \TestDbAcle\Psv\Table\PsvTree();
         
         $dataTree->addTable(
                     new \TestDbAcle\Psv\Table\Table('user', array(

@@ -5,7 +5,7 @@ class SetupTablesCommand implements CommandInterface
     protected $parser;
     protected $dataInserter;
     protected $filterQueue;
-    protected $tableInfo;
+    protected $tableList;
     protected $pdoFacade;
     protected $tableFactory;
 
@@ -22,7 +22,7 @@ class SetupTablesCommand implements CommandInterface
     public function execute()
     {
         $parsedTree = $this->parser->parsePsvTree($this->sourcePsv);
-        $this->tableFactory->populateTableInfo(array_keys($parsedTree->getTables()),$this->tableInfo);
+        $this->tableFactory->populateTableList(array_keys($parsedTree->getTables()),$this->tableList);
         return $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree));
     }
 
@@ -31,7 +31,7 @@ class SetupTablesCommand implements CommandInterface
         $this->parser       = $serviceLocator->get('parser');
         $this->filterQueue  = $serviceLocator->createNew('dataInserterFilterQueue');
         $this->dataInserter = $serviceLocator->get('dataInserter');
-        $this->tableInfo    = $serviceLocator->get('tableInfo');
+        $this->tableList    = $serviceLocator->get('tableList');
         $this->pdoFacade    = $serviceLocator->get('pdoFacade');
         $this->tableFactory = $serviceLocator->get('tableFactory');
         if($this->placeHolders){

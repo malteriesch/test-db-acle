@@ -21,7 +21,7 @@ The default configuration is as follows, this can be used as an example for the 
                 $testDbAcle = new TestDbAcle();
                 $testDbAcle->setParser($serviceLocator->get('parser'));
                 $testDbAcle->setPdoFacade($serviceLocator->get('pdoFacade'));
-                $testDbAcle->setTableInfo($serviceLocator->get('tableInfo'));
+                $testDbAcle->setTableList($serviceLocator->get('tableList'));
                 $testDbAcle->setDataInserter($serviceLocator->get('dataInserter'));
                 $testDbAcle->setFilterQueue($serviceLocator->get('filterQueue'));
                 return $testDbAcle;
@@ -34,15 +34,15 @@ The default configuration is as follows, this can be used as an example for the 
            },
            'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 $dataInserter = new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'));
-                $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableInfo')));
+                $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableList')));
                 return $dataInserter;
            },
            'filterQueue'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 $filterQueue = new Filter\FilterQueue();
-                $filterQueue->addRowFilter(new Filter\AddDefaultValuesRowFilter($serviceLocator->get('tableInfo')));
+                $filterQueue->addRowFilter(new Filter\AddDefaultValuesRowFilter($serviceLocator->get('tableList')));
                 return $filterQueue;
            },
-           'tableInfo' => '\TestDbAcle\Db\TableInfo',
+           'tableList' => '\TestDbAcle\Db\TableList',
            'parser'    => '\TestDbAcle\Psv\PsvParser',
                    
         );

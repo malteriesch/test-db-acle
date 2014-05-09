@@ -2,7 +2,7 @@
 
 namespace TestDbAcle\Psv\Table;
 
-class TableList 
+class PsvTree 
 {
     protected $tables;
     function __construct(array $tables = array())

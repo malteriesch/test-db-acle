@@ -1,14 +1,14 @@
 <?php
 namespace TestDbAcleTests\TestDbAcle\Db;
 
-class TableInfoTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
+class TableListTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
-    protected $tableInfo;
+    protected $tableList;
     
     function setUp()
     {
         
-        $this->tableInfo = new \TestDbAcle\Db\TableInfo();
+        $this->tableList = new \TestDbAcle\Db\TableList();
         
     }
     
@@ -23,13 +23,13 @@ class TableInfoTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
             $mock->shouldReceive("getName")->withNoArgs()->andReturn("table2");
         });
         
-        $this->tableInfo->addTable($testTable1);
-        $this->tableInfo->addTable($testTable2);
+        $this->tableList->addTable($testTable1);
+        $this->tableList->addTable($testTable2);
         
-        $this->assertSame($testTable1, $this->tableInfo->getTable('table1'));
-        $this->assertSame($testTable2, $this->tableInfo->getTable('table2'));
+        $this->assertSame($testTable1, $this->tableList->getTable('table1'));
+        $this->assertSame($testTable2, $this->tableList->getTable('table2'));
         
-        $this->assertNull($this->tableInfo->getTable('foo'));
+        $this->assertNull($this->tableList->getTable('foo'));
     }
     
 }
