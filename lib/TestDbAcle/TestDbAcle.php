@@ -59,11 +59,7 @@ class TestDbAcle
     public static function getDefaultFactoriesAllDrivers(){
        
         return array(
-           'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                $dataInserter = new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'));
-                $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableList')));
-                return $dataInserter;
-           },
+           
            'dataInserterFilterQueue'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 $filterQueue = $serviceLocator->get('filterQueue');
                 $filterQueue->addRowFilter(new Filter\AddDefaultValuesRowFilter($serviceLocator->get('tableList')));
@@ -86,6 +82,11 @@ class TestDbAcle
     public static function getDefaultFactoriesMysql(){
        
         return array(
+            'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                $dataInserter = new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'));
+                $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableList')));
+                return $dataInserter;
+           },
            'pdoFacade'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 $pdoFacade    = new Db\Mysql\Pdo\PdoFacade($serviceLocator->get('pdo'));
                 $pdoFacade->disableForeignKeyChecks();
@@ -102,6 +103,10 @@ class TestDbAcle
     public static function getDefaultFactoriesSqlite(){
        
         return array(
+           'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                return new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'));
+           },
+                   
            'pdoFacade'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 $pdoFacade    = new \TestDbAcle\Db\Sqlite\Pdo\PdoFacade($serviceLocator->get('pdo'));
                 $pdoFacade->disableForeignKeyChecks();

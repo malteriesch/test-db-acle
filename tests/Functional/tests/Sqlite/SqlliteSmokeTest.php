@@ -13,7 +13,7 @@ class SqlliteSmokeTest extends \TestDbAcle\PhpUnit\AbstractTestCase
     
     function providePdo()
     {
-        return new \Pdo("sqlite::memory");
+        return new \Pdo("sqlite::memory:");
     }
     
     function setup()
@@ -190,7 +190,7 @@ class SqlliteSmokeTest extends \TestDbAcle\PhpUnit\AbstractTestCase
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
      * @covers \TestDbAcle::getDefaultFactories()
      */
-    function xtest_DatetimeColumnsGetTruncatedWhenComparing()
+    function test_DatetimeColumnsGetTruncatedWhenComparing()
     {
         
         $this->setupTables("
@@ -213,7 +213,7 @@ class SqlliteSmokeTest extends \TestDbAcle\PhpUnit\AbstractTestCase
 
         
         $this->assertTableStateContains("
-            [address]
+            [address|truncateDates:date_of_entry]
             address_id  |company    |date_of_entry
             1           |me         |2001-01-01
             3           |John       |NULL

@@ -40,7 +40,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
             $expectedData[$tableName]=$table->toArray();
             $columnsToSelect = array_keys($expectedData[$tableName][0]);
             $data = $this->pdoFacade->getQuery("select ".implode(", ",$columnsToSelect)." from $tableName");
-            $actualData[$tableName] = $this->truncateDatetimeFields($tableName, $data);
+            $actualData[$tableName] = $this->truncateDatetimeFields($table, $data);
         }
         $this->actualData = $actualData;
         $this->expectedData = $expectedData;
@@ -75,13 +75,16 @@ class FilterTableStateByPsvCommand implements CommandInterface
         return $this->actualData;
     }
     
-    protected function truncateDatetimeFields($tableName, $tableData)
+    protected function truncateDatetimeFields(\TestDbAcle\Psv\Table\Table $table, array $tableDataFromDb)
     {
+        $tableName = $table->getName();
+        $truncateableColumns = $table->getMeta()->getTruncateDateColumns();
         $filtered = array();
-        foreach($tableData as $dataRow){
+        foreach($tableDataFromDb as $dataRow){
             $newFilteredRow = array();
             foreach($dataRow as $columnName=>$value){
-                if ($this->tableList->getTable($tableName)->getColumn($columnName)->isDateTime() && $value){
+                $isDatetime = $this->tableList->getTable($tableName)->getColumn($columnName)->isDateTime() || in_array($columnName, $truncateableColumns);
+                if ($isDatetime && $value){
                     $newFilteredRow[$columnName] = date("Y-m-d", strtotime($value));
                 }else{
                     $newFilteredRow[$columnName] = $value;

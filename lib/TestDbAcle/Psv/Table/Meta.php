@@ -23,6 +23,16 @@ class Meta
         return $default;
     }
     
+    protected function getAttributeAsArray($name, $default = null)
+    {
+        $value = $this->getAttribute($name, $default);
+        if(!is_array($value)){
+            return array($value);
+        }else {
+            return $value;
+        }
+    }
+    
     public function isReplaceMode()
     {
         return $this->getAttribute('mode') ==  'replace';
@@ -31,6 +41,11 @@ class Meta
     public function getIdentifyColumns()
     {
         return $this->getAttribute('identifiedBy', array());
+    }
+    
+    public function getTruncateDateColumns()
+    {
+        return $this->getAttributeAsArray('truncateDates', array());
     }
     
    
