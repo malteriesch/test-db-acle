@@ -18,7 +18,7 @@ class Table
         return $this->name;
     }
     
-    public function addColumn(\TestDbAcle\Db\Mysql\Table\Column $column)
+    public function addColumn(\TestDbAcle\Db\Table\AbstractColumn $column)
     {
         $this->columns[$column->getName()] = $column;
 

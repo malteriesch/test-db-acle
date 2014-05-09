@@ -7,7 +7,7 @@ class MysqlZeroPKListener implements \TestDbAcle\Db\DataInserter\UpsertListenerI
     protected $pdoFacadeFacade;
     protected $tableList;
     
-    public function __construct(\TestDbAcle\Db\Mysql\Pdo\PdoFacade $pdoFacade, \TestDbAcle\Db\TableList $tableList)
+    public function __construct(\TestDbAcle\Db\AbstractPdoFacade $pdoFacade, \TestDbAcle\Db\TableList $tableList)
     {
         $this->pdoFacadeFacade = $pdoFacade;
         $this->tableList = $tableList;

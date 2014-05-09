@@ -9,7 +9,6 @@ class SetupTablesCommand implements CommandInterface
     protected $dataInserter;
     protected $filterQueue;
     protected $tableList;
-    protected $pdoFacade;
     protected $tableFactory;
 
     protected $placeHolders;
@@ -35,7 +34,6 @@ class SetupTablesCommand implements CommandInterface
         $this->filterQueue  = $serviceLocator->createNew('dataInserterFilterQueue');
         $this->dataInserter = $serviceLocator->get('dataInserter');
         $this->tableList    = $serviceLocator->get('tableList');
-        $this->pdoFacade    = $serviceLocator->get('pdoFacade');
         $this->tableFactory = $serviceLocator->get('tableFactory');
         if($this->placeHolders){
             $this->filterQueue->addRowFilter( new \TestDbAcle\Filter\PlaceholderRowFilter($this->placeHolders));

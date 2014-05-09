@@ -38,7 +38,7 @@ class TestDbAcle
     {
         
         $testDbAcle = new TestDbAcle();
-        $serviceLocator = new ServiceLocator(array_merge(static::getDefaultFactories(),$factoryOverrides));
+        $serviceLocator = new ServiceLocator(array_merge(static::getDefaultFactories($pdo->getAttribute(\PDO::ATTR_DRIVER_NAME)),$factoryOverrides));
         $serviceLocator->set('pdo', $pdo);
         
         $testDbAcle->setServiceLocator($serviceLocator);
@@ -46,14 +46,19 @@ class TestDbAcle
         return $testDbAcle;
     }
     
-    public static function getDefaultFactories(){
+    public static function getDefaultFactories($pdoDriverName){
+       
+        if($pdoDriverName=="sqlite"){
+            return array_merge(static::getDefaultFactoriesAllDrivers(), static::getDefaultFactoriesSqlite());
+        }else{
+            return array_merge(static::getDefaultFactoriesAllDrivers(), static::getDefaultFactoriesMysql());
+        }
+        
+    }
+    
+    public static function getDefaultFactoriesAllDrivers(){
+       
         return array(
-           'pdoFacade'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                $pdoFacade    = new Db\Mysql\Pdo\PdoFacade($serviceLocator->get('pdo'));
-                $pdoFacade->disableForeignKeyChecks();
-                $pdoFacade->enableExceptions();
-                return $pdoFacade;
-           },
            'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 $dataInserter = new Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'));
                 $dataInserter->addUpsertListener(new Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableList')));
@@ -71,13 +76,43 @@ class TestDbAcle
            'upsertBuilderFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 return new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($serviceLocator->get('pdoFacade'));
            },
-           'tableFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                return new \TestDbAcle\Db\Mysql\TableFactory($serviceLocator->get('pdoFacade'));
-           },
+           
            'tableList' => '\TestDbAcle\Db\TableList',
            'parser'    => '\TestDbAcle\Psv\PsvParser',
                    
         );
     }
         
+    public static function getDefaultFactoriesMysql(){
+       
+        return array(
+           'pdoFacade'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                $pdoFacade    = new Db\Mysql\Pdo\PdoFacade($serviceLocator->get('pdo'));
+                $pdoFacade->disableForeignKeyChecks();
+                $pdoFacade->enableExceptions();
+                return $pdoFacade;
+           },
+           'tableFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                return new \TestDbAcle\Db\Mysql\TableFactory($serviceLocator->get('pdoFacade'));
+           },
+                   
+        );
+}
+    
+    public static function getDefaultFactoriesSqlite(){
+       
+        return array(
+           'pdoFacade'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                $pdoFacade    = new \TestDbAcle\Db\Sqlite\Pdo\PdoFacade($serviceLocator->get('pdo'));
+                $pdoFacade->disableForeignKeyChecks();
+                $pdoFacade->enableExceptions();
+                return $pdoFacade;
+           },
+           'tableFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                return new \TestDbAcle\Db\Sqlite\TableFactory($serviceLocator->get('pdoFacade'));
+           },
+                   
+        );
+    }
+    
 }

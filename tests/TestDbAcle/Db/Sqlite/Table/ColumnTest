@@ -1,0 +1,75 @@
+<?php
+namespace TestDbAcleTests\TestDbAcle\Db\Sqlite\Table;
+
+class ColumnTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
+{
+    
+    public function test_getName() {
+        
+        $column= new \TestDbAcle\Db\Sqlite\Table\Column(array('name' => 'user_id'));
+        $this->assertEquals('user_id', $column->getName());
+    }
+   
+    public function test_isDateTime_isAlwaysFalse() {
+        // there is no special data type for date/time in sqlite.
+        
+        $columnDate = new \TestDbAcle\Db\Sqlite\Table\Column(array('type' => 'date'));
+        $columnDateTime = new \TestDbAcle\Db\Sqlite\Table\Column(array('type' => 'datetime'));
+        $columnTinyBlob = new \TestDbAcle\Db\Sqlite\Table\Column(array('type' => 'tinyblob'));
+        
+        $this->assertFalse($columnDate->isDateTime());
+        $this->assertFalse($columnDateTime->isDateTime());
+        $this->assertFalse($columnTinyBlob->isDateTime());
+        
+    }
+    
+    public function test_isNullable() {
+        
+        $columnNullable = new \TestDbAcle\Db\Sqlite\Table\Column(array('notnull' => '0'));
+        $columnNotNullable = new \TestDbAcle\Db\Sqlite\Table\Column(array('notnull' => '1'));
+        
+        $this->assertTrue($columnNullable->isNullable());
+        $this->assertFalse($columnNotNullable->isNullable());
+    }
+    
+    public function test_isPrimaryKey() {
+        $columnPrimaryKey = new \TestDbAcle\Db\Sqlite\Table\Column(array('pk' => '1'));
+        $columnNoPrimaryKey = new \TestDbAcle\Db\Sqlite\Table\Column(array('pk' => '0'));
+        
+        $this->assertTrue($columnPrimaryKey->isPrimaryKey());
+        $this->assertFalse($columnNoPrimaryKey->isPrimaryKey());
+    }
+    
+    public function test_getDefault()
+    {
+        $column = new \TestDbAcle\Db\Sqlite\Table\Column(array('dflt_value' => 'foo'));
+        $this->assertEquals('foo', $column->getDefault());
+    }
+    
+    public function test_isAutoIncrement_aliasesToIsPrimaryKey()
+    {
+        $column1 = new \TestDbAcle\Db\Sqlite\Table\Column(array('pk' => '1'));
+        $column2 = new \TestDbAcle\Db\Sqlite\Table\Column(array('pk' => '0'));
+        
+        $this->assertTrue($column1->isAutoIncrement());
+        $this->assertFalse($column2->isAutoIncrement());
+    }
+    
+    public function provider_generateDefaultNullValue()
+    {
+        return array(
+          array(new \TestDbAcle\Db\Sqlite\Table\Column(array('type' => 'INTEGER')), "1"),
+          array(new \TestDbAcle\Db\Sqlite\Table\Column(array('type' => 'integer')), "1"),//is case insensitive
+          array(new \TestDbAcle\Db\Sqlite\Table\Column(array('type' => 'TEXT')), "T"),
+          array(new \TestDbAcle\Db\Sqlite\Table\Column(array('type' => 'BLOB')), "T"),
+        );
+    }
+    
+    /**
+     * @dataProvider provider_generateDefaultNullValue
+     */
+    public function test_generateDefaultNullValue(\TestDbAcle\Db\Sqlite\Table\Column $column ,$expected) {
+        $this->assertEquals($expected, $column->generateDefaultNullValue());
+    }
+    
+}

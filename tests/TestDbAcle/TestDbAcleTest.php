@@ -63,9 +63,14 @@ class TestDbAcleTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
     function test_create(){
         
         $expectedTestDbAcle = new \TestDbAcle\TestDbAcle();
-        $mockPdo = \TestDbAcle\PhpUnit\Mocks\MockablePdo::createMock($this);
+        $mockPdo = \TestDbAcle\PhpUnit\Mocks\MockablePdo::createMock($this, array('getAttribute'));
                       
-        $serviceLocator = new \TestDbAcle\ServiceLocator(\TestDbAcle\TestDbAcle::getDefaultFactories());
+        $mockPdo->expects($this->once())
+                ->method('getAttribute')
+                ->with(\PDO::ATTR_DRIVER_NAME)
+                ->will($this->returnValue("mysql"));
+        
+        $serviceLocator = new \TestDbAcle\ServiceLocator(\TestDbAcle\TestDbAcle::getDefaultFactories("mysql"));
         $serviceLocator->set('pdo', $mockPdo);
         
         $expectedTestDbAcle->setServiceLocator($serviceLocator);
@@ -93,17 +98,4 @@ class TestDbAcleTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
     
     
     
-}
-//@TODO use \TestDbAcle\PhpUnit\Mocks\MockablePdo, at the moment somehow it only works if defined below.... investigate.
-class MockablePdo extends \PDO {
-
-    public function __construct() {
-        
-    }
-
-    public static function createMock(\TestDbAcleTests\TestDbAcle\BaseTestCase $testCase, $methods = array()) {
-        $className = 'TestDbAcleTests\TestDbAcle\MockablePdo';
-        $mock = $testCase->getMock($className, $methods, array(), "_Mock_" . uniqid($className));
-        return $mock;
-    }
 }

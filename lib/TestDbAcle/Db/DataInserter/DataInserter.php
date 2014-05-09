@@ -19,7 +19,7 @@ class DataInserter
     /* @var $listeners UpsertListenerInterface */
     protected $listeners = array();
 
-    public function __construct(\TestDbAcle\Db\Mysql\Pdo\PdoFacade $pdoFacade, \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory $upsertBuilderFactory)
+    public function __construct(\TestDbAcle\Db\AbstractPdoFacade $pdoFacade, \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory $upsertBuilderFactory)
     {
         $this->pdoFacade            = $pdoFacade;
         $this->upsertBuilderFactory = $upsertBuilderFactory;

@@ -25,7 +25,7 @@ class PsvParser implements PsvParserInterface
      *             1     |moo     |foo
      *             30    |miaow   |boo 
      *              
-     * Into following array
+     * Into following array 
      * 
      *     array("expression1" => array(
      *              'meta' => array(
