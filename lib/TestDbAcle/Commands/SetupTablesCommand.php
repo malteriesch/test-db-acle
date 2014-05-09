@@ -7,6 +7,7 @@ class SetupTablesCommand implements CommandInterface
     protected $filterQueue;
     protected $tableInfo;
     protected $pdoFacade;
+    protected $tableFactory;
 
     protected $placeHolders;
     protected $sourcePsv;
@@ -18,18 +19,10 @@ class SetupTablesCommand implements CommandInterface
         
     }
     
-    protected function configureTableInfo(array $tables)
-    {
-        foreach($tables as $table){
-            $tableName = $table->getName();
-            $this->tableInfo->addTable(new \TestDbAcle\Db\Table\Table($tableName, $this->pdoFacade->describeTable($tableName) ) );
-        }
-    }
-    
     public function execute()
     {
         $parsedTree = $this->parser->parsePsvTree($this->sourcePsv);
-        $this->configureTableInfo($parsedTree->getTables());
+        $this->tableFactory->populateTableInfo(array_keys($parsedTree->getTables()),$this->tableInfo);
         return $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree));
     }
 
@@ -40,6 +33,7 @@ class SetupTablesCommand implements CommandInterface
         $this->dataInserter = $serviceLocator->get('dataInserter');
         $this->tableInfo    = $serviceLocator->get('tableInfo');
         $this->pdoFacade    = $serviceLocator->get('pdoFacade');
+        $this->tableFactory = $serviceLocator->get('tableFactory');
         if($this->placeHolders){
             $this->filterQueue->addRowFilter( new \TestDbAcle\Filter\PlaceholderRowFilter($this->placeHolders));
         }

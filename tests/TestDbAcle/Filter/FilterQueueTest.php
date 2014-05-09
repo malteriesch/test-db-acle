@@ -1,5 +1,8 @@
 <?php
-class FilterQueueTest extends \PHPUnit_Framework_TestCase 
+
+namespace TestDbAcleTests\TestDbAcle\Filter;
+
+class FilterQueueTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
     protected $mockTableInfo;
     protected $filterQueue;

@@ -2,37 +2,18 @@
 
 namespace TestDbAcle\Db;
 
-class PdoFacade
+abstract class AbstractPdoFacade
 {
 
     protected $pdo;
 
     function __construct(\PDO $pdo)
     {
-        
         $this->pdo = $pdo;
     }
     
     public function enableExceptions(){
         $this->pdo->setAttribute(\Pdo::ATTR_ERRMODE, \Pdo::ERRMODE_EXCEPTION);
-    }
-    
-    public function disableForeignKeyChecks(){
-        $this->pdo->query("SET FOREIGN_KEY_CHECKS = 0");
-    }
-
-    public function setAutoIncrement($table, $nextIncrement){
-        $this->pdo->query("ALTER TABLE $table AUTO_INCREMENT = $nextIncrement");
-    }
-
-    public function clearTable($table)
-    {
-        $this->executeSql("TRUNCATE TABLE {$table}");
-    }
-
-    public function describeTable($table)
-    {
-        return $this->getQuery("DESCRIBE {$table}");
     }
 
     public function executeSql($sql)
@@ -40,11 +21,6 @@ class PdoFacade
         $this->pdo->exec($sql);
     }
     
-    public function lastInsertId()
-    {
-        return $this->pdo->lastInsertId();
-    }
-
     public function getQuery($sql)
     {
         $result = $this->pdo->query($sql);
@@ -65,4 +41,14 @@ class PdoFacade
         return $numberOfRecords[0]['N'] > 0;
         
     }
+    public function lastInsertId()
+    {
+        return $this->pdo->lastInsertId();
+    }
+    
+    abstract public function setAutoIncrement($table, $nextIncrement);
+    abstract public function disableForeignKeyChecks();
+    abstract public function clearTable($table);
+    abstract public function describeTable($table);
+    
 }

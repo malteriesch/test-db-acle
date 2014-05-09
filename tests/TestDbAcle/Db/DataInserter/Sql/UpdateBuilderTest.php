@@ -1,4 +1,5 @@
 <?php
+namespace TestDbAcleTests\TestDbAcle\Db\DataInserter\Sql;
 
 class UpdateBuilderTest extends \PHPUnit_Framework_TestCase
 {

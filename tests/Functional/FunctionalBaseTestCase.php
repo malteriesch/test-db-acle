@@ -1,6 +1,7 @@
 <?php
+namespace TestDbAcleTests\Functional;
 
-class FunctionalBaseTestCase extends TestDbAcle\PhpUnit\AbstractTestCase
+class FunctionalBaseTestCase extends \TestDbAcle\PhpUnit\AbstractTestCase
 {
     function providePdo()
     {

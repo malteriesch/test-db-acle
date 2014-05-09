@@ -49,7 +49,7 @@ class TestDbAcle
     public static function getDefaultFactories(){
         return array(
            'pdoFacade'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                $pdoFacade    = new Db\PdoFacade($serviceLocator->get('pdo'));
+                $pdoFacade    = new Db\Mysql\Pdo\PdoFacade($serviceLocator->get('pdo'));
                 $pdoFacade->disableForeignKeyChecks();
                 $pdoFacade->enableExceptions();
                 return $pdoFacade;
@@ -70,6 +70,9 @@ class TestDbAcle
            },
            'upsertBuilderFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
                 return new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($serviceLocator->get('pdoFacade'));
+           },
+           'tableFactory'    => function(\TestDbAcle\ServiceLocator $serviceLocator) {
+                return new \TestDbAcle\Db\Mysql\TableFactory($serviceLocator->get('pdoFacade'));
            },
            'tableInfo' => '\TestDbAcle\Db\TableInfo',
            'parser'    => '\TestDbAcle\Psv\PsvParser',

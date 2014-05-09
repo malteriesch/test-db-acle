@@ -1,10 +1,11 @@
 <?php
+namespace TestDbAcleTests\TestDbAcle\Db\DataInserter\Factory;
 
-class UpsertBuilderFactoryTest extends \PHPUnit_Framework_TestCase 
+class UpsertBuilderFactoryTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
     function test_getUpserter_returnsInsertBuilderByDefault()
     {
-        $mockPdoFacade =  Mockery::mock('\TestDbAcle\Db\PdoFacade');
+        $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
         $factory = new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade);
         $expectedBuilder = new \TestDbAcle\Db\DataInserter\Sql\InsertBuilder("foo");
         $table = new \TestDbAcle\Psv\Table\Table("foo");
@@ -13,7 +14,7 @@ class UpsertBuilderFactoryTest extends \PHPUnit_Framework_TestCase
     
     function test_getUpserter_returnsUpdateBuilderIfReplaceModeAndRecordExists()
     {
-        $mockPdoFacade =  Mockery::mock('\TestDbAcle\Db\PdoFacade');
+        $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
         $factory = new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade);
         $expectedBuilder = new \TestDbAcle\Db\DataInserter\Sql\UpdateBuilder("foo", array('first_name'=>'john', 'last_name' => 'Smith'));
 
@@ -31,7 +32,7 @@ class UpsertBuilderFactoryTest extends \PHPUnit_Framework_TestCase
     
     function test_getUpserter_returnsInsertBuilderIfReplaceModeAndRecordDoesNotExist()
     {
-        $mockPdoFacade =  Mockery::mock('\TestDbAcle\Db\PdoFacade');
+        $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
         $factory = new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade);
         $expectedBuilder = new \TestDbAcle\Db\DataInserter\Sql\InsertBuilder("foo");
 

@@ -1,6 +1,7 @@
 <?php
+namespace TestDbAcleTests\TestDbAcle\Psv\Table;
 
-class MetaTest extends \PHPUnit_Framework_TestCase 
+class MetaTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
     
     public function test_Default()

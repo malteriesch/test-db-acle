@@ -1,5 +1,8 @@
 <?php
-class PlaceholderRowFilterTest extends \PHPUnit_Framework_TestCase 
+
+namespace TestDbAcleTests\TestDbAcle\Filter;
+
+class PlaceholderRowFilterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
     protected $mockTableInfo;
     protected $filter;

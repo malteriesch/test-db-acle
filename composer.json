@@ -14,9 +14,11 @@
         
     },
     "require-dev": {
-	"mockery/mockery": "0.9.*"
+	"mockery/mockery": "0.9.*",
+        "phpunit/phpunit": "4.1.*"
     },
     "autoload": {
-        "psr-0": { "TestDbAcle": "lib/" }
+        "psr-0": { "TestDbAcle": "lib/" },
+        "psr-4": { "TestDbAcleTests\\" :"tests/" }
     }
 }

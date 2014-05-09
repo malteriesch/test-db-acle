@@ -1,5 +1,8 @@
 <?php
-class AddDefaultValuesRowFilterTest extends \PHPUnit_Framework_TestCase 
+
+namespace TestDbAcleTests\TestDbAcle\Filter;
+
+class AddDefaultValuesRowFilterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
     protected $mockTableInfo;
     protected $filter;
@@ -19,7 +22,10 @@ class AddDefaultValuesRowFilterTest extends \PHPUnit_Framework_TestCase
             array('Field' => 'col9', 'Type' => 'varchar(255)', 'Null' => 'NO', 'Key' => '', 'Default' => 'foo', 'Extra' => ''),
         );
 
-        $this->table = new TestDbAcle\Db\Table\Table("stuff", $describeStuff);
+        $this->table = new \TestDbAcle\Db\Table\Table("stuff");
+        foreach($describeStuff as $describedColumn) {
+            $this->table->addColumn(new \TestDbAcle\Db\Mysql\Table\Column($describedColumn));
+        }
         $this->mockTableInfo =  \Mockery::mock('\TestDbAcle\Db\TableInfo');
         $this->mockTableInfo->shouldReceive('getTable')->andReturn($this->table);
         $this->filter = new \TestDbAcle\Filter\AddDefaultValuesRowFilter($this->mockTableInfo);

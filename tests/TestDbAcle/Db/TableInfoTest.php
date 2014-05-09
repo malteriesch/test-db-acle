@@ -1,6 +1,7 @@
 <?php
+namespace TestDbAcleTests\TestDbAcle\Db;
 
-class TableInfoTest extends \PHPUnit_Framework_TestCase 
+class TableInfoTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
     protected $tableInfo;
     
@@ -13,22 +14,20 @@ class TableInfoTest extends \PHPUnit_Framework_TestCase
     
     function test_AddingAndGettingTables()
     {
-        $testTable1 = new TestDbAcle\Db\Table\Table("user", array(
-            array('Field' => 'user_id', 'Type' => 'int(11)', 'Null' => 'NO', 'Key' => 'PRI', 'Default' => NULL, 'Extra' => 'auto_increment'),
-            array('Field' => 'first_name', 'Type' => 'varchar(255)', 'Null' => 'NO', 'Key' => '', 'Default' => NULL, 'Extra' => ''),
-            array('Field' => 'last_name', 'Type' => 'varchar(255)', 'Null' => 'YES', 'Key' => '', 'Default' => NULL, 'Extra' => '')
-        ));
         
-        $testTable2 = new TestDbAcle\Db\Table\Table("stuff", array(
-            array('Field' => 'stuff_id', 'Type' => 'int(11)', 'Null' => 'NO', 'Key' => 'PRI', 'Default' => NULL, 'Extra' => 'auto_increment'),
-            array('Field' => 'col1', 'Type' => 'int', 'Null' => 'NO', 'Key' => '', 'Default' => NULL, 'Extra' => ''),
-            array('Field' => 'col2', 'Type' => 'tinyint', 'Null' => 'YES', 'Key' => '', 'Default' => NULL, 'Extra' => ''),
-        ));
+        $testTable1 = \Mockery::mock('TestDbAcle\Db\Table\Table',function($mock) {
+            $mock->shouldReceive("getName")->withNoArgs()->andReturn("table1");
+        });
+        
+        $testTable2 = \Mockery::mock('TestDbAcle\Db\Table\Table',function($mock) {
+            $mock->shouldReceive("getName")->withNoArgs()->andReturn("table2");
+        });
+        
         $this->tableInfo->addTable($testTable1);
         $this->tableInfo->addTable($testTable2);
         
-        $this->assertSame($testTable1, $this->tableInfo->getTable('user'));
-        $this->assertSame($testTable2, $this->tableInfo->getTable('stuff'));
+        $this->assertSame($testTable1, $this->tableInfo->getTable('table1'));
+        $this->assertSame($testTable2, $this->tableInfo->getTable('table2'));
         
         $this->assertNull($this->tableInfo->getTable('foo'));
     }

@@ -5,35 +5,30 @@ class Table
 {
     protected $name;
     protected $primaryKey;
-    protected $columns = array();
+    protected $columns            = array();
     protected $nonNullableColumns = array();
     
-    function __construct($name, array $metaData) 
+    function __construct($name) 
     {
         $this->name = $name;
-        $this->parse($metaData);
     }
     
-    protected function parse(array $metaData)
+    function getName() 
     {
-        foreach ($metaData as $columnMeta) {
-            $column = new \TestDbAcle\Db\Table\Column($columnMeta);
-            
-            $this->columns[$column->getName()] = $column;
-            
-            if (!$column->isNullable()) {
-                $this->nonNullableColumns[] = $column->getName();
-            } 
-            
-            if ($column->isPrimaryKey()) {
-                $this->primaryKey = $column->getName();
-            }
+        return $this->name;
+    }
+    
+    public function addColumn(\TestDbAcle\Db\Mysql\Table\Column $column)
+    {
+        $this->columns[$column->getName()] = $column;
+
+        if (!$column->isNullable()) {
+            $this->nonNullableColumns[] = $column->getName();
+        } 
+
+        if ($column->isPrimaryKey()) {
+            $this->primaryKey = $column->getName();
         }
-    }
-    
-    public function getNonNullableColumns()
-    {
-        return $this->nonNullableColumns;
     }
     
     public function getColumn($name)
@@ -44,16 +39,14 @@ class Table
         return null;
     }
     
-    
-    function getName() 
-    {
-        return $this->name;
-    }
-    
     function getPrimaryKey() 
     {
         return $this->primaryKey;
     }
     
+    public function getNonNullableColumns()
+    {
+        return $this->nonNullableColumns;
+    }
    
 }

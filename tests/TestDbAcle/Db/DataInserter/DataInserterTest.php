@@ -1,14 +1,11 @@
 <?php
+namespace TestDbAcleTests\TestDbAcle\Db\DataInserter;
 
-class DataInserterTest extends \PHPUnit_Framework_TestCase {
+class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
 
-    public function teardown() {
-        \Mockery::close();
-    }
-    
     public function test_process() {
         
-        $mockPdoFacade =  Mockery::mock('\TestDbAcle\Db\PdoFacade');
+        $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
 
         $dataTree = new \TestDbAcle\Psv\Table\TableList();
         
@@ -48,7 +45,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
     
     public function test_process_upsertEventsGetCalled() {
         
-        $mockPdoFacade =  Mockery::mock('\TestDbAcle\Db\PdoFacade');
+        $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
 
         $dataTree = new \TestDbAcle\Psv\Table\TableList();
         $dataTree->addTable(   new \TestDbAcle\Psv\Table\Table('user', array(
@@ -88,7 +85,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
    
     public function test_process_withReplace() {
         
-        $mockPdoFacade =  Mockery::mock('\TestDbAcle\Db\PdoFacade');
+        $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
 
         $dataTree = new \TestDbAcle\Psv\Table\TableList();
         $dataTree->addTable(  new \TestDbAcle\Psv\Table\Table('user', array(
@@ -133,7 +130,7 @@ class DataInserterTest extends \PHPUnit_Framework_TestCase {
     
     public function test_process_withReplace_OneIdentifiedByFieldOnly() {
         
-        $mockPdoFacade =  Mockery::mock('\TestDbAcle\Db\PdoFacade');
+        $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
 
         $dataTree = new \TestDbAcle\Psv\Table\TableList();
         $dataTree->addTable( new \TestDbAcle\Psv\Table\Table('user',  array(

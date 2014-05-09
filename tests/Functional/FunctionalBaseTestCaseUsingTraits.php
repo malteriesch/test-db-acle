@@ -1,4 +1,5 @@
 <?php
+namespace TestDbAcleTests\Functional;
 
 class FunctionalBaseTestCaseUsingTraits extends \PHPUnit_Framework_TestCase implements \TestDbAcle\PhpUnit\AbstractTestCaseInterface
 {

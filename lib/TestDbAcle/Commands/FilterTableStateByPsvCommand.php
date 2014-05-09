@@ -6,6 +6,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
     protected $filterQueue;
     protected $tableInfo;
     protected $pdoFacade;
+    protected $tableFactory;
     
     protected $placeHolders;
     protected $sourcePsv;
@@ -28,9 +29,12 @@ class FilterTableStateByPsvCommand implements CommandInterface
         
         $filteredParsedTree   = $this->filterQueue->filterDataTree($parsedTree);
 
-        foreach($filteredParsedTree->getTables() as $table){
-            $this->tableInfo->addTable(new \TestDbAcle\Db\Table\Table($table->getName(), $this->pdoFacade->describeTable($table->getName())));
-        }
+        $this->tableFactory->populateTableInfo(array_keys($filteredParsedTree->getTables()),$this->tableInfo);
+        
+        
+//        foreach($filteredParsedTree->getTables() as $table){
+//            $this->tableInfo->addTable(new \TestDbAcle\Db\Mysql\Table\Table($table->getName(), $this->pdoFacade->describeTable($table->getName())));
+//        }
 
         foreach($filteredParsedTree->getTables() as $table){
             $tableName = $table->getName();
@@ -49,6 +53,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
         //$this->filterQueue = $serviceLocator->get('filterQueue');
         $this->tableInfo   = $serviceLocator->get('tableInfo');
         $this->pdoFacade   = $serviceLocator->get('pdoFacade');
+        $this->tableFactory = $serviceLocator->get('tableFactory');
         
         $this->filterQueue          = new \TestDbAcle\Filter\FilterQueue();
         $this->filterQueue->addRowFilter(new \TestDbAcle\Filter\PlaceholderRowFilter($this->placeHolders));

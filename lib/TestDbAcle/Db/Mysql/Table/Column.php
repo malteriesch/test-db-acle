@@ -1,13 +1,8 @@
 <?php
-namespace TestDbAcle\Db\Table;
-class Column 
+namespace TestDbAcle\Db\Mysql\Table;
+
+class Column extends \TestDbAcle\Db\Table\AbstractColumn
 {
-    protected $meta=array();
-    
-    function __construct(array $meta)
-    {
-        $this->meta = $meta;
-    }
     
     public function getName()
     {

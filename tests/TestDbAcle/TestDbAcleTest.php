@@ -1,7 +1,7 @@
 <?php
+namespace TestDbAcleTests\TestDbAcle;
 
-
-class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
+class TestDbAcleTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
     
     public function teardown() {
         \Mockery::close();
@@ -21,7 +21,7 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
         $describedTable1= array('table information 1');
         $describedTable2= array('table information 2');
         
-        $mockPdoFacade = \Mockery::mock('TestDbAcle\Db\PdoFacade');
+        $mockPdoFacade = \Mockery::mock(' TestDbAcle\Db\Mysql\PdoFacade');
         $mockPdoFacade->shouldReceive('describeTable')->once()->with('table1')->andReturn($describedTable1);
         $mockPdoFacade->shouldReceive('describeTable')->once()->with('table2')->andReturn($describedTable2);
 
@@ -63,7 +63,7 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
     function test_create(){
         
         $expectedTestDbAcle = new \TestDbAcle\TestDbAcle();
-        $mockPdo = MockablePdo::createMock($this);
+        $mockPdo = \TestDbAcle\PhpUnit\Mocks\MockablePdo::createMock($this);
                       
         $serviceLocator = new \TestDbAcle\ServiceLocator(\TestDbAcle\TestDbAcle::getDefaultFactories());
         $serviceLocator->set('pdo', $mockPdo);
@@ -77,7 +77,7 @@ class TestDbAcleTest extends \PHPUnit_Framework_TestCase {
     
     function test_create_with_defaultOverriden(){
         
-        $mockPdo = MockablePdo::createMock($this);
+        $mockPdo = \TestDbAcle\PhpUnit\Mocks\MockablePdo::createMock($this);
                       
         $testDbAcle = \TestDbAcle\TestDbAcle::create($mockPdo, array(
                     'dataInserter' => function($serviceLocator) {
@@ -101,8 +101,8 @@ class MockablePdo extends \PDO {
         
     }
 
-    public static function createMock(\PHPUnit_Framework_TestCase $testCase, $methods = array()) {
-        $className = 'MockablePdo';
+    public static function createMock(\TestDbAcleTests\TestDbAcle\BaseTestCase $testCase, $methods = array()) {
+        $className = 'TestDbAcleTests\TestDbAcle\MockablePdo';
         $mock = $testCase->getMock($className, $methods, array(), "_Mock_" . uniqid($className));
         return $mock;
     }

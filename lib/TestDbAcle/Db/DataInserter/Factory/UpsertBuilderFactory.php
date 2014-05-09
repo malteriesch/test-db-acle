@@ -4,7 +4,7 @@ namespace TestDbAcle\Db\DataInserter\Factory;
 
 class UpsertBuilderFactory
 {
-    function __construct(\TestDbAcle\Db\PdoFacade $pdoFacade)
+    function __construct(\TestDbAcle\Db\Mysql\Pdo\PdoFacade $pdoFacade)
     {
         $this->pdoFacade = $pdoFacade;
     }

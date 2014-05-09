@@ -1,7 +1,7 @@
 <?php
+namespace TestDbAcleTests\TestDbAcle\Psv;
 
-
-class PsvConverterTest extends \PHPUnit_Framework_TestCase {
+class PsvConverterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
 
     function test_format() {
 

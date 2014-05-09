@@ -1,6 +1,7 @@
 <?php
+namespace TestDbAcleTests\TestDbAcle\Psv;
 
-class PsvParserTest extends \PHPUnit_Framework_TestCase {
+class PsvParserTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
 
     function test_parsePsv() {
 

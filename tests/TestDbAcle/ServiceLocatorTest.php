@@ -1,7 +1,8 @@
 <?php
 
+namespace TestDbAcleTests\TestDbAcle;
 
-class ServiceLocatorTest extends \PHPUnit_Framework_TestCase 
+class ServiceLocatorTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 {
     public function setup()
     {
@@ -11,7 +12,7 @@ class ServiceLocatorTest extends \PHPUnit_Framework_TestCase
                 'foo' => function(\TestDbAcle\ServiceLocator $serviceLocator){
                     return new TestClass(); 
                 },
-                'moo' => 'Cow',
+                'moo' => 'TestDbAcleTests\TestDbAcle\Cow',
                 'field' => function(\TestDbAcle\ServiceLocator $serviceLocator){
                     return new Field($serviceLocator->get("moo")); 
                 },
@@ -43,7 +44,7 @@ class ServiceLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedField, $field);
         $this->assertSame($cow1, $field->cow);
         
-        $override= new StdClass();
+        $override= new \StdClass();
         $this->serviceLocator->set('moo', $override);
         $this->assertSame($override, $this->serviceLocator->get('moo'), 'services can be overridden');
         $this->assertSame($cow1,     $this->serviceLocator->get('prototype.moo'), 'overides are shadowed by parent');
