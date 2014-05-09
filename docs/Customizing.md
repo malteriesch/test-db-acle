@@ -50,8 +50,6 @@ The default configuration is as follows, this can be used as an example for the 
 ```
 
 
-
-
 So if you do not want exceptions to be enabled for example, you can override AbstractTestCase::createDatabaseTestHelper as such:
 ```php
     protected function createDatabaseTestHelper()

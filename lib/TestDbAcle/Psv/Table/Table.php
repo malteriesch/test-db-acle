@@ -1,6 +1,9 @@
 <?php
 namespace TestDbAcle\Psv\Table;
 
+/**
+ * @TODO this is currently covered implicitly by PsvParseTest
+ */
 class Table
 {
     protected $data;

@@ -1,5 +1,8 @@
 <?php
 namespace TestDbAcle\Commands;
+/**
+ * @TODO this is currently covered only by the functional tests. 
+ */
 class SetupTablesCommand implements CommandInterface
 {
     protected $parser;
