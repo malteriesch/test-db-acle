@@ -60,7 +60,7 @@ class TestDbAcleTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         
     }
     
-    function test_create(){
+    function test_create_default(){
         
         $expectedTestDbAcle = new \TestDbAcle\TestDbAcle();
         $mockPdo = \TestDbAcle\PhpUnit\Mocks\MockablePdo::createMock($this, array('getAttribute'));
@@ -70,8 +70,10 @@ class TestDbAcleTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
                 ->with(\PDO::ATTR_DRIVER_NAME)
                 ->will($this->returnValue("mysql"));
         
-        $serviceLocator = new \TestDbAcle\ServiceLocator(\TestDbAcle\TestDbAcle::getDefaultFactories("mysql"));
-        $serviceLocator->set('pdo', $mockPdo);
+        $defaultFactories = new \TestDbAcle\Config\DefaultFactories();
+        
+        $serviceLocator = new \TestDbAcle\ServiceLocator($defaultFactories->getFactories("mysql"));
+        $serviceLocator->setService('pdo', $mockPdo);
         
         $expectedTestDbAcle->setServiceLocator($serviceLocator);
         $testDbAcle = \TestDbAcle\TestDbAcle::create($mockPdo);
@@ -95,7 +97,34 @@ class TestDbAcleTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         
     }
     
-    
+    function test_create_customFactoryContainer(){
+        
+        $expectedTestDbAcle = new \TestDbAcle\TestDbAcle();
+        $mockPdo = \TestDbAcle\PhpUnit\Mocks\MockablePdo::createMock($this, array('getAttribute'));
+                      
+        $mockPdo->expects($this->once())
+                ->method('getAttribute')
+                ->with(\PDO::ATTR_DRIVER_NAME)
+                ->will($this->returnValue("mysql"));
+        
+        $expectedConfig = array(
+            'foo' => function(){
+                return "moo";
+            }
+        );
+        
+        $factories = \Mockery::mock('\TestDbAcle\Config\FactoriesInterface');
+        $factories->shouldReceive("getFactories")->with("mysql")->andReturn($expectedConfig);
+        
+        $serviceLocator = new \TestDbAcle\ServiceLocator($expectedConfig);
+        $serviceLocator->setService('pdo', $mockPdo);
+        
+        $expectedTestDbAcle->setServiceLocator($serviceLocator);
+        $testDbAcle = \TestDbAcle\TestDbAcle::create($mockPdo, array(), $factories);
+                
+        $this->assertEquals($expectedTestDbAcle, $testDbAcle);
+        
+    }
     
     
 }

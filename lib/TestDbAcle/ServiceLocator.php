@@ -1,5 +1,6 @@
 <?php
 namespace TestDbAcle;
+
 class ServiceLocator 
 {
     protected $factories = array();
@@ -15,6 +16,13 @@ class ServiceLocator
         $this->factories = $factories;
     }
     
+    function addFactories($factories)
+    {
+        foreach($factories as $key=>$factory){
+            $this->setFactory($key, $factory);
+        }
+    }
+  
     function get($name)
     {
         if (!isset($this->services[$name])){
@@ -36,11 +44,19 @@ class ServiceLocator
             return $factory($this);
         }
     }
-    function set($name, $service)
+    
+    function setService($name, $service)
     {
-        if (isset($this->services[$name])){
-            $this->services["prototype.$name"] = $this->services[$name];
-        }
         $this->services[$name] = $service;
     }
+    
+    protected function setFactory($name, $factory)
+    {
+        if (isset($this->factories[$name])){
+            $this->setFactory("prototype.$name", $this->factories[$name]);
+        }
+        $this->factories[$name] = $factory;
+    }
+    
+    
 }
