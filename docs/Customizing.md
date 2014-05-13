@@ -5,15 +5,17 @@ All aspects of TestDbAcle can be customised, it uses a very simple ServiceLocato
 The TestDbAcle class is used as a simple facade that provides access to common functionality and all the components involved.
 It is configured in AbstractTestCase::createDatabaseTestHelper and can be customised there.
 
-It is possible to override AbstractTestCase::createDatabaseTestHelper and provide to the TestDbAcle::create factory methods as a second arument a service locator configuration.
-(NB: This service locator is a very simplified version of one inspired by the Zend Framework 2.)
+It is possible to override AbstractTestCase::createDatabaseTestHelper and to provide to the TestDbAcle::create factory method as a second arument a service locator configuration to override the defaults.
+As an optional third parameter a Configuration class can be specified additionally (\FactoriesInterfaceTestDbAcle\Config\FactoriesInterface) where all the default core factories are taken from.
+See \TestDbAcle\Config\DefaultFactories for an example.
 
-The custom configuration is merged with the one provided as the second argument so it is easy to selectively override any part without affecting others.
+
+The custom configuration (2nd argument) is merged with the default configuration so it is relatively easy to selectively exchange any part without affecting others.
 
 The values of the configuration array can either be a string, in which case the class just gets instantiated, or a simple factory that gets the service locator
-as only argument. 
+as the only argument. 
 
-The default configuration is as follows, this can be used as an example for the service locator usage:
+An example configuration is as follows:
 
 ```php
     array(

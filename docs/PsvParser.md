@@ -80,7 +80,7 @@ Whilst it is advisable for readability to line columns up, it is not required fo
 Is equivalent to the above.
 
 ###With table names and expressions###
-This is used in: *TestDbAcle\PhpUnit\AbstractTestCase::setupTables*
+There is a kind of meta-language in the table names, used in: *TestDbAcle\PhpUnit\AbstractTestCase::setupTables* asnd *TestDbAcle\PhpUnit\AbstractTestCase::assertTableStateContains*
 
     [user]
     id  |first_name   |last_name
@@ -104,3 +104,20 @@ It is possible to instead to replace rows:
     20  |stu          |Smith        |value 2
 
 This will not clear the user table but replace any rows with *first_name=john* and *last_name=miller* with the respective specified row.
+
+In Mysql, datetime columns will be automatically truncated in *assertTableStateContains*, for Sqlite, it is possible to indicate which date columns to truncate:
+
+```php
+$this->assertTableStateContains("
+            [address|truncateDates:date_of_entry]
+            address_id  |company    |date_of_entry
+            1           |me         |2001-01-01
+            3           |John       |NULL
+            1000        |them       |NOW
+
+            [user]
+            user_id |name
+            1       |mary
+            ", array('NOW'=>date("Y-m-d")));
+```
+
