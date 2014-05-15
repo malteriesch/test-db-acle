@@ -2,3 +2,4 @@
 /vendor/
 /Example/
 /tests/Functional/config.php
+/composer.lock
