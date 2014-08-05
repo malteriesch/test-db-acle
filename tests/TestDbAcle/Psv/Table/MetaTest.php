@@ -18,6 +18,13 @@ class MetaTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
         $this->assertEquals(array('first_name','last_name'), $meta->getIdentifyColumns());
     }
     
+     public function test_Replace_OneIdColumn()
+    {
+        $meta = new \TestDbAcle\Psv\Table\Meta(array( 'mode'=> 'replace', 'identifiedBy' => 'id'));
+        $this->assertTrue($meta->isReplaceMode());
+        $this->assertEquals(array('id'), $meta->getIdentifyColumns());
+    }
+    
     public function test_TruncateDates_none()
     {
         $meta = new \TestDbAcle\Psv\Table\Meta(array());
