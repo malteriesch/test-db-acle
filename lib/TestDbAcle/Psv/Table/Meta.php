@@ -40,7 +40,7 @@ class Meta
     
     public function getIdentifyColumns()
     {
-        return $this->getAttribute('identifiedBy', array());
+        return (array) $this->getAttribute('identifiedBy', array());
     }
     
     public function getTruncateDateColumns()

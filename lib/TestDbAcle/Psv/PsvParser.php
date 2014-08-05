@@ -105,6 +105,11 @@ class PsvParser implements PsvParserInterface
         $psvHeaderLine = $this->extractHeaders($psvRows);
         $headers       = $this->splitByPipe($psvHeaderLine);
 
+        foreach($headers as $index=>$header){
+            
+            $headers[$index] = $this->filterHeader($header);
+        }
+
         $contentTable = array();
 
         foreach ($psvRows as $psvRow) {
@@ -157,6 +162,24 @@ class PsvParser implements PsvParserInterface
             $row[$index] = trim($column);
         }
         return $row;
+    }
+   
+    protected function filterHeader($value)
+    {
+        $self = $this;//we need to to do this for PHP 5.3 compatability
+        $filters = array(//@TODO remove duplication 
+            'stripComments' => function(&$value) use($self){
+                if(strpos($value, $self::SYMBOL_COMMENT) !== false && strpos($value, $self::SYMBOL_COMMENT)!==0){
+                    list($valuePart,) = preg_split('/(?<!\\\\)'.$self::SYMBOL_COMMENT.'/', $value);
+                    $value = trim($valuePart);
+                }
+            },
+        );
+            
+        foreach($filters as $filter){
+            $filter($value);
+        }
+        return $value;
     }
     
     protected function filterColumnValue($value)
