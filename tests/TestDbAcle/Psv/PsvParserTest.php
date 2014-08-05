@@ -66,6 +66,48 @@ class PsvParserTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $this->assertSame($expectedArray, $psvParser->parsePsv($psvToParse));
     }
     
+    function test_parsePsv_WithNull_AndCommentInLastHeader() {
+
+        $psvParser = new \TestDbAcle\Psv\PsvParser();
+
+        $psvToParse = "
+        id  |first_name  #moo  |last_name    
+        10  |NULL  #nul        |miller       
+        20  |stu               |Smith        
+    	";
+
+        $expectedArray = array(
+            array("id" => "10",
+                "first_name" => NULL,
+                "last_name" => "miller"),
+            array("id" => "20",
+                "first_name" => "stu",
+                "last_name" => "Smith"),
+        );
+        $this->assertSame($expectedArray, $psvParser->parsePsv($psvToParse));
+    }
+    
+    function test_parsePsv_WithNull_AndCommentInHeaders() {
+
+        $psvParser = new \TestDbAcle\Psv\PsvParser();
+
+        $psvToParse = "
+        id  |first_name    |last_name    #comment
+        10  |NULL  #nul    |miller       
+        20  |stu           |Smith        
+    	";
+
+        $expectedArray = array(
+            array("id" => "10",
+                "first_name" => NULL,
+                "last_name" => "miller"),
+            array("id" => "20",
+                "first_name" => "stu",
+                "last_name" => "Smith"),
+        );
+        $this->assertSame($expectedArray, $psvParser->parsePsv($psvToParse));
+    }
+    
     function test_parsePsv_WithNull_AndInlineComment() {
 
         $psvParser = new \TestDbAcle\Psv\PsvParser();
