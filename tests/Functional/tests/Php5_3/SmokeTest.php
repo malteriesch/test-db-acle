@@ -215,7 +215,95 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
                 
     }
     
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_AssertTableStateContains_handlesEmptyTables()
+    {
+        
+        $this->setupTables("
+            [address]
+            address_id  |company    
+
+            [user]
+
+        ");
+
+        $this->assertTableStateContains("
+            [address]
+            address_id  |company    
+            
+
+            [user]
+           
+            ");
+             
+    }
     
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_AssertTableStateContains_handlesEmptyTables_raisesExceptionIfEmptyExpectedButNotEmpty()
+    {
+        
+        $this->setupTables("
+            [address]
+            address_id  |company    
+
+            [user]
+            user_id |name
+            1       |foo
+
+        ");
+        
+        try{
+            $this->assertTableStateContains("
+            [address]
+            address_id  |company    
+            
+
+            [user]
+            user_id |name
+           
+            ");
+            $this->fail("assertTableStateContains fails if the information in the table is different ");
+        } catch(\PHPUnit_Framework_ExpectationFailedException $e){
+          //do nothing
+        }
+             
+    }
+    
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_AssertTableStateContains_handlesEmptyTables_raisesExceptionIfEmptyExpectedButNotEmpty_EmptyTableSpecifiedWithoutColumns()
+    {
+        
+        $this->setupTables("
+            [user]
+            user_id |name
+            1       |foo
+
+        ");
+        
+        try{
+            $this->assertTableStateContains("
+            [user]
+            user_id |name
+           
+            ");
+            $this->fail("assertTableStateContains fails if the information in the table is different ");
+        } catch(\PHPUnit_Framework_ExpectationFailedException $e){
+          //do nothing
+        }
+             
+    }
 }
 
 class ExampleService
