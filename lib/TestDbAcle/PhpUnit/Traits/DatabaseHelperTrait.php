@@ -88,5 +88,19 @@ trait DatabaseHelperTrait
         $this->assertEquals($command->getExpectedData(), $command->getActualData(), $message);
     }
 
-    
+     /**
+     * Asserts that array contains the values specified. Placeholders can be 
+     * provided 
+     * 
+     * @param PsvString $expectedPsv expected values as PSV
+     * @param array $actual actual values
+     * @param array $placeHolders
+     * @param String $message an optional assert message
+     */
+    protected function assertArrayContainsPsv( $expectedPsv, $actual, $placeHolders = array(), $message = '' )
+    {
+        $command = new \TestDbAcle\Commands\FilterArrayByPsvCommand($expectedPsv, $actual, $placeHolders);
+        $this->getDatabaseTestHelper()->runCommand($command);
+        $this->assertEquals($command->getExpectedData(), $command->getActualData(), $message);
+    }
 }
