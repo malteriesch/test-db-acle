@@ -85,11 +85,66 @@ The framework itself knows which columns are not NULL-able in the table and inse
 Also, there might be various foreign key constraints going on in the background. Test-Db-Acle temporarily disables foreign key checks, so we do not have to worry about this, or in which order we insert the test data.
 
 ###What about an actual test.....?###
+First, if you use PHP5.4, you can use the traits version:
+```php
+class ExampleTest extends \PHPUnit_Framework_TestCase implements \TestDbAcle\PhpUnit\AbstractTestCaseInterface
+{
+    use \TestDbAcle\PhpUnit\Traits\DatabaseHelperTrait;
+ 
+    /**
+     * This method needs to be implemented, it should return the PDO object that is to be used in the database fixtures
+     * 
+     * @return \Pdo
+     */
+    public function providePdo()
+    {
+        return new \Pdo("mysql:dbname=my_db_tests;host=localhost",'myTestUser', 'myTestPassword');
+    }
+    
+    /*
+     * An example test
+     */
+    public function test_AddressService()
+    {
+        $this->setupTables("
+            [address]
+            address_id  |company
+            1           |me
+            3           |you
+            
+            [user]
+            user_id  |name
+            10       |John
+            20       |Mary
+            
+        ");
+        
+        $this->setAutoIncrement('address', 100);
+        
+        $this->addressService->addEntry("them");
+
+        $this->assertTableStateContains("
+            [address]
+            address_id  |company
+            1           |me
+            3           |you
+            100         |them
+            
+            [user]
+            user_id  |name
+            10       |John
+            20       |Mary
+            ", array(), "Stuff works");
+    }
+}
+```
+
+If you don't use traits, you can use ```AbstractTestCase```, however you won't be able to use your own base test classes in that case.
 
 ```php
 class ExampleTest extends \TestDbAcle\PhpUnit\AbstractTestCase
 {
-    protected $pdo;
+    
     protected $addressService;
 
     function Setup(){
@@ -97,13 +152,14 @@ class ExampleTest extends \TestDbAcle\PhpUnit\AbstractTestCase
         $this->addressService = new \Services\AddressService();
     }
 
-    function getPdo()
+    /**
+     * This method needs to be implemented, it should return the PDO object that is to be used in the database fixtures
+     * 
+     * @return \Pdo
+     */
+    public function providePdo()
     {
-        if (!isset($this->pdo)){
-            $config = include(__DIR__."/config.php");
-            $this->pdo = new \Pdo("mysql:dbname={$config['db_name']};host={$config['db_host']}",$config['db_user'],$config['db_password']);
-        }
-        return $this->pdo;
+        return new \Pdo("mysql:dbname=my_db_tests;host=localhost",'myTestUser', 'myTestPassword');
     }
 
     function test_AddressService()
