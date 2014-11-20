@@ -173,6 +173,37 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
                 
     }
     
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    
+    function test_SetupAndAssertWithNullColumn()
+    {
+        
+        $this->setupTables("
+            [address]
+            address_id  |address2   
+            1           |NULL        
+            3           |here      
+            1000        |there      
+
+        ");
+
+        $this->assertTableStateContains("
+            [address]
+            address_id  |address2   
+            1           |NULL        
+            3           |here      
+            1000        |there      
+
+            ");
+        $countResult = $this->pdo->query("select count(*) n from address where address2 is NULL")->fetch(\PDO::FETCH_ASSOC);
+        $this->assertEquals(1, $countResult['n']);
+    }
+    
      /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders
