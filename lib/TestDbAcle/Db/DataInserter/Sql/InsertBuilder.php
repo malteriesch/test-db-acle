@@ -14,15 +14,22 @@ class InsertBuilder extends UpsertBuilder {
     }
 
     public function getSql() {
-
-        $columnNames = implode(', ', array_keys($this->columns));
+        $columnNames = array_keys($this->columns);
+        
+        array_walk($columnNames, function(&$value) {
+            $value = "`$value`";
+        });
+        
+        $columnNamesImploded = implode(', ', $columnNames);
         $columns     = $this->getCopyOfColumnsForManipulation();
 
         array_walk($columns, array($this,'escapeValues'));
+        
+        
 
         $values = implode(', ', $columns);
 
-        return "INSERT INTO {$this->tablename} ( {$columnNames} ) VALUES ( {$values} )";
+        return "INSERT INTO `{$this->tablename}` ( {$columnNamesImploded} ) VALUES ( {$values} )";
     }
 
 }

@@ -32,11 +32,11 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
        
 
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('user')->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '10', 'john', 'miller' )")->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '20', 'stu', 'Smith' )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '10', 'john', 'miller' )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '20', 'stu', 'Smith' )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('stuff')->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '1', 'moo', NULL )")->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '30', 'miaow', NULL )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `stuff` ( `col1`, `col2`, `col3` ) VALUES ( '1', 'moo', NULL )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `stuff` ( `col1`, `col2`, `col3` ) VALUES ( '30', 'miaow', NULL )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('emptyTable')->ordered();
         
         $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
@@ -68,11 +68,11 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $testListener2 = \Mockery::mock('\TestDbAcle\Db\DataInserter\UpsertListenerInterface');
 
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('user')->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '10', 'john', 'miller' )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '10', 'john', 'miller' )")->ordered();
         $testListener1->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
         $testListener2->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
         
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '20', 'stu', 'Smith' )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '20', 'stu', 'Smith' )")->ordered();
         $testListener1->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
         $testListener2->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
         
@@ -114,14 +114,14 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $dataTree->addTable( new \TestDbAcle\Psv\Table\Table('emptyTable'));
         
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'john','last_name'=>'miller'))->andReturn(true)->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE user SET user_id='10', first_name='john', last_name='miller' WHERE first_name='john' AND last_name='miller'")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE `user` SET `user_id`='10', `first_name`='john', `last_name`='miller' WHERE `first_name`='john' AND `last_name`='miller'")->ordered();
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'stu','last_name'=>'Smith'))->andReturn(true)->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE user SET user_id='20', first_name='stu', last_name='Smith' WHERE first_name='stu' AND last_name='Smith'")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE `user` SET `user_id`='20', `first_name`='stu', `last_name`='Smith' WHERE `first_name`='stu' AND `last_name`='Smith'")->ordered();
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'stuart','last_name'=>'Smith'))->andReturn(false)->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '30', 'stuart', 'Smith' )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '30', 'stuart', 'Smith' )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('stuff')->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '1', 'moo', NULL )")->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO stuff ( col1, col2, col3 ) VALUES ( '30', 'miaow', 'boo' )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `stuff` ( `col1`, `col2`, `col3` ) VALUES ( '1', 'moo', NULL )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `stuff` ( `col1`, `col2`, `col3` ) VALUES ( '30', 'miaow', 'boo' )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('emptyTable')->ordered();
         
         $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
@@ -152,11 +152,11 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         
         
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'john'))->andReturn(true)->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE user SET user_id='10', first_name='john', last_name='miller' WHERE first_name='john'")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE `user` SET `user_id`='10', `first_name`='john', `last_name`='miller' WHERE `first_name`='john'")->ordered();
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'stu'))->andReturn(true)->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE user SET user_id='20', first_name='stu', last_name='Smith' WHERE first_name='stu'")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE `user` SET `user_id`='20', `first_name`='stu', `last_name`='Smith' WHERE `first_name`='stu'")->ordered();
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'stuart'))->andReturn(false)->ordered();
-        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO user ( user_id, first_name, last_name ) VALUES ( '30', 'stuart', 'Smith' )")->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '30', 'stuart', 'Smith' )")->ordered();
         
         $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
         $dataInserter->process($dataTree);

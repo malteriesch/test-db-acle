@@ -17,7 +17,7 @@ class UpdateBuilder extends UpsertBuilder {
     {
         $conditions = array();
         foreach($identifyKeyMap as $key=>$value){
-            $conditions[]="$key='".addslashes($value)."'";
+            $conditions[]="`$key`='".addslashes($value)."'";
         }
         return $conditions;
     }
@@ -49,11 +49,10 @@ class UpdateBuilder extends UpsertBuilder {
         array_walk($columns, function(&$value,$key){
             $actualValue = addslashes($value['value']);
             if ($value['isExpression']) {
-                $value = "$key=$actualValue";
+                $value = "`$key`=$actualValue";
             } else {
-                $value = "$key='$actualValue'";
+                $value = "`$key`='$actualValue'";
             }
-            return "$key=$value";
         });
 
         $valueString = implode(', ', $columns);
@@ -61,7 +60,7 @@ class UpdateBuilder extends UpsertBuilder {
         $conditionString = $this->getConditionSql();
         
 
-        return "UPDATE {$this->tablename} SET $valueString WHERE $conditionString";
+        return "UPDATE `{$this->tablename}` SET $valueString WHERE $conditionString";
     }
 
    

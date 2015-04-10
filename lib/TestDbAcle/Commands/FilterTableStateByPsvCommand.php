@@ -38,8 +38,18 @@ class FilterTableStateByPsvCommand implements CommandInterface
         foreach($filteredParsedTree->getTables() as $table){
             $tableName = $table->getName();
             $expectedData[$tableName]=$table->toArray();
-            $columnsToSelect = isset($expectedData[$tableName][0]) ? implode(", ",array_keys($expectedData[$tableName][0])) : '*';
-            $data = $this->pdoFacade->getQuery("select $columnsToSelect from $tableName");
+            
+            if(isset($expectedData[$tableName][0])) {
+                $columns = array_keys($expectedData[$tableName][0]);
+                array_walk($columns, function(&$value){
+                    $value ="`$value`";
+                });
+                $columnsToSelect = implode(", ", $columns);
+                $data = $this->pdoFacade->getQuery("select $columnsToSelect from `$tableName`");
+            } else {
+                $data = $this->pdoFacade->getQuery("select * from `$tableName`");
+            }
+            
             $actualData[$tableName] = $this->truncateDatetimeFields($table, $data);
         }
         $this->actualData = $actualData;

@@ -278,6 +278,60 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
      * @covers \TestDbAcle::getDefaultFactories()
      */
+    function test_AssertTableStateContains_handlesReservedKeywords()
+    {
+        $this->getPdo()->query('CREATE TEMPORARY TABLE `select` (
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `select` varchar(100) NOT NULL,
+                                PRIMARY KEY (`id`)
+                              ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8');
+        
+        $this->setupTables("
+            [select]
+            id  |select    
+            1   |foo
+
+
+        ");
+
+        $this->assertTableStateContains("
+            [select]
+            id  |select    
+            1   |foo
+            ");
+    }
+    
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_AssertTableStateContains_handlesReservedKeywords_emptyTable()
+    {
+        $this->getPdo()->query('CREATE TEMPORARY TABLE `select` (
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `select` varchar(100) NOT NULL,
+                                PRIMARY KEY (`id`)
+                              ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8');
+        
+        $this->setupTables("
+            [select]
+            id  |select    
+
+
+        ");
+
+        $this->assertTableStateContains("
+            [select]
+            id  |select    
+            ");
+    }
+    
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
     function test_AssertTableStateContains_handlesEmptyTables_raisesExceptionIfEmptyExpectedButNotEmpty()
     {
         

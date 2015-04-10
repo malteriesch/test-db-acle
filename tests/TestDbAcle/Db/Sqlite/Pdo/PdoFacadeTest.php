@@ -29,7 +29,7 @@ class PdoFacadeTest extends \TestDbAcleTests\TestDbAcle\Db\BasePdoFacadeTestCase
     
     function test_clearTable()
     {
-        $this->mockPdo->expects($this->once())->method('exec')->with("DELETE FROM user;DELETE FROM sqlite_sequence WHERE name='user'"); 
+        $this->mockPdo->expects($this->once())->method('exec')->with("DELETE FROM `user`;DELETE FROM sqlite_sequence WHERE name='user'"); 
         $this->pdoFacade->clearTable('user');
     }
     
@@ -37,7 +37,7 @@ class PdoFacadeTest extends \TestDbAcleTests\TestDbAcle\Db\BasePdoFacadeTestCase
     function test_describeTable()
     {
         $this->mockPdo->expects($this->once())
-                      ->method('query')->with('PRAGMA table_info(user)')->will($this->returnValue($this->createMockStatement(array('table description'))));
+                      ->method('query')->with('PRAGMA table_info(`user`)')->will($this->returnValue($this->createMockStatement(array('table description'))));
         
         $this->assertEquals(array('table description'), $this->pdoFacade->describeTable('user'));
     }

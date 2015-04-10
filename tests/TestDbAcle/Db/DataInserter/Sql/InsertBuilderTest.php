@@ -11,7 +11,7 @@ class InsertBuilderTest extends \PHPUnit_Framework_TestCase
         $insertBuilder->addColumn("the_date", "now()",true);
         $insertBuilder->addColumn("col2", null);
         $insertBuilder->addColumn("col3", "NULL");
-        $this->assertEquals("INSERT INTO foo ( col1, the_date, col2, col3 ) VALUES ( '\'I will be escaped\'', now(), NULL, NULL )", $insertBuilder->getSql());
+        $this->assertEquals("INSERT INTO `foo` ( `col1`, `the_date`, `col2`, `col3` ) VALUES ( '\'I will be escaped\'', now(), NULL, NULL )", $insertBuilder->getSql());
     }
     
     function test_getColumn() 

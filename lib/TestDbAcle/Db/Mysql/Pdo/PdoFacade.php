@@ -10,16 +10,16 @@ class PdoFacade extends \TestDbAcle\Db\AbstractPdoFacade
     }
 
     public function setAutoIncrement($table, $nextIncrement){
-        $this->pdo->query("ALTER TABLE $table AUTO_INCREMENT = $nextIncrement");
+        $this->pdo->query("ALTER TABLE `$table` AUTO_INCREMENT = $nextIncrement");
     }
 
     public function clearTable($table)
     {
-        $this->executeSql("TRUNCATE TABLE {$table}");
+        $this->executeSql("TRUNCATE TABLE `{$table}`");
     }
 
     public function describeTable($table)
     {
-        return $this->getQuery("DESCRIBE {$table}");
+        return $this->getQuery("DESCRIBE `{$table}`");
     }
 }

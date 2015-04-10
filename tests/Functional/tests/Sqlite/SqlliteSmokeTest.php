@@ -226,7 +226,59 @@ class SqlliteSmokeTest extends \TestDbAcle\PhpUnit\AbstractTestCase
                 
     }
     
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_AssertTableStateContains_handlesReservedKeywords()
+    {
+        $this->getPdo()->query('CREATE TABLE `select` (
+                                `id` int(11) NOT NULL,
+                                `select` varchar(100) NOT NULL,
+                                PRIMARY KEY (`id`)
+                              )');
+        
+        $this->setupTables("
+            [select]
+            id  |select    
+            1   |foo
+
+
+        ");
+
+        $this->assertTableStateContains("
+            [select]
+            id  |select    
+            1   |foo
+            ");
+    }
     
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_AssertTableStateContains_handlesReservedKeywords_emptyTable()
+    {
+        $this->getPdo()->query('CREATE TABLE `select` (
+                                `id` int(11) NOT NULL,
+                                `select` varchar(100) NOT NULL,
+                                PRIMARY KEY (`id`)
+                              )');
+        
+        $this->setupTables("
+            [select]
+            id  |select    
+
+
+        ");
+
+        $this->assertTableStateContains("
+            [select]
+            id  |select    
+            ");
+    }
                              
 }
 

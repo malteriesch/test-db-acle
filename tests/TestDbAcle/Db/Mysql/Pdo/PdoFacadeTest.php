@@ -25,7 +25,7 @@ class PdoFacadeTest extends \TestDbAcleTests\TestDbAcle\Db\BasePdoFacadeTestCase
     {
         $this->mockPdo->expects($this->once())
                 ->method('query')
-                ->with("ALTER TABLE address AUTO_INCREMENT = 100");
+                ->with("ALTER TABLE `address` AUTO_INCREMENT = 100");
 
         $this->pdoFacade->setAutoIncrement("address", 100);
     }
@@ -33,7 +33,7 @@ class PdoFacadeTest extends \TestDbAcleTests\TestDbAcle\Db\BasePdoFacadeTestCase
     
     function test_clearTable()
     {
-        $this->mockPdo->expects($this->once())->method('exec')->with("TRUNCATE TABLE user"); 
+        $this->mockPdo->expects($this->once())->method('exec')->with("TRUNCATE TABLE `user`"); 
         $this->pdoFacade->clearTable('user');
     }
     
@@ -41,7 +41,7 @@ class PdoFacadeTest extends \TestDbAcleTests\TestDbAcle\Db\BasePdoFacadeTestCase
     function test_describeTable()
     {
         $this->mockPdo->expects($this->once())
-                      ->method('query')->with('DESCRIBE user')->will($this->returnValue($this->createMockStatement(array('table description'))));
+                      ->method('query')->with('DESCRIBE `user`')->will($this->returnValue($this->createMockStatement(array('table description'))));
         
         $this->assertEquals(array('table description'), $this->pdoFacade->describeTable('user'));
     }
