@@ -48,7 +48,7 @@ class AbstractPdoFacadeTest extends \TestDbAcleTests\TestDbAcle\Db\BasePdoFacade
     
     function test_recordExists_True(){
         $this->mockPdo->expects($this->once())
-                      ->method('query')->with("SELECT COUNT(*) N FROM user WHERE first_name='john' AND last_name='miller'")->will($this->returnValue($this->createMockStatement(array(array('N'=>1)))));
+                      ->method('query')->with("SELECT COUNT(*) N FROM `user` WHERE `first_name`='john' AND `last_name`='miller'")->will($this->returnValue($this->createMockStatement(array(array('N'=>1)))));
         
         $this->assertTrue($this->pdoFacade->recordExists('user', array('first_name'=>'john','last_name'=>'miller')));
         
@@ -56,7 +56,7 @@ class AbstractPdoFacadeTest extends \TestDbAcleTests\TestDbAcle\Db\BasePdoFacade
     
     function test_recordExists_False(){
         $this->mockPdo->expects($this->once())
-                      ->method('query')->with("SELECT COUNT(*) N FROM user WHERE first_name='john' AND last_name='miller'")->will($this->returnValue($this->createMockStatement(array(array('N'=>0)))));
+                      ->method('query')->with("SELECT COUNT(*) N FROM `user` WHERE `first_name`='john' AND `last_name`='miller'")->will($this->returnValue($this->createMockStatement(array(array('N'=>0)))));
         
         $this->assertFalse($this->pdoFacade->recordExists('user', array('first_name'=>'john','last_name'=>'miller')));
     }
