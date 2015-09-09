@@ -62,7 +62,7 @@ trait DatabaseHelperTrait
     /**
      * 
      * 
-     * @param PsvString $psvContent the PSV formatted tables to setup
+     * @param String $psvContent the PSV formatted tables to setup
      * @param array $replace an optional hash list of replacements
      */
     protected function setupTables($psvContent, $replace = array())
@@ -77,7 +77,7 @@ trait DatabaseHelperTrait
      * Asserts that a table contains the values specified. Placeholders can be 
      * provided and datetime columns get truncated when taken out from the database to compare
      * 
-     * @param PsvString $expectedPsv
+     * @param String $expectedPsv
      * @param array $placeHolders
      * @param String $message an optional assert message
      */
@@ -92,7 +92,7 @@ trait DatabaseHelperTrait
      * Asserts that array contains the values specified. Placeholders can be 
      * provided 
      * 
-     * @param PsvString $expectedPsv expected values as PSV
+     * @param String $expectedPsv expected values as PSV
      * @param array $actual actual values
      * @param array $placeHolders
      * @param String $message an optional assert message
