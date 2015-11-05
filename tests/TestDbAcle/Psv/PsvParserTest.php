@@ -228,4 +228,36 @@ class PsvParserTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
 
     }
 
+
+    function test_parsePsvTree_withOneColumnOfZeros() {
+        $psvParser = new \TestDbAcle\Psv\PsvParser();
+
+        $psvToParse = "
+
+          [ expression2]
+         col1
+         0
+         0
+        ";
+
+        $parsedTree = $psvParser->parsePsvTree($psvToParse);
+
+
+
+
+        $this->assertEquals(array (
+            'expression2' =>
+                array (
+                    0 =>
+                        array (
+                            'col1' => '0',
+                        ),
+                    1 =>
+                        array (
+                            'col1' => '0',
+                        ),
+                ),
+        ), $parsedTree->toArray());
+
+    }
 }

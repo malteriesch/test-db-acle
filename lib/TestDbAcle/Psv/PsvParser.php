@@ -145,7 +145,7 @@ class PsvParser implements PsvParserInterface
     
     protected function skipRow($row){
         $trimmedRow = ltrim($row);
-        return !$trimmedRow || $trimmedRow[0] == static::SYMBOL_COMMENT;
+        return $trimmedRow == '' || $trimmedRow[0] == static::SYMBOL_COMMENT;
     }
     
     protected function splitByPipe($row){
