@@ -28,4 +28,18 @@ class PsvTree
     {
         return $this->tables;
     }
+
+    function toArray()
+    {
+        $out = array();
+        foreach ($this->getTableNames() as $table) {
+            $out[$table] = $this->getTable($table)->toArray();
+        }
+        return $out;
+    }
+
+    function getTableNames()
+    {
+        return array_keys($this->tables);
+    }
 }

@@ -187,6 +187,45 @@ class PsvParserTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
                        'identifiedBy' => array('first_name','last_name') ), $parsedTree->getTable('expression1')->getMeta()->toArray());
         
         $this->assertEquals(array(), $parsedTree->getTable('expression2')->getMeta()->toArray());
+
+        $this->assertEquals(array (
+                'expression1' =>
+                    array (
+                        0 =>
+                            array (
+                                'id' => '10',
+                                'first_name' => 'john',
+                                'last_name' => '[miller]',
+                            ),
+                        1 =>
+                            array (
+                                'id' => '20',
+                                'first_name' => 'stu',
+                                'last_name' => 'Smith"',
+                            ),
+                    ),
+                'expression2' =>
+                    array (
+                        0 =>
+                            array (
+                                'col1' => '1',
+                                'col2' => 'moo',
+                                'col3' => 'foo',
+                            ),
+                        1 =>
+                            array (
+                                'col1' => '30',
+                                'col2' => 'miaow',
+                                'col3' => 'boo',
+                            ),
+                    ),
+                'empty' =>
+                    array (
+                    ),
+            ), $parsedTree->toArray());
+
+        $this->assertEquals(array('expression1','expression2','empty'), $parsedTree->getTableNames());
+
     }
 
 }
