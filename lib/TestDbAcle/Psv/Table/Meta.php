@@ -37,7 +37,12 @@ class Meta
     {
         return $this->getAttribute('mode') ==  'replace';
     }
-    
+
+    public function isAppendMode()
+    {
+        return $this->getAttribute('mode') ==  'append';
+    }
+
     public function getIdentifyColumns()
     {
         return (array) $this->getAttribute('identifiedBy', array());

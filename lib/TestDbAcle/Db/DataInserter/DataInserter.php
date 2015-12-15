@@ -34,7 +34,7 @@ class DataInserter
 
     public function processTable(\TestDbAcle\Psv\Table\Table $table)
     {
-        if(!$table->getMeta()->isReplaceMode()){
+        if(!$table->getMeta()->isReplaceMode() && !$table->getMeta()->isAppendMode()){
             $this->pdoFacade->clearTable($table->getName());
         }
         foreach ($table->toArray() as $valuesToBeInserted) {

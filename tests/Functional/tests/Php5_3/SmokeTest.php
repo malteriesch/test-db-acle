@@ -86,6 +86,48 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
         }
                 
     }
+
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_SetupCanAppendData()
+    {
+
+        $this->setupTables("
+            [address]
+            address_id  |company
+            1           |me
+            3           |you
+
+            [user]
+            user_id |name
+            1       |mary
+
+        ");
+
+
+        $this->setupTables("
+            [address|mode:append]
+            company |city
+            them    |london
+
+        ");
+
+        $this->assertTableStateContains("
+            [address]
+            address_id  |company    |city
+            1           |me         |T #T is the default for non-null text
+            3           |you        |T
+            4           |them       |london
+
+            [user]
+            user_id |name
+            1       |mary
+            ", array('NOW'=>date("Y-m-d")));
+    }
     
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
