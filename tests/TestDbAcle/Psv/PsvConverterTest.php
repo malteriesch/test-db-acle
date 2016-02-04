@@ -46,6 +46,28 @@ id   |first_name   |last_name
         $this->assertEquals($expectedPsv, $psvConverter->format($arrayToFormat));
     }
 
+    function test_format_WithFalseAndTrue
+    () {
+
+        $psvConverter = new \TestDbAcle\Psv\PsvConverter();
+
+        $expectedPsv = trim("
+id   |first_name   |last_name
+10   |FALSE        |miller
+20   |stu          |TRUE
+    	");
+
+        $arrayToFormat = array(
+            array("id" => "10",
+                "first_name" => false,
+                "last_name" => "miller"),
+            array("id" => "20",
+                "first_name" => "stu",
+                "last_name" => true),
+        );
+        $this->assertEquals($expectedPsv, $psvConverter->format($arrayToFormat));
+    }
+
     function test_format_Empty() {
 
         $psvConverter = new \TestDbAcle\Psv\PsvConverter();

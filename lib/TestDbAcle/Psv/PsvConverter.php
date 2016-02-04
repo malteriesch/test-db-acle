@@ -10,7 +10,12 @@ class PsvConverter
             foreach ($rowToFormat as $key => $value) {
                 if (is_null($value)) {
                     $toFormat[$index][$key] = "NULL";
+                } elseif ($value === false) {
+                    $toFormat[$index][$key] = "FALSE";
+                } elseif ($value === true) {
+                    $toFormat[$index][$key] = "TRUE";
                 }
+
                 $toFormat[$index][$key] = str_replace("\n", "", $toFormat[$index][$key]);
                 $toFormat[$index][$key] = str_replace("\r", "", $toFormat[$index][$key]);
                 
