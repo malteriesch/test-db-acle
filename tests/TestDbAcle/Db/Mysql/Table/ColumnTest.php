@@ -14,10 +14,12 @@ class ColumnTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
         
         $columnDate = new \TestDbAcle\Db\Mysql\Table\Column(array('Type' => 'date'));
         $columnDateTime = new \TestDbAcle\Db\Mysql\Table\Column(array('Type' => 'datetime'));
+        $columnTimestamp = new \TestDbAcle\Db\Mysql\Table\Column(array('Type' => 'timestamp'));
         $columnTinyBlob = new \TestDbAcle\Db\Mysql\Table\Column(array('Type' => 'tinyblob'));
-        
+
         $this->assertTrue($columnDate->isDateTime());
         $this->assertTrue($columnDateTime->isDateTime());
+        $this->assertTrue($columnTimestamp->isDateTime());
         $this->assertFalse($columnTinyBlob->isDateTime());
         
     }

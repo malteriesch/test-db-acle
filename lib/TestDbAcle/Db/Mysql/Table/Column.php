@@ -21,7 +21,7 @@ class Column extends \TestDbAcle\Db\Table\AbstractColumn
     
     public function isDateTime()
     {
-        return strpos($this->meta['Type'], 'date') !== false;
+        return strpos($this->meta['Type'], 'date') !== false || strpos($this->meta['Type'], 'timestamp') !== false;
     }
     
     public function isNullable()
