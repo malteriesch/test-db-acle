@@ -37,6 +37,8 @@ class FilterQueueTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
         
         
         $mockRowFilter1 = \Mockery::mock('\TestDbAcle\Filter\RowFilter');
+
+        $mockRowFilter1->shouldReceive('skip')->andReturn(false);
         
         $mockRowFilter1->shouldReceive('filter')->once()->with('user', array("user.row1"))->ordered()
                        ->andReturn(array('user.filtered_filter1_row1'));
@@ -84,11 +86,12 @@ class FilterQueueTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
         
         $dataTree->addTable(
                     new \TestDbAcle\Psv\Table\Table('emptyTable'));
-        
-       
-        
+
+
         $mockRowFilter1 = \Mockery::mock('\TestDbAcle\Filter\RowFilter');
-        
+
+        $mockRowFilter1->shouldReceive('skip')->andReturn(false);
+
         $mockRowFilter1->shouldReceive('filter')->once()->with('user', array("user.row1"))->ordered()
                        ->andReturn(array('user.filtered_filter1_row1'));
         $mockRowFilter1->shouldReceive('filter')->once()->with('user', array("user.row2"))->ordered()
@@ -100,6 +103,8 @@ class FilterQueueTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 
         
         $mockRowFilter2 = \Mockery::mock('\TestDbAcle\Filter\RowFilter');
+
+        $mockRowFilter2->shouldReceive('skip')->andReturn(false);
 
         $mockRowFilter2->shouldReceive('filter')->once()->with('user', array("user.filtered_filter1_row1"))->ordered()
                         ->andReturn(array('user.filtered_filter2_row1'));

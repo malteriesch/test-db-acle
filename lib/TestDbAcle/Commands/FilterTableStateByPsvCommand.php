@@ -1,17 +1,45 @@
 <?php
 namespace TestDbAcle\Commands;
 
+use TestDbAcle\Db\AbstractPdoFacade;
+use TestDbAcle\Db\AbstractTableFactory;
+use TestDbAcle\Db\Mysql\Pdo\PdoFacade;
+use TestDbAcle\Db\TableList;
+use TestDbAcle\Filter\FilterQueue;
+use TestDbAcle\Psv\PsvParser;
+use TestDbAcle\Psv\Table\Table;
+
 /**
  * @TODO this is currently covered only by the functional tests. 
  */
 class FilterTableStateByPsvCommand implements CommandInterface
 {
+    /**
+     * @var PsvParser $parser
+     */
     protected $parser;
+
+    /**
+     * @var FilterQueue $filterQueue
+     */
     protected $filterQueue;
+
+    /**
+     * @var TableList
+     */
     protected $tableList;
+
+    /** @var  AbstractPdoFacade */
     protected $pdoFacade;
+
+    /**
+     * @var AbstractTableFactory $tableFactory
+     */
     protected $tableFactory;
-    
+
+    /**
+     * @var array $placeHolders
+     */
     protected $placeHolders;
     protected $sourcePsv;
     
@@ -36,7 +64,9 @@ class FilterTableStateByPsvCommand implements CommandInterface
         $this->tableFactory->populateTableList(array_keys($filteredParsedTree->getTables()),$this->tableList);
 
         foreach($filteredParsedTree->getTables() as $table){
+            /** @var Table $table */
             $tableName = $table->getName();
+
             $expectedData[$tableName]=$table->toArray();
             
             if(isset($expectedData[$tableName][0])) {

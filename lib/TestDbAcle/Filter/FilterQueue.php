@@ -2,6 +2,8 @@
 
 namespace TestDbAcle\Filter;
 
+use TestDbAcle\Psv\Table\Table;
+
 class FilterQueue
 {
 
@@ -20,10 +22,14 @@ class FilterQueue
         return $dataTree;
     }
 
-    protected function filterTable(\TestDbAcle\Filter\RowFilter $filter, $table, array $tableData)
+    protected function filterTable(\TestDbAcle\Filter\RowFilter $filter, Table $table)
     {
+        $tableName = $table->getName();
+        $tableData = $table->toArray();
         foreach ($tableData as $index => $tableRow) {
-            $tableData[$index] = $filter->filter($table, $tableRow);
+            if (!$filter->skip($table)) {
+                $tableData[$index] = $filter->filter($tableName, $tableRow);
+            }
         }
         return $tableData;
     }
@@ -31,7 +37,7 @@ class FilterQueue
     protected function applyRowFilter($filter, \TestDbAcle\Psv\PsvTree $dataTree)
     {
         foreach ($dataTree->getTables() as $table) {
-            $table->setData( $this->filterTable($filter, $table->getName(), $table->toArray()));
+            $table->setData( $this->filterTable($filter, $table));
         }
         return $dataTree;
     }

@@ -1,14 +1,40 @@
 <?php
 namespace TestDbAcle\Commands;
+
+use TestDbAcle\Db\AbstractTableFactory;
+use TestDbAcle\Db\DataInserter\DataInserter;
+use TestDbAcle\Db\TableList;
+use TestDbAcle\Filter\FilterQueue;
+use TestDbAcle\Psv\PsvParser;
+
 /**
  * @TODO this is currently covered only by the functional tests. 
  */
 class SetupTablesCommand implements CommandInterface
 {
+    /**
+     * @var PsvParser
+     */
     protected $parser;
+
+    /**
+     * @var DataInserter
+     */
     protected $dataInserter;
+
+    /**
+     * @var FilterQueue
+     */
     protected $filterQueue;
+
+    /**
+     * @var TableList
+     */
     protected $tableList;
+
+    /**
+     * @var AbstractTableFactory
+     */
     protected $tableFactory;
 
     protected $placeHolders;
@@ -25,7 +51,7 @@ class SetupTablesCommand implements CommandInterface
     {
         $parsedTree = $this->parser->parsePsvTree($this->sourcePsv);
         $this->tableFactory->populateTableList(array_keys($parsedTree->getTables()),$this->tableList);
-        return $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree));
+        $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree));
     }
 
     public function initialise(\TestDbAcle\ServiceLocator $serviceLocator)

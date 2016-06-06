@@ -245,7 +245,44 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
         $countResult = $this->pdo->query("select count(*) n from address where address2 is NULL")->fetch(\PDO::FETCH_ASSOC);
         $this->assertEquals(1, $countResult['n']);
     }
-    
+
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     *
+     * @link https://github.com/malteriesch/test-db-acle/issues/10
+     */
+
+    function test_Setup_Bug_ReplaceModeOverwritesNonNullColumns()
+    {
+
+        $this->setupTables("
+            [address]
+            address_id  |address1       |postcode
+            1           |val 1          |foo1
+            3           |val 2          |foo2
+            1000        |val3           |foo3
+
+        ");
+
+        $this->setupTables("
+            [address|mode:replace;identifiedBy:address_id]
+            address_id  |address1   
+            3           |val 2 amended       
+        ");
+
+        $this->assertTableStateContains("
+            [address]
+           address_id   |address1           |postcode
+            1           |val 1              |foo1
+            3           |val 2 amended      |foo2
+            1000        |val3               |foo3
+
+            ");
+    }
+
      /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders

@@ -1,7 +1,10 @@
 <?php
 namespace TestDbAcle\Filter;
 
-class AddDefaultValuesRowFilter implements RowFilter {
+use TestDbAcle\Psv\Table\Table;
+
+class AddDefaultValuesRowFilter extends AbstractRowFilter
+{
     
     protected $tableList;
     
@@ -37,6 +40,11 @@ class AddDefaultValuesRowFilter implements RowFilter {
     {
 
         
+    }
+
+    public function skip(Table $table)
+    {
+        return $table->getMeta()->isReplaceMode();
     }
     
 }

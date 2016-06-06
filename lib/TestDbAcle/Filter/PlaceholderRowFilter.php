@@ -1,7 +1,8 @@
 <?php
 namespace TestDbAcle\Filter;
 
-class PlaceholderRowFilter implements RowFilter {
+class PlaceholderRowFilter extends AbstractRowFilter
+{
     
     protected $replace;
     
