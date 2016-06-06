@@ -7,7 +7,10 @@ class  BasePdoFacadeTestCase extends \TestDbAcleTests\TestDbAcle\BaseTestCase
     protected $mockPdo;
     
     protected function createMock($className, $methods = array(), $constructorParameters = array()) {
-        $mock = $this->getMock($className, $methods, $constructorParameters, "_Mock_" . uniqid($className));
+        $mock = $this->getMockBuilder($className)
+            ->setMethods($methods)
+            ->setMockClassName("_Mock_" . uniqid($className))
+            ->getMock();
         return $mock;
     }
 
