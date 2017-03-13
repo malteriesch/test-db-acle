@@ -41,11 +41,11 @@ class UpsertBuilderFactoryTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
 
         $psvTable = new \TestDbAcle\Psv\Table\Table(
             "foo",
-            [],
+            array(),
             new \TestDbAcle\Psv\Table\Meta(
-                [
+                array(
                     'mode'         => 'replace',
-                ]
+                )
             )
         );
 
