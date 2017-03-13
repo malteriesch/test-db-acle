@@ -163,28 +163,28 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $dataTree = new \TestDbAcle\Psv\PsvTree();
         $dataTree->addTable(
             new \TestDbAcle\Psv\Table\Table(
-                'user', [
-                [
+                'user', array(
+                array(
                     "user_id"    => "10",
                     "first_name" => "john",
                     "last_name"  => "miller",
-                ],
-                [
+                ),
+                array(
                     "user_id"    => "20",
                     "first_name" => "stu",
                     "last_name"  => "Smith",
-                ],
-                [
+                ),
+                array(
                     "user_id"    => "30",
                     "first_name" => "stuart",
                     "last_name"  => "Smith",
-                ],
-            ],
+                ),
+            ),
                 new \TestDbAcle\Psv\Table\Meta(
-                    [
+                    array(
                         'mode'         => 'replace',
-                        'identifiedBy' => ['first_name'],
-                    ]
+                        'identifiedBy' => array('first_name'),
+                    )
                 )
             )
         );
@@ -213,27 +213,27 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $dataTree = new \TestDbAcle\Psv\PsvTree();
         $dataTree->addTable(
             new \TestDbAcle\Psv\Table\Table(
-                'user', [
-                [
+                'user', array(
+                array(
                     "user_id"    => "10",
                     "first_name" => "john",
                     "last_name"  => "miller",
-                ],
-                [
+                ),
+                array(
                     "user_id"    => "20",
                     "first_name" => "stu",
                     "last_name"  => "Smith",
-                ],
-                [
+                ),
+                array(
                     "user_id"    => "30",
                     "first_name" => "stuart",
                     "last_name"  => "Smith",
-                ],
-            ],
+                ),
+            ),
                 new \TestDbAcle\Psv\Table\Meta(
-                    [
+                    array(
                         'mode' => 'replace',
-                    ]
+                    )
                 )
             )
         );
