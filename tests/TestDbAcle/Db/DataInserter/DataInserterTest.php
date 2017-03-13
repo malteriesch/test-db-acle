@@ -1,11 +1,16 @@
 <?php
 namespace TestDbAcleTests\TestDbAcle\Db\DataInserter;
 
+use TestDbAcle\Db\Table\Table;
+
 class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
 
     public function test_process() {
         
         $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
+        $mockTableList =  \Mockery::mock('\TestDbAcle\Db\TableList');
+        $mockTableUser     =  \Mockery::mock('\TestDbAcle\Db\Table\Table');
+        $mockTableStuff    =  \Mockery::mock('\TestDbAcle\Db\Table\Table');
 
         $dataTree = new \TestDbAcle\Psv\PsvTree();
         
@@ -29,7 +34,9 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
                         "col3" => null))));
                     
         $dataTree->addTable( new \TestDbAcle\Psv\Table\Table('emptyTable'));
-       
+
+        $mockTableList->shouldReceive('getTable')->with('user')->andReturn($mockTableUser);
+        $mockTableList->shouldReceive('getTable')->with('stuff')->andReturn($mockTableStuff);
 
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('user')->ordered();
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '10', 'john', 'miller' )")->ordered();
@@ -39,13 +46,21 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `stuff` ( `col1`, `col2`, `col3` ) VALUES ( '30', 'miaow', NULL )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('emptyTable')->ordered();
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter(
+            $mockPdoFacade,
+            new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade),
+            $mockTableList
+        );
         $dataInserter->process($dataTree);
     }
     
     public function test_process_upsertEventsGetCalled() {
         
         $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
+
+        $mockTableList =  \Mockery::mock('\TestDbAcle\Db\TableList');
+        $mockTableUser     =  \Mockery::mock('\TestDbAcle\Db\Table\Table');
+        $mockTableStuff    =  \Mockery::mock('\TestDbAcle\Db\Table\Table');
 
         $dataTree = new \TestDbAcle\Psv\PsvTree();
         $dataTree->addTable(   new \TestDbAcle\Psv\Table\Table('user', array(
@@ -67,6 +82,9 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $testListener1 = \Mockery::mock('\TestDbAcle\Db\DataInserter\UpsertListenerInterface');
         $testListener2 = \Mockery::mock('\TestDbAcle\Db\DataInserter\UpsertListenerInterface');
 
+        $mockTableList->shouldReceive('getTable')->with('user')->andReturn($mockTableUser);
+        $mockTableList->shouldReceive('getTable')->with('stuff')->andReturn($mockTableStuff);
+
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('user')->ordered();
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '10', 'john', 'miller' )")->ordered();
         $testListener1->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
@@ -76,7 +94,7 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $testListener1->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
         $testListener2->shouldReceive('afterUpsert')->once()->with(\Mockery::on($checkUpserterClosure));
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade), $mockTableList);
         $dataInserter->addUpsertListener($testListener1);
         $dataInserter->addUpsertListener($testListener2);
        
@@ -86,6 +104,10 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
     public function test_process_withReplace() {
         
         $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
+
+        $mockTableList =  \Mockery::mock('\TestDbAcle\Db\TableList');
+        $mockTableUser     =  \Mockery::mock('\TestDbAcle\Db\Table\Table');
+        $mockTableStuff    =  \Mockery::mock('\TestDbAcle\Db\Table\Table');
 
         $dataTree = new \TestDbAcle\Psv\PsvTree();
         $dataTree->addTable(  new \TestDbAcle\Psv\Table\Table('user', array(
@@ -112,7 +134,10 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
                         "col2" => "miaow",
                         "col3" => "boo"))));
         $dataTree->addTable( new \TestDbAcle\Psv\Table\Table('emptyTable'));
-        
+
+        $mockTableList->shouldReceive('getTable')->with('user')->andReturn($mockTableUser);
+        $mockTableList->shouldReceive('getTable')->with('stuff')->andReturn($mockTableStuff);
+
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'john','last_name'=>'miller'))->andReturn(true)->ordered();
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE `user` SET `user_id`='10', `first_name`='john', `last_name`='miller' WHERE `first_name`='john' AND `last_name`='miller'")->ordered();
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'stu','last_name'=>'Smith'))->andReturn(true)->ordered();
@@ -124,7 +149,7 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `stuff` ( `col1`, `col2`, `col3` ) VALUES ( '30', 'miaow', 'boo' )")->ordered();
         $mockPdoFacade->shouldReceive('clearTable')->once()->with('emptyTable')->ordered();
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade), $mockTableList);
         $dataInserter->process($dataTree);
     }
     
@@ -132,25 +157,40 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         
         $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
 
+        $mockTableList =  \Mockery::mock('\TestDbAcle\Db\TableList');
+        $mockTableUser     =  \Mockery::mock('\TestDbAcle\Db\Table\Table');
+
         $dataTree = new \TestDbAcle\Psv\PsvTree();
-        $dataTree->addTable( new \TestDbAcle\Psv\Table\Table('user',  array(
-                        array("user_id" => "10",
-                            "first_name" => "john",
-                            "last_name" => "miller"),
-                        array("user_id" => "20",
-                            "first_name" => "stu",
-                            "last_name" => "Smith"),
-                        array("user_id" => "30",
-                            "first_name" => "stuart",
-                            "last_name" => "Smith")
-                    ),
-                    new \TestDbAcle\Psv\Table\Meta(array(
-                        'mode'=> 'replace',
-                         'identifiedBy' => array('first_name')
-                    ))));
-       
-        
-        
+        $dataTree->addTable(
+            new \TestDbAcle\Psv\Table\Table(
+                'user', [
+                [
+                    "user_id"    => "10",
+                    "first_name" => "john",
+                    "last_name"  => "miller",
+                ],
+                [
+                    "user_id"    => "20",
+                    "first_name" => "stu",
+                    "last_name"  => "Smith",
+                ],
+                [
+                    "user_id"    => "30",
+                    "first_name" => "stuart",
+                    "last_name"  => "Smith",
+                ],
+            ],
+                new \TestDbAcle\Psv\Table\Meta(
+                    [
+                        'mode'         => 'replace',
+                        'identifiedBy' => ['first_name'],
+                    ]
+                )
+            )
+        );
+
+        $mockTableList->shouldReceive('getTable')->with('user')->andReturn($mockTableUser);
+
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'john'))->andReturn(true)->ordered();
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE `user` SET `user_id`='10', `first_name`='john', `last_name`='miller' WHERE `first_name`='john'")->ordered();
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'stu'))->andReturn(true)->ordered();
@@ -158,8 +198,57 @@ class DataInserterTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
         $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('first_name'=>'stuart'))->andReturn(false)->ordered();
         $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '30', 'stuart', 'Smith' )")->ordered();
         
-        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade));
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade), $mockTableList);
         $dataInserter->process($dataTree);
     }
-    
+
+    public function test_process_withReplace_identifiedByPrimaryKeyAsDefault() {
+
+        $mockPdoFacade =  \Mockery::mock('\TestDbAcle\Db\Mysql\Pdo\PdoFacade');
+
+        $mockTableList =  \Mockery::mock('\TestDbAcle\Db\TableList');
+        $mockTableUser     =  \Mockery::mock('\TestDbAcle\Db\Table\Table');
+        $mockTableStuff    =  \Mockery::mock('\TestDbAcle\Db\Table\Table');
+
+        $dataTree = new \TestDbAcle\Psv\PsvTree();
+        $dataTree->addTable(
+            new \TestDbAcle\Psv\Table\Table(
+                'user', [
+                [
+                    "user_id"    => "10",
+                    "first_name" => "john",
+                    "last_name"  => "miller",
+                ],
+                [
+                    "user_id"    => "20",
+                    "first_name" => "stu",
+                    "last_name"  => "Smith",
+                ],
+                [
+                    "user_id"    => "30",
+                    "first_name" => "stuart",
+                    "last_name"  => "Smith",
+                ],
+            ],
+                new \TestDbAcle\Psv\Table\Meta(
+                    [
+                        'mode' => 'replace',
+                    ]
+                )
+            )
+        );
+
+        $mockTableList->shouldReceive('getTable')->with('user')->andReturn($mockTableUser);
+        $mockTableUser->shouldReceive('getPrimaryKey')->andReturn('user_id');
+
+        $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('user_id'=>'10'))->andReturn(true)->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE `user` SET `user_id`='10', `first_name`='john', `last_name`='miller' WHERE `user_id`='10'")->ordered();
+        $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('user_id'=>'20'))->andReturn(true)->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("UPDATE `user` SET `user_id`='20', `first_name`='stu', `last_name`='Smith' WHERE `user_id`='20'")->ordered();
+        $mockPdoFacade->shouldReceive('recordExists')->once()->with("user",array('user_id'=>'30'))->andReturn(false)->ordered();
+        $mockPdoFacade->shouldReceive('executeSql')->once()->with("INSERT INTO `user` ( `user_id`, `first_name`, `last_name` ) VALUES ( '30', 'stuart', 'Smith' )")->ordered();
+
+        $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($mockPdoFacade, new \TestDbAcle\Db\DataInserter\Factory\UpsertBuilderFactory($mockPdoFacade), $mockTableList);
+        $dataInserter->process($dataTree);
+    }
 }

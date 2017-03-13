@@ -40,7 +40,7 @@ class DefaultFactories  implements \TestDbAcle\Config\FactoriesInterface
        
         return array(
             'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'));
+                $dataInserter = new \TestDbAcle\Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'), $serviceLocator->get('tableList'));
                 $dataInserter->addUpsertListener(new \TestDbAcle\Db\DataInserter\Listeners\MysqlZeroPKListener($serviceLocator->get('pdoFacade'), $serviceLocator->get('tableList')));
                 return $dataInserter;
            },
@@ -61,7 +61,7 @@ class DefaultFactories  implements \TestDbAcle\Config\FactoriesInterface
        
         return array(
            'dataInserter'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {
-                return new \TestDbAcle\Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'));
+                return new \TestDbAcle\Db\DataInserter\DataInserter($serviceLocator->get('pdoFacade'), $serviceLocator->get('upsertBuilderFactory'), $serviceLocator->get('tableList'));
            },
                    
            'pdoFacade'=> function(\TestDbAcle\ServiceLocator $serviceLocator) {

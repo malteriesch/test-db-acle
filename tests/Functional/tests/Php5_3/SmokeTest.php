@@ -283,6 +283,42 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             ");
     }
 
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     *
+     */
+
+    function test_Setup_ReplaceMode_takesByDefaultPrimaryColumnForIdentification()
+    {
+
+        $this->setupTables("
+            [address]
+            address_id  |address1       |postcode
+            1           |val 1          |foo1
+            3           |val 2          |foo2
+            1000        |val3           |foo3
+
+        ");
+
+        $this->setupTables("
+            [address|mode:replace]
+            address_id  |address1   
+            3           |val 2 amended       
+        ");
+
+        $this->assertTableStateContains("
+            [address]
+            address_id   |address1           |postcode
+            1           |val 1              |foo1
+            3           |val 2 amended      |foo2
+            1000        |val3               |foo3
+
+            ");
+    }
+
      /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders

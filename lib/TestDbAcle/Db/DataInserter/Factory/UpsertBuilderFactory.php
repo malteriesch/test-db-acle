@@ -9,15 +9,21 @@ class UpsertBuilderFactory
         $this->pdoFacade = $pdoFacade;
     }
     
-    function getUpserter(\TestDbAcle\Psv\Table\Table $table, $valuesToBeInserted = array())
+    function getUpserter(\TestDbAcle\Psv\Table\Table $psvTable, \TestDbAcle\Db\Table\Table $dbTable, $valuesToBeInserted = array())
     {
-        $tableName = $table->getName();
-        if ($table->getMeta()->isReplaceMode()){
+        $tableName = $psvTable->getName();
+        if ($psvTable->getMeta()->isReplaceMode()){
             $identifyMap = array();
-        
-            foreach ($table->getMeta()->getIdentifyColumns() as $idColumn) {
-                $identifyMap[$idColumn]=$valuesToBeInserted[$idColumn];
+
+            if ($psvTable->getMeta()->getIdentifyColumns()) {
+                foreach ($psvTable->getMeta()->getIdentifyColumns() as $idColumn) {
+                    $identifyMap[$idColumn]=$valuesToBeInserted[$idColumn];
+                }
+            } else {
+                $identifyMap[$dbTable->getPrimaryKey()]=$valuesToBeInserted[$dbTable->getPrimaryKey()];
             }
+
+
 
             if($this->pdoFacade->recordExists($tableName, $identifyMap)){
                 return new \TestDbAcle\Db\DataInserter\Sql\UpdateBuilder($tableName,$identifyMap);

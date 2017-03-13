@@ -75,7 +75,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
                     $value ="`$value`";
                 });
                 $columnsToSelect = implode(", ", $columns);
-                $data = $this->pdoFacade->getQuery("select $columnsToSelect from `$tableName`");
+                $data = $this->pdoFacade->getQuery("select $columnsToSelect from `$tableName` order by " . $this->tableList->getTable($tableName)->getPrimaryKey());
             } else {
                 $data = $this->pdoFacade->getQuery("select * from `$tableName`");
             }
