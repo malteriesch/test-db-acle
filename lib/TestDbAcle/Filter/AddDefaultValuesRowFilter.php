@@ -18,9 +18,8 @@ class AddDefaultValuesRowFilter extends AbstractRowFilter
         $table = $this->tableList->getTable($tableName);
         foreach ($table->getNonNullableColumns() as $columnName) {
             $column = $table->getColumn($columnName);
-            if (($default = $column->getDefault()) && $this->isRedefineable($row,$columnName)){
-                $row[$columnName] = $default;
-            } elseif ($this->isUndefined($row, $columnName) && !$column->isAutoIncrement()) {
+            if($column->getDefault()){continue;}
+            if ($this->isUndefined($row, $columnName) && !$column->isAutoIncrement()) {
                 $row[$columnName] = $column->generateDefaultNullValue();
             }
         }

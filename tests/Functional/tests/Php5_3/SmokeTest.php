@@ -289,6 +289,44 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
      * @covers \TestDbAcle::getDefaultFactories()
      *
+     * @link https://github.com/malteriesch/test-db-acle/issues/10
+     */
+
+    function test_Setup_Bug_2()
+    {
+
+        $this->setupTables("
+            [address]
+            address_id  |address2       |postcode
+            1           |val 1          |foo1
+            3           |val 2          |foo2
+            1000        |val3           |foo3
+
+        ");
+
+        $this->setupTables("
+            [address|mode:replace;identifiedBy:address_id]
+            address_id  |address1   
+            3           |val 2 amended       
+        ");
+
+        $this->assertTableStateContains("
+            [address]
+            address_id  |address2       |postcode
+            1           |val 1          |foo1
+            3           |val 2          |foo2
+            1000        |val3           |foo3
+
+            ");
+    }
+
+
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     *
      */
 
     function test_Setup_ReplaceMode_takesByDefaultPrimaryColumnForIdentification()
@@ -576,7 +614,36 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
              
     }
     
-   
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterArrayByPsvCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_StandradDefaults()
+    {
+
+        $this->getPdo()->query('CREATE TEMPORARY TABLE `time_stuff` (
+                                `time_stuff_id` int(11) NOT NULL AUTO_INCREMENT,
+                                `last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                PRIMARY KEY (`time_stuff_id`)
+                              ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8');
+
+        $this->setupTables("
+            [time_stuff]
+            time_stuff_id    
+            10
+            
+        ");
+
+        $this->assertTableStateContains("
+            [time_stuff]
+            time_stuff_id       |last_updated
+            10                  |NOW
+            
+        ",array('NOW'=>date("Y-m-d")));
+    }
+
+
 }
 
 class ExampleService

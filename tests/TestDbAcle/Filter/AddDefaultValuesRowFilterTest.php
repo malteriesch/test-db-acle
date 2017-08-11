@@ -37,10 +37,9 @@ class AddDefaultValuesRowFilterTest extends \TestDbAcleTests\TestDbAcle\BaseTest
     
     function test_filter_addsNonNullableDefaultValues()
     {
-        $this->assertEquals( array('col4'=>'2012-01-01','col1'=>'1','col9'=>'foo'), $this->filter->filter("my_table", array('col9'=>'','col4'=>'2012-01-01')));
+        $this->assertEquals( array('col4'=>'2012-01-01','col1'=>'1'), $this->filter->filter("my_table", array('col4'=>'2012-01-01')));
+        $this->assertEquals( array('col4'=>'2012-01-01','col1'=>'1','col9'=>''), $this->filter->filter("my_table", array('col9'=>'','col4'=>'2012-01-01')));
         $this->assertEquals( array('col9'=>'moo','col4'=>'2012-01-01','col1'=>'1'), $this->filter->filter("my_table", array('col9'=>'moo','col4'=>'2012-01-01')));
-        
-        
     }
 }
 
