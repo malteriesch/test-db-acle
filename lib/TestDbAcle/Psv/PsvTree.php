@@ -15,13 +15,13 @@ class PsvTree
     
     function addTable(\TestDbAcle\Psv\Table\Table $table)
     {
-        return $this->tables[$table->getName()] = $table;
+        return $this->tables[] = $table;
     }
     
     
-    function getTable($name)
+    function getTable($index)
     {
-        return $this->tables[$name];
+        return $this->tables[$index];
     }
     
     function getTables()
@@ -32,14 +32,23 @@ class PsvTree
     function toArray()
     {
         $out = array();
-        foreach ($this->getTableNames() as $table) {
-            $out[$table] = $this->getTable($table)->toArray();
+        foreach ($this->getTableIndexes() as $table) {
+            $out[$this->getTable($table)->getName()] = $this->getTable($table)->toArray();
         }
         return $out;
     }
 
-    function getTableNames()
+    function getTableIndexes()
     {
         return array_keys($this->tables);
+    }
+
+    function getTableNames()
+    {
+        $out = array();
+        foreach ($this->getTableIndexes() as $table) {
+            $out[] = $this->getTable($table)->getName();
+        }
+        return $out;
     }
 }

@@ -619,7 +619,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterArrayByPsvCommand()
      * @covers \TestDbAcle::getDefaultFactories()
      */
-    function test_StandradDefaults()
+    function test_StandardDefaults()
     {
 
         $this->getPdo()->query('CREATE TEMPORARY TABLE `time_stuff` (
@@ -641,6 +641,33 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             10                  |NOW
             
         ",array('NOW'=>date("Y-m-d")));
+    }
+
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterArrayByPsvCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_CanHaveConsecutiveTablesWithSameNameAndAppend()
+    {
+        $this->setupTables("
+            [address]
+            address_id  |company    
+            10          |foo1
+            
+            [address|mode:append]
+            address_id  |company    
+            20          |foo2
+
+        ");
+
+        $this->assertTableStateContains("
+            [address|mode:append]
+            address_id  |company    
+            10          |foo1
+            20          |foo2
+            
+        ");
     }
 
 

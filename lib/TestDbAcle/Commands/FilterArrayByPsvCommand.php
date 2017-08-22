@@ -31,7 +31,7 @@ class FilterArrayByPsvCommand implements \TestDbAcle\Commands\CommandInterface
         
         $filteredParsedTree   = $this->filterQueue->filterDataTree($parsedTree);
 
-        $expectedData = $filteredParsedTree->getTable('default')->toArray();
+        $expectedData = $filteredParsedTree->getTable(0)->toArray();
         
         if (count($expectedData) == 0){
             $this->expectedData = $expectedData;

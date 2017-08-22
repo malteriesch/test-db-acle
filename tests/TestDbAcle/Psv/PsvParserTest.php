@@ -166,11 +166,11 @@ class PsvParserTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
                     "first_name" => "stu",
                     "last_name" => 'Smith"'),
                 ), 
-                $parsedTree->getTable('expression1')->toArray());
+                $parsedTree->getTable(0)->toArray());
         
-        $this->assertEquals('expression1', $parsedTree->getTable('expression1')->getName());
+        $this->assertEquals('expression1', $parsedTree->getTable(0)->getName());
         
-        $this->assertEquals('expression2', $parsedTree->getTable('expression2')->getName());
+        $this->assertEquals('expression2', $parsedTree->getTable(1)->getName());
         
         $this->assertEquals(
             array(
@@ -180,13 +180,13 @@ class PsvParserTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
                 array("col1" => "30",
                     "col2" => "miaow",
                     "col3" => "boo")),
-             $parsedTree->getTable('expression2')->toArray());
+             $parsedTree->getTable(1)->toArray());
         
         $this->assertEquals(array(
                        'mode'=> 'replace',
-                       'identifiedBy' => array('first_name','last_name') ), $parsedTree->getTable('expression1')->getMeta()->toArray());
+                       'identifiedBy' => array('first_name','last_name') ), $parsedTree->getTable(0)->getMeta()->toArray());
         
-        $this->assertEquals(array(), $parsedTree->getTable('expression2')->getMeta()->toArray());
+        $this->assertEquals(array(), $parsedTree->getTable(1)->getMeta()->toArray());
 
         $this->assertEquals(array (
                 'expression1' =>
@@ -224,7 +224,9 @@ class PsvParserTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase{
                     ),
             ), $parsedTree->toArray());
 
+        $this->assertEquals(array(0, 1, 2), $parsedTree->getTableIndexes());
         $this->assertEquals(array('expression1','expression2','empty'), $parsedTree->getTableNames());
+
 
     }
 

@@ -61,7 +61,7 @@ class FilterTableStateByPsvCommand implements CommandInterface
         
         $filteredParsedTree   = $this->filterQueue->filterDataTree($parsedTree);
 
-        $this->tableFactory->populateTableList(array_keys($filteredParsedTree->getTables()),$this->tableList);
+        $this->tableFactory->populateTableList($filteredParsedTree->getTableNames(),$this->tableList);
 
         foreach($filteredParsedTree->getTables() as $table){
             /** @var Table $table */

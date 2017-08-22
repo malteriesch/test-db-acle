@@ -50,7 +50,7 @@ class SetupTablesCommand implements CommandInterface
     public function execute()
     {
         $parsedTree = $this->parser->parsePsvTree($this->sourcePsv);
-        $this->tableFactory->populateTableList(array_keys($parsedTree->getTables()),$this->tableList);
+        $this->tableFactory->populateTableList($parsedTree->getTableNames(),$this->tableList);
         $this->dataInserter->process($this->filterQueue->filterDataTree($parsedTree));
     }
 

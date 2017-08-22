@@ -58,12 +58,12 @@ class FilterQueueTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
        $this->assertEquals( array(
                     array('user.filtered_filter1_row1'),
                     array('user.filtered_filter1_row2')
-                ), $filteredTableList->getTable('user')->toArray());
+                ), $filteredTableList->getTable(0)->toArray());
        
        $this->assertEquals( array(
                     array('stuff.filtered_filter1_row1'),
-                    array('stuff.filtered_filter1_row2')), $filteredTableList->getTable('stuff')->toArray());
-       $this->assertEquals( array(), $filteredTableList->getTable('emptyTable')->toArray());
+                    array('stuff.filtered_filter1_row2')), $filteredTableList->getTable(1)->toArray());
+       $this->assertEquals( array(), $filteredTableList->getTable(2)->toArray());
         
     }
     
@@ -124,12 +124,12 @@ class FilterQueueTest extends \TestDbAcleTests\TestDbAcle\BaseTestCase
        $this->assertEquals(  array(
                     array('user.filtered_filter2_row1'),
                     array('user.filtered_filter2_row2')
-                ), $filteredTableList->getTable('user')->toArray());
+                ), $filteredTableList->getTable(0)->toArray());
        
        $this->assertEquals( array(
                     array('stuff.filtered_filter2_row1'),
-                    array('stuff.filtered_filter2_row2')), $filteredTableList->getTable('stuff')->toArray());
-       $this->assertEquals( array(), $filteredTableList->getTable('emptyTable')->toArray());
+                    array('stuff.filtered_filter2_row2')), $filteredTableList->getTable(1)->toArray());
+       $this->assertEquals( array(), $filteredTableList->getTable(2)->toArray());
        
         
     }
