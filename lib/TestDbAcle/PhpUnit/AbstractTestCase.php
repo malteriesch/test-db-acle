@@ -65,7 +65,6 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase implements A
     protected function setupTables($psvContent, $replace = array())
     {
         $this->getDatabaseTestHelper()->runCommand(new \TestDbAcle\Commands\SetupTablesCommand($psvContent, $replace));
-       // $this->getDatabaseTestHelper()->setupTablesWithPlaceholders($psvContent, $replace);
     }
     
     /**

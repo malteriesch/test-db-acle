@@ -214,7 +214,63 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
        
                 
     }
-    
+
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+
+    function test_SetupAndAssertWithPlaceholders_PlaceholdersAreNotReused()
+    {
+
+        $this->setupTables("
+            [address]
+            address_id  |company   
+            1           |me        
+            3           |you       
+
+            [user]
+            user_id |name
+            1       |mary
+
+        ",array('you'=>'Johnny'));
+
+        $this->setupTables("
+            [address]
+            address_id  |company   
+            1           |me        
+            3           |you       
+
+            [user]
+            user_id |name
+            1       |mary
+
+        ",array('you'=>'John'));
+
+        $exampleService = new ExampleService($this->getPdo());
+
+        $this->setAutoIncrement('address', 1000);
+
+        $exampleService->addEntry("them");
+
+
+        $this->assertTableStateContains("
+            [address]
+            address_id  |company   
+            1           |me        
+            3           |John      
+            1000        |them      
+
+            [user]
+            user_id |name
+            1       |mary
+            ");
+
+
+    }
+
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders

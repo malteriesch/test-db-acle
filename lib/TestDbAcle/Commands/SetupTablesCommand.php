@@ -57,7 +57,11 @@ class SetupTablesCommand implements CommandInterface
     public function initialise(\TestDbAcle\ServiceLocator $serviceLocator)
     {
         $this->parser       = $serviceLocator->get('parser');
-        $this->filterQueue  = $serviceLocator->createNew('dataInserterFilterQueue');
+
+        /**
+         * We need to use a new copy of the filter, otherwise old placeholders will override new ones.
+         */
+        $this->filterQueue  = clone $serviceLocator->createNew('dataInserterFilterQueue');
         $this->dataInserter = $serviceLocator->get('dataInserter');
         $this->tableList    = $serviceLocator->get('tableList');
         $this->tableFactory = $serviceLocator->get('tableFactory');
