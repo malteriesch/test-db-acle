@@ -1,13 +1,14 @@
 <?php
 
-
-class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase 
+class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCaseUsingTraits
 {
     
     
     function setup()
     {
+
         parent::setup();
+        $this->getPdo()->query('DROP TEMPORARY TABLE IF EXISTS address');
         $this->getPdo()->query('CREATE TEMPORARY TABLE `address` (
                                 `address_id` int(11) NOT NULL AUTO_INCREMENT,
                                 `company` varchar(100) NOT NULL,
@@ -21,7 +22,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
                                 PRIMARY KEY (`address_id`)
                               ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8');
 
-
+        $this->getPdo()->query('DROP TEMPORARY TABLE IF EXISTS user');
         $this->getPdo()->query('CREATE TEMPORARY TABLE `user` (
                                 `user_id` int(11) NOT NULL AUTO_INCREMENT,
                                 `name` varchar(100) NOT NULL,
@@ -84,7 +85,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
         } catch(\PHPUnit_Framework_ExpectationFailedException $e){
           //do nothing
         }
-                
+
     }
 
     /**
@@ -128,7 +129,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             1       |mary
             ", array('NOW'=>date("Y-m-d")));
     }
-    
+
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
@@ -137,7 +138,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
      */
     function test_simpleSetupAndAssertTableStateContains_WithZeroPrimaryKey()
     {
-        
+
         $this->setupTables("
             [address]
             address_id  |company    
@@ -156,7 +157,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
 
         $exampleService->addEntry("them");
 
-        
+
         $this->assertTableStateContains("
             [address]
             address_id  |company   
@@ -168,19 +169,19 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             user_id |name
             1       |mary
             ", array('NOW'=>date("Y-m-d")));
-              
+
     }
-    
+
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand() with placeholders
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
      * @covers \TestDbAcle::getDefaultFactories()
      */
-    
+
     function test_SetupAndAssertWithPlaceholders()
     {
-        
+
         $this->setupTables("
             [address]
             address_id  |company   
@@ -199,7 +200,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
 
         $exampleService->addEntry("them");
 
-        
+
         $this->assertTableStateContains("
             [address]
             address_id  |company   
@@ -211,8 +212,8 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             user_id |name
             1       |mary
             ");
-       
-                
+
+
     }
 
     /**
@@ -277,10 +278,10 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
      * @covers \TestDbAcle::getDefaultFactories()
      */
-    
+
     function test_SetupAndAssertWithNullColumn()
     {
-        
+
         $this->setupTables("
             [address]
             address_id  |address2   
@@ -421,7 +422,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
      */
     function test_DatetimeColumnsGetTruncatedWhenComparing()
     {
-        
+
         $this->setupTables("
             [address]
             address_id  |company    |date_of_entry
@@ -440,7 +441,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
 
         $exampleService->addEntry("them");
 
-        
+
         $this->assertTableStateContains("
             [address]
             address_id  |company    |date_of_entry
@@ -452,9 +453,9 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             user_id |name
             1       |mary
             ", array('NOW'=>date("Y-m-d")));
-                
+
     }
-    
+
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
@@ -462,7 +463,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
      */
     function test_AssertTableStateContains_handlesEmptyTables()
     {
-        
+
         $this->setupTables("
             [address]
             address_id  |company    
@@ -479,9 +480,9 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             [user]
            
             ");
-             
+
     }
-    
+
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
@@ -494,7 +495,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
                                 `select` varchar(100) NOT NULL,
                                 PRIMARY KEY (`id`)
                               ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8');
-        
+
         $this->setupTables("
             [select]
             id  |select    
@@ -509,7 +510,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             1   |foo
             ");
     }
-    
+
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
@@ -522,7 +523,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
                                 `select` varchar(100) NOT NULL,
                                 PRIMARY KEY (`id`)
                               ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8');
-        
+
         $this->setupTables("
             [select]
             id  |select    
@@ -535,7 +536,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             id  |select    
             ");
     }
-    
+
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
@@ -543,7 +544,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
      */
     function test_AssertTableStateContains_handlesEmptyTables_raisesExceptionIfEmptyExpectedButNotEmpty()
     {
-        
+
         $this->setupTables("
             [address]
             address_id  |company    
@@ -553,7 +554,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             1       |foo
 
         ");
-        
+
         try{
             $this->assertTableStateContains("
             [address]
@@ -568,9 +569,9 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
         } catch(\PHPUnit_Framework_ExpectationFailedException $e){
           //do nothing
         }
-             
+
     }
-    
+
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
@@ -578,14 +579,14 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
      */
     function test_AssertTableStateContains_handlesEmptyTables_raisesExceptionIfEmptyExpectedButNotEmpty_EmptyTableSpecifiedWithoutColumns()
     {
-        
+
         $this->setupTables("
             [user]
             user_id |name
             1       |foo
 
         ");
-        
+
         try{
             $this->assertTableStateContains("
             [user]
@@ -596,7 +597,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
         } catch(\PHPUnit_Framework_ExpectationFailedException $e){
           //do nothing
         }
-             
+
     }
     
     /**
@@ -669,7 +670,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
         }
              
     }
-    
+                             
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterArrayByPsvCommand()
@@ -697,7 +698,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCase
             10                  |NOW
             
         ",array('NOW'=>date("Y-m-d")));
-    }
+}
 
     /**
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
