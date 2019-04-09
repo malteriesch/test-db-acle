@@ -8,7 +8,7 @@
  * check with different datetime formats (also mysql)
  * 
  */
-abstract class SqlliteSmokeTest extends \TestDbAcle\PhpUnit\AbstractTestCase
+class SqlliteSmokeTest extends \TestDbAcle\PhpUnit\AbstractTestCase
 {
     
     function providePdo()
