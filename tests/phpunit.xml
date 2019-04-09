@@ -1,7 +1,6 @@
 <phpunit bootstrap="./Bootstrap.php" colors="true" > 
     <testsuite name="Test-DB-Acle Test Suite">
-        <directory>./TestDbAcle</directory>
-        <directory>./Functional</directory>
+        <directory>.</directory>
     </testsuite>
 
     <groups>

@@ -11,6 +11,6 @@ before_script:
   - sed -e 's/@MYSQL_TESTDB_HOST@/'localhost'/' -e 's/@MYSQL_TESTDB_NAME@/'myapp_test'/' -e 's/@MYSQL_TESTDB_USER@/'root'/' -e 's/@MYSQL_TESTDB_PASSWORD@/''/' tests/Functional/config.php.dist > tests/Functional/config.php
   
   
-script: "phpunit -c tests/phpunit.xml"
+script: "vendor/bin/phpunit -c tests/phpunit.xml"
 
 
