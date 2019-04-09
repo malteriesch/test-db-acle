@@ -299,7 +299,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCaseUsingT
             1000        |there      
 
             ");
-        $countResult = $this->pdo->query("select count(*) n from address where address2 is NULL")->fetch(\PDO::FETCH_ASSOC);
+        $countResult = $this->getPdo()->query("select count(*) n from address where address2 is NULL")->fetch(\PDO::FETCH_ASSOC);
         $this->assertEquals(1, $countResult['n']);
     }
 
@@ -518,6 +518,7 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCaseUsingT
      */
     function test_AssertTableStateContains_handlesReservedKeywords_emptyTable()
     {
+        $this->getPdo()->query('DROP TEMPORARY TABLE IF EXISTS `select`');
         $this->getPdo()->query('CREATE TEMPORARY TABLE `select` (
                                 `id` int(11) NOT NULL AUTO_INCREMENT,
                                 `select` varchar(100) NOT NULL,
@@ -724,6 +725,35 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCaseUsingT
             10          |foo1
             20          |foo2
             
+        ");
+    }
+
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_CanDealWithUniqueVarCharColumns()
+    {
+        $this->getPdo()->query('DROP TEMPORARY TABLE IF EXISTS uniqueness');
+        $this->getPdo()->query('CREATE TEMPORARY TABLE `uniqueness` (
+                                `uniqueness_id` int(11) NOT NULL AUTO_INCREMENT,
+                                `name` varchar(100) UNIQUE NOT NULL,
+                                PRIMARY KEY (`uniqueness_id`)
+                              ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8');
+
+        $this->setupTables("
+            [uniqueness]
+            uniqueness_id 
+            10            
+            20
+
+        ");
+
+        $this->assertTableStateContains("
+            [uniqueness]
+            uniqueness_id       |name
+            10                  |T1
+            20                  |T2
         ");
     }
 

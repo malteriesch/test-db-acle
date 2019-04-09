@@ -3,7 +3,7 @@ namespace TestDbAcle\Db\Mysql\Table;
 
 class Column extends \TestDbAcle\Db\Table\AbstractColumn
 {
-    
+    static protected $uniqunessIndex = 0;
     public function getName()
     {
         return $this->meta['Field'];
@@ -39,6 +39,10 @@ class Column extends \TestDbAcle\Db\Table\AbstractColumn
 
         if (strpos($columnType, 'date') !== false) {
             return '2000-01-01';
+        }
+        if (($this->meta['Key'] ?? null) == 'UNI') {
+            self::$uniqunessIndex++;
+            return 'T' . self::$uniqunessIndex;
         }
         return 'T';
     }
