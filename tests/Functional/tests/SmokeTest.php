@@ -136,6 +136,31 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCaseUsingT
      * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
      * @covers \TestDbAcle::getDefaultFactories()
      */
+    function test_SetAutoIncrement()
+    {
+
+        $this->setupTables("
+
+            [user|auto-increment:123]
+
+        ");
+
+        $this->getPdo()->exec("insert into user (name) values('test')");
+
+
+        $this->assertTableStateContains("
+            [user]
+            user_id     |name
+            123         |test
+            ");
+    }
+
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
     function test_simpleSetupAndAssertTableStateContains_WithZeroPrimaryKey()
     {
 

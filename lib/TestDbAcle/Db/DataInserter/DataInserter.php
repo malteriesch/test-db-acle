@@ -46,6 +46,9 @@ class DataInserter
         if(!$table->getMeta()->isReplaceMode() && !$table->getMeta()->isAppendMode()){
             $this->pdoFacade->clearTable($table->getName());
         }
+        if($autoIncrement = $table->getMeta()->getAutoIncrement()){
+            $this->pdoFacade->setAutoIncrement($table->getName(), $autoIncrement);
+        }
         foreach ($table->toArray() as $valuesToBeInserted) {
             $this->insertValues($this->upsertBuilderFactory->getUpserter($table, $this->tableList->getTable($table->getName()), $valuesToBeInserted), $valuesToBeInserted);
         }

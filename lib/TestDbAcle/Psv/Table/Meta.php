@@ -43,6 +43,11 @@ class Meta
         return $this->getAttribute('mode') ==  'append';
     }
 
+    public function getAutoIncrement()
+    {
+        return $this->getAttribute('auto-increment');
+    }
+
     public function getIdentifyColumns()
     {
         return (array) $this->getAttribute('identifiedBy', array());
