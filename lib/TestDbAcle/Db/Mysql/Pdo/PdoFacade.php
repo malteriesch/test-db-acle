@@ -18,6 +18,11 @@ class PdoFacade extends \TestDbAcle\Db\AbstractPdoFacade
         $this->executeSql("TRUNCATE TABLE `{$table}`");
     }
 
+    public function softClearTable($table)
+    {
+        $this->executeSql("DELETE FROM `{$table}`");
+    }
+
     public function describeTable($table)
     {
         return $this->getQuery("DESCRIBE `{$table}`");

@@ -49,6 +49,7 @@ abstract class AbstractPdoFacade
     abstract public function setAutoIncrement($table, $nextIncrement);
     abstract public function disableForeignKeyChecks();
     abstract public function clearTable($table);
+    abstract public function softClearTable($table);
     abstract public function describeTable($table);
     
 }

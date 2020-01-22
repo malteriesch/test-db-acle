@@ -44,7 +44,11 @@ class DataInserter
     public function processTable(\TestDbAcle\Psv\Table\Table $table)
     {
         if(!$table->getMeta()->isReplaceMode() && !$table->getMeta()->isAppendMode()){
-            $this->pdoFacade->clearTable($table->getName());
+            if ($table->getMeta()->useTruncate()) {
+                $this->pdoFacade->clearTable($table->getName());
+            } else {
+                $this->pdoFacade->softClearTable($table->getName());
+            }
         }
         if($autoIncrement = $table->getMeta()->getAutoIncrement()){
             $this->pdoFacade->setAutoIncrement($table->getName(), $autoIncrement);

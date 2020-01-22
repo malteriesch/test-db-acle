@@ -782,6 +782,38 @@ class SmokeTest extends \TestDbAcleTests\Functional\FunctionalBaseTestCaseUsingT
         ");
     }
 
+    /**
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::execute()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::FilterTableStateByPsvCommand()
+     * @covers \TestDbAcle\Commands\FilterTableStateByPsvCommand::SetAutoIncrementCommand()
+     * @covers \TestDbAcle::getDefaultFactories()
+     */
+    function test_softDelete()
+    {
+
+        $this->setupTables("
+
+            [user]
+            user_id 
+            100
+
+        ");
+
+        $this->getPdo()->beginTransaction();
+
+        $this->setupTables("
+            [user|mode:delete]
+            user_id 
+        ");
+        $this->getPdo()->rollBack();
+
+
+        $this->assertTableStateContains("
+           [user]
+            user_id 
+            100
+            ");
+    }
 
 }
 

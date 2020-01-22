@@ -32,6 +32,11 @@ class Meta
             return $value;
         }
     }
+
+    public function useTruncate()
+    {
+        return $this->getAttribute('mode') != 'delete';
+    }
     
     public function isReplaceMode()
     {

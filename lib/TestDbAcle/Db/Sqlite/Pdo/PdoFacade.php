@@ -14,7 +14,11 @@ class PdoFacade extends \TestDbAcle\Db\AbstractPdoFacade
     {
         $this->executeSql("DELETE FROM `{$table}`;DELETE FROM sqlite_sequence WHERE name='$table'");
     }
-    
+    public function softClearTable($table)
+    {
+        $this->executeSql("DELETE FROM `{$table}`;");
+    }
+
     public function setAutoIncrement($table, $nextIncrement){
         $this->pdo->query("UPDATE sqlite_sequence SET seq=$nextIncrement-1 WHERE name='$table';");
     }
